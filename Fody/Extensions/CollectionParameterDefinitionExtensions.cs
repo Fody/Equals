@@ -7,7 +7,7 @@ namespace Equals.Fody.Extensions
     {
         public static ParameterDefinition Add(this Collection<ParameterDefinition> parameters, string name, TypeReference type)
         {
-            var parameter = new ParameterDefinition("right", ParameterAttributes.None, type);
+            var parameter = new ParameterDefinition(name, ParameterAttributes.None, type);
             parameters.Add(parameter);
             return parameter;
         }
