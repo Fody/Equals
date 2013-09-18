@@ -4,7 +4,7 @@ using Mono.Collections.Generic;
 
 namespace Equals.Fody.Extensions
 {
-    public static class CollectionInstructionExtension
+    public static class CollectionInstructionExtensions
     {
         public static void If(this Collection<Instruction> ins,
             Action<Collection<Instruction>> condition,

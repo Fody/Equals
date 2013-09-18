@@ -26,6 +26,11 @@ namespace Equals.Fody
             public static TypeReference TypeReference;
         }
 
+        public static class String
+        {
+            public static TypeReference TypeReference;
+        }
+
         public static class Int32
         {
             public static TypeReference TypeReference;
@@ -49,10 +54,25 @@ namespace Equals.Fody
             public static TypeReference TypeReference;
         }
 
+        public static class GeneratedCodeAttribute
+        {
+            public static TypeReference TypeReference;
+            public static MethodReference ConstructorStringString;
+        }
+
+        public static class DebuggerNonUserCodeAttribute
+        {
+            public static TypeReference TypeReference;
+            public static MethodReference Constructor;
+        }
+
         public static void FindReferences(IAssemblyResolver assemblyResolver, ModuleDefinition moduleDefinition)
         {
             var baseLib = assemblyResolver.Resolve("mscorlib");
             var baseLibTypes = baseLib.MainModule.Types;
+
+            var systemLib = assemblyResolver.Resolve("System");
+            var systemLibTypes = systemLib.MainModule.Types;
 
             var winrt = !baseLibTypes.Any(type => type.Name == "Object");
             if (winrt)
@@ -64,6 +84,8 @@ namespace Equals.Fody
             Boolean.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Boolean"));
             
             Int32.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Int32"));
+
+            String.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "String"));
 
             Type.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Type"));
             Type.GetTypeFromHandle = moduleDefinition.Import(Type.TypeReference.Resolve().FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
@@ -82,6 +104,12 @@ namespace Equals.Fody
             IEnumerator.GetCurrent = moduleDefinition.Import(IEnumerator.TypeReference.Resolve().FindMethod("get_Current"));
 
             IEquatable.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "IEquatable`1"));
+
+            GeneratedCodeAttribute.TypeReference = moduleDefinition.Import(systemLibTypes.First(t => t.Name == "GeneratedCodeAttribute"));
+            GeneratedCodeAttribute.ConstructorStringString = moduleDefinition.Import(GeneratedCodeAttribute.TypeReference.Resolve().FindMethod(".ctor", "String", "String"));
+
+            DebuggerNonUserCodeAttribute.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "DebuggerNonUserCodeAttribute"));
+            DebuggerNonUserCodeAttribute.Constructor = moduleDefinition.Import(DebuggerNonUserCodeAttribute.TypeReference.Resolve().FindMethod(".ctor"));
         }
     }
 }

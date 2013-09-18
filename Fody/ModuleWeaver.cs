@@ -5,6 +5,7 @@ using Equals.Fody;
 using Equals.Fody.Injectors;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
 
 public class ModuleWeaver
 {

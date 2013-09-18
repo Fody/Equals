@@ -3,7 +3,7 @@ using Mono.Collections.Generic;
 
 namespace Equals.Fody.Extensions
 {
-    public static class CollectionParameterDefinitionExtension
+    public static class CollectionParameterDefinitionExtensions
     {
         public static ParameterDefinition Add(this Collection<ParameterDefinition> parameters, string name, TypeReference type)
         {
