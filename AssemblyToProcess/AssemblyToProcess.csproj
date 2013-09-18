@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{40939411-32F0-48DD-B17B-FA46DD5D9B25}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AssemblyToProcess</RootNamespace>
+    <AssemblyName>AssemblyToProcess</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile2</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="EmptyClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EnumClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EqualsOrSubtypeClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExaclyOfTypeClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExaclyTheSameTypeAsThisClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GenericClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IgnoredPropertiesClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InheritedClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IntCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NestedClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NormalClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OnlyIntCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OnlyOperator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleStruct.cs" />
+    <Compile Include="StructPropertyClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StructWithOnlyOperator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
+      <Project>{70804914-c3d9-4737-bcb8-b3d40f305db3}</Project>
+      <Name>AssemblyToReference</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+</Project>

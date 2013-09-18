@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+
+[Equals]
+public class GenericClass<T> where T : GenericClassBaseClass
+{
+    public int a;
+
+    public int A
+    {
+        get
+        {
+            return a;
+        }
+        set
+        {
+            a = value;
+        }
+    }
+
+    public IEnumerable<T> B { get; set; }
+}
+
+[Equals]
+public abstract class GenericClassBaseClass
+{
+    public int C { get; set; }
+}
+
+[Equals]
+public class GenericClassNormalClass : GenericClassBaseClass
+{
+    public int D { get; set; }
+}
