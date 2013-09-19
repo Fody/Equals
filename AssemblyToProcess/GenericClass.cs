@@ -1,5 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+
+[Equals]
+public class WithGenericParameter<T> : GenericClass<T> where T : GenericClassBaseClass
+{
+   public int X { get; set; }
+}
+
+[Equals]
+public class WithoutGenericParameter: GenericClass<GenericClassBaseClass> 
+{
+   public int Z { get; set; }
+}
 
 [Equals]
 public class GenericClass<T> where T : GenericClassBaseClass

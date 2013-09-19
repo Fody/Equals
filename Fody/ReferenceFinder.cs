@@ -66,6 +66,11 @@ namespace Equals.Fody
             public static MethodReference Constructor;
         }
 
+        public static class DateTime
+        {
+            public static TypeReference TypeReference;
+        }       
+
         public static void FindReferences(IAssemblyResolver assemblyResolver, ModuleDefinition moduleDefinition)
         {
             var baseLib = assemblyResolver.Resolve("mscorlib");
@@ -80,6 +85,10 @@ namespace Equals.Fody
                 baseLib = assemblyResolver.Resolve("System.Runtime");
                 baseLibTypes = baseLib.MainModule.Types;
             }
+
+            DateTime.TypeReference = moduleDefinition.Import( baseLibTypes.First( t => t.Name == "DateTime" ) );
+
+            DateTime.TypeReference.Resolve();
 
             Boolean.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Boolean"));
             

@@ -12,6 +12,7 @@ namespace Equals.Fody.Injectors
         {
             var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
             var helperType = new TypeDefinition("Equals", "Helpers", typeAttributes);
+            helperType.CustomAttributes.MarkAsGeneratedCode();
             helperType.BaseType = ReferenceFinder.Object.TypeReference;
             moduleDefinition.Types.Add(helperType);
 
@@ -40,6 +41,7 @@ namespace Equals.Fody.Injectors
             AddCollectionLoop(ins, leftEnumerator, leftHasNext, rightEnumerator, rightHasNext);
 
             body.OptimizeMacros();
+            method.CustomAttributes.MarkAsGeneratedCode();
 
             return method;
         }

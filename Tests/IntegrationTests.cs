@@ -295,9 +295,103 @@ public class IntegrationTests
         Assert.AreNotEqual(0, result);
     }
 
+    [Test]
+    public void GetHashCode_shoud_return_value_for_class_without_generic_parameter()
+    {
+        var withoutGenericParameterType = assembly.GetType("WithoutGenericParameter");
+        var propType = assembly.GetType("GenericClassNormalClass");
+
+        dynamic instance = Activator.CreateInstance(withoutGenericParameterType);
+        instance.Z = 12;
+        instance.A = 1;
+        dynamic propInstance = Activator.CreateInstance(propType);
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] {1});
+        array[0] = propInstance;
+        instance.B = array;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void GetHashCode_shoud_return_value_for_class_with_generic_parameter()
+    {
+        var withGenericParameterType = assembly.GetType("WithGenericParameter`1");
+        var propType = assembly.GetType("GenericClassNormalClass");
+        var instanceType = withGenericParameterType.MakeGenericType(propType);
+
+        dynamic instance = Activator.CreateInstance(instanceType);
+        instance.X = 12;
+        instance.A = 1;
+        dynamic propInstance = Activator.CreateInstance(propType);
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] {1});
+        array[0] = propInstance;
+        instance.B = array;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+    
     #endregion
 
     #region Equals
+
+    [Test]
+    public void Equals_shoud_return_value_for_class_without_generic_parameter()
+    {
+        var withoutGenericParameterType = assembly.GetType("WithoutGenericParameter");
+        var propType = assembly.GetType("GenericClassNormalClass");
+
+        dynamic instance = Activator.CreateInstance(withoutGenericParameterType);
+        instance.Z = 12;
+        instance.A = 1;
+        dynamic propInstance = Activator.CreateInstance(propType);
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        array[0] = propInstance;
+        instance.B = array;
+
+        dynamic instance2 = Activator.CreateInstance(withoutGenericParameterType);
+        instance2.Z = 12;
+        instance2.A = 1;
+        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic propInstance2 = Activator.CreateInstance(propType);
+        array2[0] = propInstance2;
+        instance2.B = array2;
+
+        var result = instance.Equals(instance2);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_shoud_return_value_for_class_with_generic_parameter()
+    {
+        var withGenericParameterType = assembly.GetType("WithGenericParameter`1");
+        var propType = assembly.GetType("GenericClassNormalClass");
+        var instanceType = withGenericParameterType.MakeGenericType(propType);
+
+        dynamic instance = Activator.CreateInstance(instanceType);
+        instance.X = 12;
+        instance.A = 1;
+        dynamic propInstance = Activator.CreateInstance(propType);
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        array[0] = propInstance;
+        instance.B = array;
+
+        dynamic instance2 = Activator.CreateInstance(instanceType);
+        instance2.X = 12;
+        instance2.A = 1;
+        dynamic propInstance2 = Activator.CreateInstance(propType);
+        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        array2[0] = propInstance2;
+        instance2.B = array;
+
+        var result = instance.Equals(instance2);
+
+        Assert.AreNotEqual(0, result);
+    }
 
     private bool CheckEqualityOnTypesForTypeCheck(string left, string right)
     {

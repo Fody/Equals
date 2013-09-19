@@ -8,20 +8,21 @@ namespace Equals.Fody.Injectors
 {
     public static class OperatorInjector
     {
-        public static void InjectEqualityOperator(TypeDefinition type)
+        public static MethodDefinition InjectEqualityOperator( TypeDefinition type )
         {
-            AddOperator(type, true);
+            return AddOperator(type, true);
         }
 
-        public static void InjectInequalityOperator(TypeDefinition type)
+        public static MethodDefinition InjectInequalityOperator( TypeDefinition type )
         {
-            AddOperator(type, false);
+            return  AddOperator(type, false);
         }
 
-        private static void AddOperator(TypeDefinition type, bool isEquality)
+        private static MethodDefinition AddOperator( TypeDefinition type, bool isEquality )
         {
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
             var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+            method.CustomAttributes.MarkAsGeneratedCode();
 
             method.Parameters.Add("left", type);
             method.Parameters.Add("right", type);
@@ -35,6 +36,8 @@ namespace Equals.Fody.Injectors
             body.OptimizeMacros();
 
             type.Methods.Add(method);
+
+            return method;
         }
 
         private static void AddReturnValue(bool isEquality, Collection<Instruction> ins)

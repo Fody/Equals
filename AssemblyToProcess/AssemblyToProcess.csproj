@@ -83,11 +83,15 @@
     <Compile Include="SimpleClass.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SimpleStruct.cs" />
+    <Compile Include="SimpleStruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="StructPropertyClass.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="StructWithOnlyOperator.cs" />
+    <Compile Include="StructWithOnlyOperator.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">

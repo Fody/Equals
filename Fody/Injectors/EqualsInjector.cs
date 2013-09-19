@@ -39,6 +39,7 @@ namespace Equals.Fody.Injectors
         {
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
             var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+            method.CustomAttributes.MarkAsGeneratedCode();
 
             var obj = method.Parameters.Add("obj", ReferenceFinder.Object.TypeReference);
 
@@ -69,6 +70,7 @@ namespace Equals.Fody.Injectors
         {
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
             var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+            method.CustomAttributes.MarkAsGeneratedCode();
             var body = method.Body;
             var ins = body.Instructions;
 
@@ -87,10 +89,11 @@ namespace Equals.Fody.Injectors
             return method;
         }
 
-        public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals)
+        public static MethodReference InjectEqualsInternal( TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals )
         {
             var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
             var method = new MethodDefinition("EqualsInternal", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+            method.CustomAttributes.MarkAsGeneratedCode();
 
             var left = method.Parameters.Add("left", typeRef);
             var right = method.Parameters.Add("right", typeRef);
@@ -98,14 +101,20 @@ namespace Equals.Fody.Injectors
             var body = method.Body;
             var ins = body.Instructions;
 
+            var result = body.Variables.Add( "result", ReferenceFinder.Boolean.TypeReference );
+            var labelRet = Instruction.Create( OpCodes.Nop );
+
             var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
+
+            ins.Add( Instruction.Create( OpCodes.Ldc_I4_1 ) );
+            ins.Add( Instruction.Create( OpCodes.Stloc, result ) );
 
             foreach (var property in properties)
             {
-                AddPropertyCode(type, collectionEquals, property, ins);
+                AddPropertyCode( type, collectionEquals, property, ins, result , labelRet);
             }
 
-            AddReturnTrue(ins);
+            AddReturn( ins, labelRet, result );
 
             body.OptimizeMacros();
 
@@ -252,14 +261,7 @@ namespace Equals.Fody.Injectors
                 });
         }
 
-        private static void AddReturnTrue(Collection<Instruction> ins)
-        {
-            ins.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-            ins.Add(Instruction.Create(OpCodes.Ret));
-        }
-
-        private static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property,
-            Collection<Instruction> ins)
+        private static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins, VariableDefinition result, Instruction ret)
         {
             var propType = property.PropertyType.Resolve();
             var isCollection = propType.IsCollection();
@@ -269,7 +271,7 @@ namespace Equals.Fody.Injectors
                 {
                     if (simpleTypes.Contains(propType.FullName) || propType.IsEnum)
                     {
-                        AssSimpleValueCheck(c, property);
+                        AddSimpleValueCheck(c, property, type);
                     }
                     else if (!isCollection || propType.FullName == typeof (string).FullName)
                     {
@@ -283,26 +285,17 @@ namespace Equals.Fody.Injectors
                 t =>
                 {
                     t.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                    t.Add(Instruction.Create(OpCodes.Ret));
+                    t.Add( Instruction.Create( OpCodes.Stloc, result ) );
+                    t.Add(Instruction.Create(OpCodes.Br, ret));
                 });
         }
 
         private static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType)
         {
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
-            if (propType.IsValueType)
-            {
-                c.Add(Instruction.Create(OpCodes.Box, type));
-            }
-
+            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
-            if (propType.IsValueType)
-            {
-                c.Add(Instruction.Create(OpCodes.Box, type));
-            }
-
+            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
         }
 
@@ -327,17 +320,17 @@ namespace Equals.Fody.Injectors
                 es =>
                 {
                     es.Add(Instruction.Create(OpCodes.Ldarg_0));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
+                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
                     if (propType.IsValueType)
                     {
-                        es.Add(Instruction.Create(OpCodes.Box, type));
+                        es.Add( Instruction.Create( OpCodes.Box, propType ) );
                     }
 
                     es.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
+                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
                     if (propType.IsValueType)
                     {
-                        es.Add(Instruction.Create(OpCodes.Box, type));
+                        es.Add( Instruction.Create( OpCodes.Box, propType ) );
                     }
 
                     es.Add(Instruction.Create(OpCodes.Call, collectionEquals));
@@ -364,13 +357,13 @@ namespace Equals.Fody.Injectors
             cf.Add(Instruction.Create(OpCodes.Ceq));
         }
 
-        private static void AssSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property)
+        private static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type)
         {
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
+            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
 
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod()));
+            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
 
             c.Add(Instruction.Create(OpCodes.Ceq));
         }

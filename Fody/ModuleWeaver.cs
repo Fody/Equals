@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Equals.Fody;
+using Equals.Fody.Extensions;
 using Equals.Fody.Injectors;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
@@ -47,38 +49,51 @@ public class ModuleWeaver
 
         foreach (var type in GetMachingTypes())
         {
-            var attribute = type.CustomAttributes.Where(x => x.AttributeType.Name == attributeName).Single();
-            var typeRef = this.GetGenericType(type);
-
-            if (!this.IsPropertySet(attribute, DoNotAddEquals))
+            try
             {
-                int typeCheck = 0;
-                var typeCheckProperty = attribute.Properties.Where(x => x.Name == "TypeCheck").SingleOrDefault();
-                if (typeCheckProperty.Name != null)
+                var props = type.Properties;
+                foreach (var prop in props)
                 {
-                    typeCheck = (int)typeCheckProperty.Argument.Value;
+                    ModuleDefinition.Import(prop.PropertyType).Resolve();
                 }
 
-                var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals);
-                EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
-                EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
+                var attribute = type.CustomAttributes.Where(x => x.AttributeType.Name == attributeName).Single();
+                var typeRef = this.GetGenericType(type);
 
-                var typeInterface = ReferenceFinder.IEquatable.TypeReference.MakeGenericInstanceType(typeRef);
-                type.Interfaces.Add(typeInterface);
+                if (!this.IsPropertySet(attribute, DoNotAddEquals))
+                {
+                    int typeCheck = 0;
+                    var typeCheckProperty = attribute.Properties.Where(x => x.Name == "TypeCheck").SingleOrDefault();
+                    if (typeCheckProperty.Name != null)
+                    {
+                        typeCheck = (int)typeCheckProperty.Argument.Value;
+                    }
+
+                    var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals);
+                    EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
+                    EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
+
+                    var typeInterface = ReferenceFinder.IEquatable.TypeReference.MakeGenericInstanceType(typeRef);
+                    type.Interfaces.Add(typeInterface);
+                }
+
+                if (!this.IsPropertySet(attribute, DoNotAddGetHashCode))
+                {
+                    GetHashCodeInjector.Inject(type);
+                }
+
+                if (!this.IsPropertySet(attribute, DoNotAddEqualityOperators))
+                {
+                    OperatorInjector.InjectEqualityOperator(type);
+                    OperatorInjector.InjectInequalityOperator(type);
+                }
+
+                this.RemoveFodyAttributes(type);
             }
-
-            if (!this.IsPropertySet(attribute, DoNotAddGetHashCode))
+            catch (Exception ex)
             {
-                GetHashCodeInjector.Inject(type);
+                throw new WeavingException("Excpetion occurs occurred  procesing type: " + type.FullName + ". Report bug with code on https://github.com/Fody/Equals Error: " + ex.Message + ex.StackTrace);
             }
-
-            if (!this.IsPropertySet(attribute, DoNotAddEqualityOperators))
-            {
-                OperatorInjector.InjectEqualityOperator(type);
-                OperatorInjector.InjectInequalityOperator(type);
-            }
-
-            this.RemoveFodyAttributes(type);
         }
 
         this.RemoveReference();

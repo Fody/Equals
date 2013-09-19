@@ -17,15 +17,19 @@ namespace Equals.Fody.Injectors
 
         private const int magicNumber = 397;
 
-        public static void Inject(TypeDefinition type)
+        public static MethodDefinition Inject( TypeDefinition type )
         {
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
             var method = new MethodDefinition("GetHashCode", methodAttributes, ReferenceFinder.Int32.TypeReference);
+            method.CustomAttributes.MarkAsGeneratedCode();
 
             var resultVariable = method.Body.Variables.Add("result", ReferenceFinder.Int32.TypeReference);
 
             var body = method.Body;
             var ins = body.Instructions;
+
+            ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+            ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
             var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
             if (properties.Length == 0)
@@ -36,7 +40,7 @@ namespace Equals.Fody.Injectors
             var isFirst = true;
             foreach (var property in properties)
             {
-                AddPropertyCode(property, isFirst, ins, resultVariable, method);
+                AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
                 isFirst = false;
             }
 
@@ -45,6 +49,8 @@ namespace Equals.Fody.Injectors
             body.OptimizeMacros();
 
             type.Methods.Add(method);
+
+            return method;
         }
 
         private static void AddReturnCode(Collection<Instruction> ins, VariableDefinition resultVariable)
@@ -53,30 +59,30 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Ret));
         }
 
-        private static void AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method)
+        private static void AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
         {
             var propType = property.PropertyType.Resolve();
             var isCollection = propType.IsCollection();
 
             AddMultiplicytyByMagicNumber(isFirst, ins, resultVariable, isCollection);
 
-            var get = property.GetGetMethod();
-            ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-            ins.Add(Instruction.Create(OpCodes.Call, get));
+           
 
             if (property.PropertyType.IsValueType)
             {
+                LoadVariable(property, ins, type);
                 AddValueTypeCOde(property, ins);
             }
             else
             {
                 if (isCollection)
                 {
-                    AddCollectionCode(property, isFirst, ins, resultVariable, method);
+                    AddCollectionCode(property, isFirst, ins, resultVariable, method, type);
                 }
                 else
                 {
-                    AddNormalCode(property, ins, method);
+                    LoadVariable(property, ins, type);
+                    AddNormalCode(property, ins, method, type);
                 }
             }
 
@@ -89,6 +95,13 @@ namespace Equals.Fody.Injectors
             {
                 ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
             }
+        }
+
+        private static void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
+        {
+            var get = property.GetGetMethod(type);
+            ins.Add(Instruction.Create(OpCodes.Ldarg_0));
+            ins.Add(Instruction.Create(OpCodes.Call, get));
         }
 
         private static void AddMultiplicytyByMagicNumber(bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable,
@@ -108,30 +121,22 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
         }
 
-        private static void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, MethodDefinition method)
+        private static void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, MethodDefinition method, TypeDefinition type)
         {
-            var variable = new VariableDefinition(property.PropertyType);
-            method.Body.Variables.Add(variable);
             ins.If(
                 c =>
                 {
-                    c.Add(Instruction.Create(OpCodes.Stloc, variable));
-                    c.Add(Instruction.Create(OpCodes.Ldloc, variable));
                 },
                 t =>
                 {
-                    t.Add(Instruction.Create(OpCodes.Ldloc, variable));
+                    LoadVariable(property, t, type);
                     t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
                 },
                 f => { f.Add(Instruction.Create(OpCodes.Ldc_I4_0)); });
         }
 
-        private static void AddCollectionCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method)
+        private static void AddCollectionCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
         {
-            var variable = new VariableDefinition(property.Name, property.PropertyType);
-            method.Body.Variables.Add(variable);
-            ins.Add(Instruction.Create(OpCodes.Stloc, variable));
-
             if (isFirst)
             {
                 ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
@@ -139,10 +144,14 @@ namespace Equals.Fody.Injectors
             }
 
             ins.If(
-                c => { c.Add(Instruction.Create(OpCodes.Ldloc, variable)); },
+                c =>
+                {
+                    LoadVariable(property, c, type);
+
+                },
                 t =>
                 {
-                    t.Add(Instruction.Create(OpCodes.Ldloc, variable));
+                    LoadVariable(property, t, type);
                     var enumeratorVariable = method.Body.Variables.Add(property.Name + "Enumarator", ReferenceFinder.IEnumerator.TypeReference);
                     var currentVariable = method.Body.Variables.Add(property.Name + "Current", ReferenceFinder.Object.TypeReference);
 
