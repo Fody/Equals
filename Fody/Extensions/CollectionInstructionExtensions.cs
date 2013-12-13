@@ -16,7 +16,14 @@ namespace Equals.Fody.Extensions
 
             condition(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Bne_Un, ifElse);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            }
 
             thenStatment(ins);
 
@@ -39,11 +46,25 @@ namespace Equals.Fody.Extensions
 
             condition1(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Bne_Un, ifElse);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            }
 
             condition2(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Bne_Un, ifElse);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
+            }
 
             thenStatment(ins);
 
@@ -63,7 +84,14 @@ namespace Equals.Fody.Extensions
 
             condition(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brfalse, ifEnd));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Bne_Un, ifEnd);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brfalse, ifEnd));
+            }
 
             thenStatment(ins);
 
@@ -78,7 +106,14 @@ namespace Equals.Fody.Extensions
 
             condition(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brtrue, ifEnd));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Beq, ifEnd);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brtrue, ifEnd));
+            }
 
             thenStatment(ins);
 
@@ -96,7 +131,14 @@ namespace Equals.Fody.Extensions
 
             condition(ins);
 
-            ins.Add(Instruction.Create(OpCodes.Brfalse, loopEnd));
+            if (ins[ins.Count - 1].OpCode == OpCodes.Ceq)
+            {
+                ins[ins.Count - 1] = Instruction.Create(OpCodes.Bne_Un, loopEnd);
+            }
+            else
+            {
+                ins.Add(Instruction.Create(OpCodes.Brfalse, loopEnd));
+            }
 
             body(ins);
 

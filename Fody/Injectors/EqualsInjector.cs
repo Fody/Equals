@@ -50,12 +50,12 @@ namespace Equals.Fody.Injectors
 
             var labelRet = Instruction.Create(OpCodes.Nop);
 
-            AddCheckEqualsReference(type, ins, result, labelRet);
+            AddCheckEqualsReference(type, ins);
 
             ins.If(
                 c => AddTypeChecking(type, typeRef, typeCheck, c),
                 t => AddInternalEqualsCall(type, typeRef, newEquals, t, result),
-                e => AddReturnFalse(e, result));
+                e => AddReturnFalse(e));
 
             AddReturn(ins, labelRet, result);
 
@@ -75,13 +75,10 @@ namespace Equals.Fody.Injectors
             var ins = body.Instructions;
 
             var other = method.Parameters.Add("other", typeRef);
-            var result = body.Variables.Add("result", ReferenceFinder.Boolean.TypeReference);
 
-            var labelRet = Instruction.Create(OpCodes.Nop);
+            AddCheckEqualsReference(type, ins);
 
-            AddCheckEqualsReference(type, ins, result, labelRet);
-
-            AddEqualsTypeReturn(newEquals, ins, result, labelRet);
+            AddEqualsTypeReturn(newEquals, ins);
 
             body.OptimizeMacros();
             type.Methods.Add(method);
@@ -101,20 +98,14 @@ namespace Equals.Fody.Injectors
             var body = method.Body;
             var ins = body.Instructions;
 
-            var result = body.Variables.Add( "result", ReferenceFinder.Boolean.TypeReference );
-            var labelRet = Instruction.Create( OpCodes.Nop );
-
             var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
-
-            ins.Add( Instruction.Create( OpCodes.Ldc_I4_1 ) );
-            ins.Add( Instruction.Create( OpCodes.Stloc, result ) );
 
             foreach (var property in properties)
             {
-                AddPropertyCode( type, collectionEquals, property, ins, result , labelRet);
+                AddPropertyCode( type, collectionEquals, property, ins);
             }
 
-            AddReturn( ins, labelRet, result );
+            AddReturnTrue(ins);
 
             body.OptimizeMacros();
 
@@ -129,15 +120,11 @@ namespace Equals.Fody.Injectors
             return methodToCall;
         }
 
-        private static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins, VariableDefinition result, Instruction labelRet)
+        private static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins)
         {
             ins.Add(Instruction.Create(OpCodes.Ldarg_0));
             ins.Add(Instruction.Create(OpCodes.Ldarg_1));
             ins.Add(Instruction.Create(OpCodes.Call, newEquals));
-            ins.Add(Instruction.Create(OpCodes.Stloc, result));
-
-            ins.Add(labelRet);
-            ins.Add(Instruction.Create(OpCodes.Ldloc, result));
             ins.Add(Instruction.Create(OpCodes.Ret));
         }
 
@@ -164,10 +151,16 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Ret));
         }
 
-        private static void AddReturnFalse(Collection<Instruction> e, VariableDefinition result)
+        private static void AddReturnTrue(Collection<Instruction> e)
+        {
+            e.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+            e.Add(Instruction.Create(OpCodes.Ret));
+        }
+
+        private static void AddReturnFalse(Collection<Instruction> e)
         {
             e.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-            e.Add(Instruction.Create(OpCodes.Stloc, result));
+            e.Add(Instruction.Create(OpCodes.Ret));
         }
 
         private static void AddTypeChecking(TypeDefinition type, TypeReference typeRef, int typeCheck, Collection<Instruction> c)
@@ -226,7 +219,7 @@ namespace Equals.Fody.Injectors
             c.Add(Instruction.Create(OpCodes.Ceq));
         }
 
-        private static void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins, VariableDefinition result, Instruction resultReturn)
+        private static void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins)
         {
             ins.If(
                 c =>
@@ -235,12 +228,7 @@ namespace Equals.Fody.Injectors
                     c.Add(Instruction.Create(OpCodes.Ldarg_1));
                     c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
                 },
-                t =>
-                {
-                    t.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                    t.Add(Instruction.Create(OpCodes.Stloc, result));
-                    t.Add(Instruction.Create(OpCodes.Br, resultReturn));
-                });
+                t => AddReturnFalse(t));
 
             ins.If(
                 c =>
@@ -253,15 +241,10 @@ namespace Equals.Fody.Injectors
                     c.Add(Instruction.Create(OpCodes.Ldarg_1));
                     c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
                 },
-                t =>
-                {
-                    t.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-                    t.Add(Instruction.Create(OpCodes.Stloc, result));
-                    t.Add(Instruction.Create(OpCodes.Br, resultReturn));
-                });
+                t => AddReturnTrue(t));
         }
 
-        private static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins, VariableDefinition result, Instruction ret)
+        private static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins)
         {
             var propType = property.PropertyType.Resolve();
             var isCollection = propType.IsCollection();
@@ -282,12 +265,7 @@ namespace Equals.Fody.Injectors
                         AddCollectionCheck(type, collectionEquals, c, property, propType);
                     }
                 },
-                t =>
-                {
-                    t.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                    t.Add( Instruction.Create( OpCodes.Stloc, result ) );
-                    t.Add(Instruction.Create(OpCodes.Br, ret));
-                });
+                t => AddReturnFalse(t));
         }
 
         private static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType)
