@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-[assembly: AssemblyTitle("Foody.Equals")]
-[assembly: AssemblyProduct("Foody.Equals")]
-[assembly: AssemblyVersion("1.2.2.0")]
-[assembly: AssemblyFileVersion("1.2.2.0")]
+[assembly: AssemblyTitle("Fody.Equals")]
+[assembly: AssemblyProduct("Fody.Equals")]
+[assembly: AssemblyVersion("1.2.3")]
+[assembly: AssemblyFileVersion("1.2.3")]
