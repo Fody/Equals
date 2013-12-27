@@ -105,6 +105,21 @@ public class IntegrationTests
         Assert.False(first == second);
     }
 
+    [Test]
+    public void Equality_operator_should_return_true_for_equal_guid_instances()
+    {
+        var type = assembly.GetType("GuidClass");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        Guid newGuid = Guid.NewGuid();
+        first.Key = newGuid;
+        second.Key = newGuid;
+
+        Assert.True(first == second);
+        Assert.False(first != second);
+    }
+
     #endregion
 
     #region GetHashCode
@@ -154,6 +169,18 @@ public class IntegrationTests
         dynamic instance = Activator.CreateInstance(type);
         instance.X = 1;
         instance.Y = 2;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_value_for_guid_class()
+    {
+        var type = assembly.GetType("GuidClass");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Key = Guid.NewGuid();
 
         var result = instance.GetHashCode();
 
