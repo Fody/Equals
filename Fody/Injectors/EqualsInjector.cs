@@ -272,8 +272,16 @@ namespace Equals.Fody.Injectors
         {
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
             c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            if (property.PropertyType.IsValueType)
+            {
+                c.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
+            }
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
             c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            if (property.PropertyType.IsValueType)
+            {
+                c.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
+            }
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
         }
 
