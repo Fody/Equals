@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ObjectCollection.cs" />
     <Compile Include="GuidClass.cs" />
     <Compile Include="EmptyClass.cs">
       <SubType>Code</SubType>
