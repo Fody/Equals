@@ -117,6 +117,8 @@ namespace Equals.Fody.Injectors
         {
             ins.Add(Instruction.Create(OpCodes.Ldloc, enumerator));
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.MoveNext));
+            ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+            ins.Add(Instruction.Create(OpCodes.Ceq));
             ins.Add(Instruction.Create(OpCodes.Stloc, hasNext));
         }
 
