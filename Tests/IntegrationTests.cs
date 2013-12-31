@@ -120,6 +120,70 @@ public class IntegrationTests
         Assert.False(first != second);
     }
 
+    [Test]
+    public void Equality_operator_should_return_true_for_empty_object_collections()
+    {
+        var type = assembly.GetType("ObjectCollection");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Collection = new object[]
+        {
+        };
+        second.Collection = new object[]
+        {
+        };
+
+        Assert.True(first == second);
+        Assert.False(first != second);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_true_for_equal_object_collections()
+    {
+        var type = assembly.GetType("ObjectCollection");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Collection = new object[]
+        {
+            "foo",
+            1.23456
+        };
+        second.Collection = new object[]
+        {
+            "foo",
+            1.23456
+        };
+
+        Assert.True(first == second);
+        Assert.False(first != second);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_false_for_different_object_collections()
+    {
+        var type = assembly.GetType("ObjectCollection");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Collection = new object[]
+        {
+            "foo",
+            1.23456
+        };
+        second.Collection = new object[]
+        {
+            "bar",
+            65432.1
+        };
+
+        Assert.True(first != second);
+        Assert.False(first == second);
+    }
+
+
+
     #endregion
 
     #region GetHashCode
