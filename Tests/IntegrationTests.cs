@@ -161,6 +161,53 @@ public class IntegrationTests
     }
 
     [Test]
+    public void Equality_operator_should_return_false_for_collections_with_diffrent_size()
+    {
+        var type = assembly.GetType("ObjectCollection");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Collection = new object[]
+        {
+            "foo",
+            1.23456,
+            1
+        };
+        second.Collection = new object[]
+        {
+            "foo",
+            1.23456
+        };
+
+        Assert.True(first != second);
+        Assert.False(first == second);
+        Assert.True(second != first);
+        Assert.False(second == first);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_false_for_collections_with_elements_and_empty_collection()
+    {
+        var type = assembly.GetType("ObjectCollection");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Collection = new object[]
+        {
+        };
+        second.Collection = new object[]
+        {
+            "foo",
+            1.23456
+        };
+
+        Assert.True(first != second);
+        Assert.False(first == second);
+        Assert.True(second != first);
+        Assert.False(second == first);
+    }
+
+    [Test]
     public void Equality_operator_should_return_false_for_different_object_collections()
     {
         var type = assembly.GetType("ObjectCollection");
