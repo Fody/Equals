@@ -14,6 +14,7 @@ public class ModuleWeaver
     public const string attributeName = "EqualsAttribute";
     public const string assemblyName = "Equals";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
+    public const string customAttribute = "CustomEqualsInternalAttribute";
 
     public const string DoNotAddEqualityOperators = "DoNotAddEqualityOperators";
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
@@ -138,6 +139,11 @@ public class ModuleWeaver
         foreach (var property in type.Fields)
         {
             property.RemoveAttribute(ignoreAttributeName);
+        }
+
+        foreach (var method in type.Methods)
+        {
+            method.RemoveAttribute(customAttribute);
         }
     }
 }
