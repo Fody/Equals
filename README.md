@@ -26,6 +26,12 @@ To Install from the Nuget Package Manager Console
         
         [IgnoreDuringEquals]
         public int Z { get; set; }
+        
+        [CustomEqualsInternal]
+        private bool CustomLogic(Point other)
+        {
+            return Z == other.Z || Z == 0 || other.Z == 0;
+        }
     }
 
 ## What gets compiled
@@ -37,6 +43,11 @@ To Install from the Nuget Package Manager Console
         public int Y { get; set; }
 
         public int Z { get; set; }
+        
+        private bool CustomLogic(Point other)
+        {
+            return Z == other.Z || Z == 0 || other.Z == 0;
+        }
 
         public static bool operator ==(Point left, Point right)
         {
@@ -50,7 +61,7 @@ To Install from the Nuget Package Manager Console
 
         private static bool EqualsInternal(Point left, Point right)
         {
-            return left.X == right.X && left.Y == right.Y;
+            return left.X == right.X && left.Y == right.Y && leftt.CustomLogic(right);
         }
 
         public virtual bool Equals(Point right)
