@@ -45,6 +45,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="EqualsInternalAttribute.cs" />
     <Compile Include="IgnoreDuringEqualsAttribute.cs" />
     <Compile Include="EqualsAttribute.cs" />
     <Compile Include="TypeCheck.cs" />

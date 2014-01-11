@@ -43,7 +43,8 @@ public class ModuleWeaver
 
     public void Execute()
     {
-        ReferenceFinder.FindReferences(this.AssemblyResolver, this.ModuleDefinition);
+        ReferenceFinder.SetModule(this.ModuleDefinition);
+        ReferenceFinder.FindReferences(this.AssemblyResolver);
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
@@ -89,6 +90,10 @@ public class ModuleWeaver
                 }
 
                 this.RemoveFodyAttributes(type);
+            }
+            catch (WeavingException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

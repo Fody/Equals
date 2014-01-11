@@ -61,17 +61,26 @@ namespace Equals.Fody.Injectors
 
         private static void AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
         {
-            var propType = property.PropertyType.Resolve();
-            var isCollection = propType.IsCollection();
+            bool isCollection;
+            TypeReference propType;
+            if (property.PropertyType.IsGenericParameter)
+            {
+                isCollection = false;
+                propType = property.PropertyType.GetGenericInstanceType(type);
+            }
+            else
+            {
+                var resolved = property.PropertyType.Resolve();
+                propType = resolved;
+                isCollection = resolved.IsCollection();
+            }
 
             AddMultiplicytyByMagicNumber(isFirst, ins, resultVariable, isCollection);
 
-           
-
-            if (property.PropertyType.IsValueType)
+            if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 LoadVariable(property, ins, type);
-                AddValueTypeCOde(property, ins);
+                AddValueTypeCode(property, ins);
             }
             else
             {
@@ -115,7 +124,7 @@ namespace Equals.Fody.Injectors
             }
         }
 
-        private static void AddValueTypeCOde(PropertyDefinition property, Collection<Instruction> ins)
+        private static void AddValueTypeCode(PropertyDefinition property, Collection<Instruction> ins)
         {
             ins.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));

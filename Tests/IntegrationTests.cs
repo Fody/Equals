@@ -236,6 +236,19 @@ public class IntegrationTests
     #region GetHashCode
 
     [Test]
+    public void GetHashCode_shoud_return_value_for_class_with_generic_property()
+    {
+        var genericClassType = assembly.GetType("GenericProperty`1");
+        var propType = typeof(int);
+        var type = genericClassType.MakeGenericType(propType);
+
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Prop = 1;
+
+        Assert.AreNotEqual(0, instance.GetHashCode());
+    }
+
+    [Test]
     public void GetHashCode_should_return_value_for_empty_type()
     {
         var type = assembly.GetType("EmptyClass");
@@ -475,6 +488,24 @@ public class IntegrationTests
     #endregion
 
     #region Equals
+
+    [Test]
+    public void Equals_shoud_return_value_for_class_with_generic_property()
+    {
+        var genericClassType = assembly.GetType("GenericProperty`1");
+        var propType = typeof(int);
+        var type = genericClassType.MakeGenericType(propType);
+
+        dynamic first = Activator.CreateInstance(type);
+        first.Prop = 1;
+        dynamic second = Activator.CreateInstance(type);
+        second.Prop = 1;
+        dynamic third = Activator.CreateInstance(type);
+        third.Prop = 2;
+
+        Assert.True(first.Equals(second));
+        Assert.False(first.Equals(third));
+    }
 
     [Test]
     public void Equals_shoud_return_value_for_class_without_generic_parameter()
@@ -865,6 +896,58 @@ public class IntegrationTests
         var result = first.Equals(second);
 
         Assert.True(result);
+    }
+
+    #endregion
+
+    #region Custom
+
+    [Test]
+    public void Equals_should_should_use_custom_logic()
+    {
+        var type = assembly.GetType("CustomEquals");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 2;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_should_use_custom_logic_for_structure()
+    {
+        var type = assembly.GetType("CustomStructEquals");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 2;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_should_use_custom_logic_for_generic_type()
+    {
+        var genericClassType = assembly.GetType("CustomGenericEquals`1");
+        var propType = typeof(int);
+        var type = genericClassType.MakeGenericType(propType);
+
+        dynamic first = Activator.CreateInstance(type);
+        first.Prop = 1;
+        dynamic second = Activator.CreateInstance(type);
+        second.Prop = 1;
+        dynamic third = Activator.CreateInstance(type);
+        third.Prop = 2;
+
+        Assert.True(first.Equals(second));
+        Assert.False(first.Equals(third));
     }
 
     #endregion

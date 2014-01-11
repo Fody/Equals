@@ -69,9 +69,26 @@ namespace Equals.Fody
         public static class DateTime
         {
             public static TypeReference TypeReference;
-        }       
+        }
 
-        public static void FindReferences(IAssemblyResolver assemblyResolver, ModuleDefinition moduleDefinition)
+        private static ModuleDefinition moduleDefinition;
+
+        public static void SetModule(ModuleDefinition module)
+        {
+            moduleDefinition = module;
+        }
+
+        public static MethodReference ImportCustom(MethodReference method)
+        {
+            return moduleDefinition.Import(method);
+        }
+
+        public static TypeReference ImportCustom(TypeReference type)
+        {
+            return moduleDefinition.Import(type);
+        }
+
+        public static void FindReferences(IAssemblyResolver assemblyResolver)
         {
             var baseLib = assemblyResolver.Resolve("mscorlib");
             var baseLibTypes = baseLib.MainModule.Types;

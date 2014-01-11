@@ -41,8 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ObjectCollection.cs" />
-    <Compile Include="GuidClass.cs" />
+    <Compile Include="CustomEquals.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="EmptyClass.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -61,6 +62,9 @@
     <Compile Include="GenericClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GuidClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IgnoredPropertiesClass.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -74,6 +78,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="NormalClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OnlyIntCollection.cs">

@@ -14,6 +14,7 @@ namespace Equals.Fody.Injectors
     public static class EqualsInjector
     {
         private const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
+        private const string customAttribute = "CustomEqualsInternalAttribute";
 
         private const int ExaclyTheSameTypeAsThis = 0;
         private const int ExaclyOfType = 1;
@@ -103,6 +104,61 @@ namespace Equals.Fody.Injectors
             foreach (var property in properties)
             {
                 AddPropertyCode( type, collectionEquals, property, ins);
+            }
+
+            var methods = type.GetMethods();
+            var customLogic = methods
+                .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customAttribute)).ToArray();
+
+            if(customLogic.Length > 2)
+            {
+                throw new WeavingException("Only one custom method can be specified.");
+            }
+
+            if (customLogic.Length == 1)
+            {
+                ins.IfNot(
+                c =>
+                {
+                    var customMethod = ReferenceFinder.ImportCustom(customLogic[0]);
+
+                    var parameters = customMethod.Parameters;
+                    if(parameters.Count != 1)
+                    {
+                        throw new WeavingException(
+                            string.Format("Custom equals of type {0} have to have one parameter.", type.FullName));
+                    }
+                    if(parameters[0].ParameterType.Resolve().FullName != type.FullName)
+                    {
+                        throw new WeavingException(
+                            string.Format("Custom equals of type {0} have to have one parameter of type {0}.", type.FullName));
+                    }
+
+                    MethodReference selectedMethod;;
+                    if (customMethod.DeclaringType.HasGenericParameters)
+                    {
+                        var genericInstanceType = type.GetGenericInstanceType(type);
+                        var gtype = ReferenceFinder.ImportCustom(genericInstanceType);
+                        MethodReference newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
+                        {
+                            DeclaringType = gtype,
+                            HasThis = true,
+                        };
+                        newRef.Parameters.Add(customMethod.Parameters[0].Name, gtype);
+
+                        selectedMethod = newRef;
+                    }
+                    else
+                    {
+                        selectedMethod = customMethod;
+                    }
+
+                    var imported = ReferenceFinder.ImportCustom(selectedMethod);
+                    ins.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    ins.Add(Instruction.Create(OpCodes.Ldarg_1));
+                    ins.Add(Instruction.Create(OpCodes.Callvirt, imported));
+                },
+                t => AddReturnFalse(t));
             }
 
             AddReturnTrue(ins);
@@ -195,7 +251,7 @@ namespace Equals.Fody.Injectors
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
             if (type.IsValueType)
             {
-                c.Add(Instruction.Create(OpCodes.Box, type));
+                c.Add(Instruction.Create(OpCodes.Box, type.GetGenericInstanceType(type)));
             }
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.GetType));
 
@@ -209,7 +265,7 @@ namespace Equals.Fody.Injectors
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
             if (type.IsValueType)
             {
-                c.Add(Instruction.Create(OpCodes.Box, type));
+                c.Add(Instruction.Create(OpCodes.Box, type.GetGenericInstanceType(type)));
             }
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.GetType));
 
@@ -236,7 +292,7 @@ namespace Equals.Fody.Injectors
                     c.Add(Instruction.Create(OpCodes.Ldarg_0));
                     if (type.IsValueType)
                     {
-                        c.Add(Instruction.Create(OpCodes.Box, type));
+                        c.Add(Instruction.Create(OpCodes.Box, type.GetGenericInstanceType(type)));
                     }
                     c.Add(Instruction.Create(OpCodes.Ldarg_1));
                     c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
@@ -246,41 +302,51 @@ namespace Equals.Fody.Injectors
 
         private static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins)
         {
-            var propType = property.PropertyType.Resolve();
-            var isCollection = propType.IsCollection();
-
             ins.IfNot(
                 c =>
                 {
-                    if (simpleTypes.Contains(propType.FullName) || propType.IsEnum)
+                    if (!property.PropertyType.IsGenericParameter)
                     {
-                        AddSimpleValueCheck(c, property, type);
-                    }
-                    else if (!isCollection || propType.FullName == typeof (string).FullName)
-                    {
-                        AddNormalCheck(type, c, property, propType);
+                        var propType = property.PropertyType.Resolve();
+                        var isCollection = propType.IsCollection();
+                        if (simpleTypes.Contains(propType.FullName) || propType.IsEnum)
+                        {
+                            AddSimpleValueCheck(c, property, type);
+                        }
+                        else if (!isCollection || propType.FullName == typeof(string).FullName)
+                        {
+                            AddNormalCheck(type, c, property, propType);
+                        }
+                        else
+                        {
+                            AddCollectionCheck(type, collectionEquals, c, property, propType);
+                        }
                     }
                     else
                     {
-                        AddCollectionCheck(type, collectionEquals, c, property, propType);
+                        var genericType = property.PropertyType.GetGenericInstanceType(type);
+                        AddNormalCheck(type, c, property, genericType);
+                        
                     }
                 },
                 t => AddReturnFalse(t));
         }
 
-        private static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType)
+        private static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, TypeReference propType)
         {
+            var genericInstance = new Lazy<TypeReference>(() => property.PropertyType.GetGenericInstanceType(type));
+            
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
             c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
-            if (property.PropertyType.IsValueType)
+            if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
-                c.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
+                c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
             }
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
             c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
-            if (property.PropertyType.IsValueType)
+            if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
-                c.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
+                c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
             }
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
         }

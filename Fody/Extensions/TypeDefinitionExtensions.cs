@@ -2,6 +2,7 @@
 using System.Linq;
 using Equals.Fody.Extensions;
 using Mono.Cecil;
+using Mono.Collections.Generic;
 
 namespace Equals.Fody.Extensions
 {
@@ -31,6 +32,51 @@ namespace Equals.Fody.Extensions
             } while (currentType.FullName != typeof(object).FullName);
 
             return properties.ToArray();
+        }
+
+        public static TypeReference GetGenericInstanceType(this TypeReference type, TypeDefinition targetType)
+        {
+            if (type.HasGenericParameters)
+            {
+                GenericInstanceType genericInstanceType;
+                TypeDefinition parent = targetType;
+                TypeReference parentReference = targetType;
+
+                if (type == targetType)
+                {
+                    genericInstanceType = GetGenericInstanceType(type, type.GenericParameters);
+                }
+                else
+                {
+                    var propertyType = type.Resolve();
+
+                    while (propertyType != parent.Resolve())
+                    {
+                        parentReference = parent.BaseType;
+                        parent = parent.BaseType.Resolve();
+                    }
+
+                    genericInstanceType = parentReference as GenericInstanceType;
+                    if (genericInstanceType == null)
+                    {
+                        genericInstanceType = GetGenericInstanceType(type, parentReference.GenericParameters);
+                    }
+                }
+
+                return genericInstanceType;
+            }
+
+            return type;
+        }
+
+        private static GenericInstanceType GetGenericInstanceType(TypeReference type, Collection<GenericParameter> parameters)
+        {
+            var genericInstanceType = new GenericInstanceType(type);
+            foreach (var genericParameter in parameters)
+            {
+                genericInstanceType.GenericArguments.Add(genericParameter);
+            }
+            return genericInstanceType;
         }
     }
 }

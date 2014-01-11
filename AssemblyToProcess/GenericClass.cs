@@ -45,3 +45,14 @@ public class GenericClassNormalClass : GenericClassBaseClass
 {
     public int D { get; set; }
 }
+
+[Equals]
+public class GenericProperty<T>
+{
+    public T Prop { get; set; }
+
+    static bool  Z(T a, T b)
+    {
+        return object.Equals(a,b);
+    }
+}
