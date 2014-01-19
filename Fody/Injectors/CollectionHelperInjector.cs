@@ -26,6 +26,8 @@ namespace Equals.Fody.Injectors
             var body = method.Body;
             var ins = body.Instructions;
 
+            body.InitLocals = true;
+            
             var leftEnumerator = body.Variables.Add("enumerator", ReferenceFinder.IEnumerator.TypeReference);
             var rightEnumerator = body.Variables.Add("rightEnumerator", ReferenceFinder.IEnumerator.TypeReference);
             var leftHasNext = body.Variables.Add("hasNext", ReferenceFinder.Boolean.TypeReference);

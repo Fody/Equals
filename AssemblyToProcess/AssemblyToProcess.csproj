@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ClassWithNullable.cs" />
+    <Compile Include="ClassWithNullable.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="CustomEquals.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -34,15 +34,21 @@ namespace Equals.Fody.Extensions
             return properties.ToArray();
         }
 
-        public static TypeReference GetGenericInstanceType(this TypeReference type, TypeDefinition targetType)
+        public static TypeReference GetGenericInstanceType(this TypeReference type, TypeReference targetType)
         {
+            var genericInstance = targetType as GenericInstanceType;
+            if (genericInstance != null)
+            {
+                return genericInstance;
+            }
+
             if (type.HasGenericParameters)
             {
                 GenericInstanceType genericInstanceType;
-                TypeDefinition parent = targetType;
+                TypeReference parent = targetType;
                 TypeReference parentReference = targetType;
 
-                if (type == targetType)
+                if (type.FullName == targetType.Resolve().FullName)
                 {
                     genericInstanceType = GetGenericInstanceType(type, type.GenericParameters);
                 }
@@ -50,10 +56,11 @@ namespace Equals.Fody.Extensions
                 {
                     var propertyType = type.Resolve();
 
-                    while (propertyType != parent.Resolve())
+                    TypeDefinition parentResolved;
+                    while (parent!= null && propertyType != (parentResolved = parent.Resolve()))
                     {
-                        parentReference = parent.BaseType;
-                        parent = parent.BaseType.Resolve();
+                        parentReference = parentResolved.BaseType;
+                        parent = parentResolved.BaseType != null ? parentResolved.BaseType.Resolve() : null;
                     }
 
                     genericInstanceType = parentReference as GenericInstanceType;

@@ -24,8 +24,10 @@ namespace Equals.Fody.Injectors
             var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ReferenceFinder.Boolean.TypeReference);
             method.CustomAttributes.MarkAsGeneratedCode();
 
-            method.Parameters.Add("left", type);
-            method.Parameters.Add("right", type);
+            var parameterType = type.GetGenericInstanceType(type);
+
+            method.Parameters.Add("left", parameterType);
+            method.Parameters.Add("right", parameterType);
 
             var body = method.Body;
             var ins = body.Instructions;
@@ -60,10 +62,11 @@ namespace Equals.Fody.Injectors
         {
             if (type.IsValueType)
             {
+                var resolved = type.GetGenericInstanceType(type);
                 ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-                ins.Add(Instruction.Create(OpCodes.Box, type));
+                ins.Add(Instruction.Create(OpCodes.Box, resolved));
                 ins.Add(Instruction.Create(OpCodes.Ldarg_1));
-                ins.Add(Instruction.Create(OpCodes.Box, type));
+                ins.Add(Instruction.Create(OpCodes.Box, resolved));
             }
             else
             {

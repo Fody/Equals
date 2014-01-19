@@ -7,7 +7,7 @@ namespace Equals.Fody.Extensions
 {
     public static class PropertyDefinitionExtensions
     {
-        public static MethodReference GetGetMethod(this PropertyDefinition property, TypeDefinition targetType)
+        public static MethodReference GetGetMethod(this PropertyDefinition property, TypeReference targetType)
         {
             MethodReference method = property.GetMethod;
             if (method.DeclaringType.HasGenericParameters)

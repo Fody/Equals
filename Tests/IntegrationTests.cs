@@ -91,6 +91,23 @@ public class IntegrationTests
         Assert.False(first != second);
     }
 
+
+    [Test]
+    public void Equality_operator_shoud_return_true_for_equal_class_with_generic_property()
+    {
+        var genericClassType = assembly.GetType("GenericProperty`1");
+        var propType = typeof(int);
+        var type = genericClassType.MakeGenericType(propType);
+
+        dynamic first = Activator.CreateInstance(type);
+        first.Prop = 1;
+        dynamic second = Activator.CreateInstance(type);
+        second.Prop = 1;
+
+        Assert.True(first == second);
+        Assert.False(first != first);
+    }
+
     [Test]
     public void Equality_operator_should_return_false_for_not_equal_struct_instances()
     {
@@ -281,6 +298,18 @@ public class IntegrationTests
         var result = instance.GetHashCode();
 
         Assert.AreEqual(0, result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_value_for_date_nullable()
+    {
+        var type = assembly.GetType("ClassWithNullable");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.NullableDate = new DateTime(1988, 5, 23);
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
     }
 
     [Test]

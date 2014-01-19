@@ -26,12 +26,13 @@ namespace Equals.Fody.Injectors
             var resultVariable = method.Body.Variables.Add("result", ReferenceFinder.Int32.TypeReference);
 
             var body = method.Body;
+            body.InitLocals = true;
             var ins = body.Instructions;
 
             ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
             ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
-            var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
+            var properties = ReferenceFinder.ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
             if (properties.Length == 0)
             {
                 AddResutInit(ins, resultVariable);
@@ -40,7 +41,13 @@ namespace Equals.Fody.Injectors
             var isFirst = true;
             foreach (var property in properties)
             {
-                AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
+                var variable = AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
+
+                if (variable != null)
+                {
+                    method.Body.Variables.Add(variable);
+                }
+
                 isFirst = false;
             }
 
@@ -59,8 +66,9 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Ret));
         }
 
-        private static void AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
+        private static VariableDefinition AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
         {
+            VariableDefinition variable = null;
             bool isCollection;
             TypeReference propType;
             if (property.PropertyType.IsGenericParameter)
@@ -77,10 +85,19 @@ namespace Equals.Fody.Injectors
 
             AddMultiplicytyByMagicNumber(isFirst, ins, resultVariable, isCollection);
 
-            if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
+            if (property.PropertyType.FullName.StartsWith("System.Nullable`1"))
+            {
+                variable = AddNullableProperty(property, ins, type, variable);
+            }
+            else if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 LoadVariable(property, ins, type);
-                AddValueTypeCode(property, ins);
+                if (property.PropertyType.FullName != "System.Int32")
+                {
+                    var proimp = ReferenceFinder.ImportCustom(property.PropertyType);
+                    ins.Add(Instruction.Create(OpCodes.Box, proimp));
+                    ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                }
             }
             else
             {
@@ -104,6 +121,46 @@ namespace Equals.Fody.Injectors
             {
                 ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
             }
+
+            return variable;
+        }
+
+        private static VariableDefinition AddNullableProperty(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type, VariableDefinition variable)
+        {
+            ins.If(c =>
+                {
+                    var nullablePropertyResolved = property.PropertyType.Resolve();
+                    var nullablePropertyImported = ReferenceFinder.ImportCustom(property.PropertyType);
+
+                    ins.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    var getMethod = ReferenceFinder.ImportCustom(property.GetGetMethod(type));
+                    c.Add(Instruction.Create(OpCodes.Call, getMethod));
+
+                    variable = new VariableDefinition(getMethod.ReturnType);
+                    c.Add(Instruction.Create(OpCodes.Stloc, variable));
+                    c.Add(Instruction.Create(OpCodes.Ldloca, variable));
+
+                    var hasValuePropertyResolved = nullablePropertyResolved.Properties.Where(x => x.Name == "HasValue").First().Resolve();
+                    var hasMethod = ReferenceFinder.ImportCustom(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
+                    c.Add(Instruction.Create(OpCodes.Call, hasMethod));
+                },
+                t =>
+                {
+                    var nullableProperty = ReferenceFinder.ImportCustom(property.PropertyType);
+
+                    t.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    var imp = property.GetGetMethod(type);
+                    var imp2 = ReferenceFinder.ImportCustom(imp);
+
+                    t.Add(Instruction.Create(OpCodes.Call, imp2));
+                    t.Add(Instruction.Create(OpCodes.Box, nullableProperty));
+                    t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                },
+                e =>
+                {
+                    e.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+                });
+            return variable;
         }
 
         private static void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
