@@ -386,15 +386,16 @@ namespace Equals.Fody.Injectors
         private static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, TypeReference propType)
         {
             var genericInstance = new Lazy<TypeReference>(() => property.PropertyType.GetGenericInstanceType(type));
+            var getMethodImported = ReferenceFinder.ImportCustom(property.GetGetMethod(type));
             
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
             }
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
@@ -422,15 +423,18 @@ namespace Equals.Fody.Injectors
                 t => { t.Add(Instruction.Create(OpCodes.Ldc_I4_0)); },
                 es =>
                 {
+                    var getMethod = property.GetGetMethod(type);
+                    var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
+
                     es.Add(Instruction.Create(OpCodes.Ldarg_0));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+                    es.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
                     if (propType.IsValueType)
                     {
                         es.Add( Instruction.Create( OpCodes.Box, propType ) );
                     }
 
                     es.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+                    es.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
                     if (propType.IsValueType)
                     {
                         es.Add( Instruction.Create( OpCodes.Box, propType ) );
@@ -462,11 +466,14 @@ namespace Equals.Fody.Injectors
 
         private static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type)
         {
+            var getMethod = property.GetGetMethod(type);
+            var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
+
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
 
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, property.GetGetMethod(type)));
+            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
 
             c.Add(Instruction.Create(OpCodes.Ceq));
         }

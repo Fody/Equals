@@ -70,17 +70,14 @@ namespace Equals.Fody.Injectors
         {
             VariableDefinition variable = null;
             bool isCollection;
-            TypeReference propType;
+            TypeReference propType = ReferenceFinder.ImportCustom( property.PropertyType.GetGenericInstanceType(type));
             if (property.PropertyType.IsGenericParameter)
             {
                 isCollection = false;
-                propType = property.PropertyType.GetGenericInstanceType(type);
             }
             else
             {
-                var resolved = property.PropertyType.Resolve();
-                propType = resolved;
-                isCollection = resolved.IsCollection();
+                isCollection = propType.Resolve().IsCollection();
             }
 
             AddMultiplicytyByMagicNumber(isFirst, ins, resultVariable, isCollection);
@@ -94,8 +91,7 @@ namespace Equals.Fody.Injectors
                 LoadVariable(property, ins, type);
                 if (property.PropertyType.FullName != "System.Int32")
                 {
-                    var proimp = ReferenceFinder.ImportCustom(property.PropertyType);
-                    ins.Add(Instruction.Create(OpCodes.Box, proimp));
+                    ins.Add(Instruction.Create(OpCodes.Box, propType));
                     ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
                 }
             }
@@ -166,8 +162,9 @@ namespace Equals.Fody.Injectors
         private static void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
         {
             var get = property.GetGetMethod(type);
+            var imported = ReferenceFinder.ImportCustom(get);
             ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-            ins.Add(Instruction.Create(OpCodes.Call, get));
+            ins.Add(Instruction.Create(OpCodes.Call, imported));
         }
 
         private static void AddMultiplicytyByMagicNumber(bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable,

@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Child.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ClassWithNullable.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -109,6 +112,10 @@
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">
       <Project>{70804914-c3d9-4737-bcb8-b3d40f305db3}</Project>
       <Name>AssemblyToReference</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReferencedDependency\ReferencedDependency.csproj">
+      <Project>{34899a51-efea-4688-805f-0354166fca09}</Project>
+      <Name>ReferencedDependency</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

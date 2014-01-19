@@ -944,7 +944,7 @@ public class IntegrationTests
     #region Custom
 
     [Test]
-    public void Equals_should_should_use_custom_logic()
+    public void Equals_should_use_custom_logic()
     {
         var type = assembly.GetType("CustomEquals");
         dynamic first = Activator.CreateInstance(type);
@@ -959,7 +959,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void Equals_should_should_use_custom_logic_for_structure()
+    public void Equals_should_use_custom_logic_for_structure()
     {
         var type = assembly.GetType("CustomStructEquals");
         dynamic first = Activator.CreateInstance(type);
@@ -974,7 +974,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void Equals_should_should_use_custom_logic_for_generic_type()
+    public void Equals_should_use_custom_logic_for_generic_type()
     {
         var genericClassType = assembly.GetType("CustomGenericEquals`1");
         var propType = typeof(int);
@@ -989,6 +989,174 @@ public class IntegrationTests
 
         Assert.True(first.Equals(second));
         Assert.False(first.Equals(third));
+    }
+
+    #endregion
+
+    #region ParentInOtherAssembly
+
+    [Test]
+    public void Equals_should_return_true_for_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("Child");
+        dynamic first = Activator.CreateInstance(child);
+        first.InParent = 10;
+        first.InChild = 5;
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InParent = 10;
+        second.InChild = 5;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_true_for_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("Child");
+        dynamic first = Activator.CreateInstance(child);
+        first.InParent = 10;
+        first.InChild = 5;
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_true_for_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("Child");
+        dynamic first = Activator.CreateInstance(child);
+        first.InParent = 10;
+        first.InChild = 5;
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InParent = 10;
+        second.InChild = 5;
+
+        var result = first.GetHashCode();
+
+        Assert.True(first == second);
+        Assert.False(first != second);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("ComplexChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChildNumber  = 1;
+        first.InChildText = "test";
+        first.InChildCollection = new int[] { 1, 2 };
+        first.InParentNumber = 1;
+        first.InParentText = "test";
+        first.InParentCollection = new int[] { 1, 2 };
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InChildNumber = 1;
+        second.InChildText = "test";
+        second.InChildCollection = new int[] { 1, 2 };
+        second.InParentNumber = 1;
+        second.InParentText = "test";
+        second.InParentCollection = new int[] { 1, 2 };
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("ComplexChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChildNumber = 1;
+        first.InChildText = "test";
+        first.InChildCollection = new int[] { 1, 2 };
+        first.InParentNumber = 1;
+        first.InParentText = "test";
+        first.InParentCollection = new int[] { 1, 2 };
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("ComplexChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChildNumber = 1;
+        first.InChildText = "test";
+        first.InChildCollection = new int[] { 1, 2 };
+        first.InParentNumber = 1;
+        first.InParentText = "test";
+        first.InParentCollection = new int[] { 1, 2 };
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InChildNumber = 1;
+        second.InChildText = "test";
+        second.InChildCollection = new int[] { 1, 2 };
+        second.InParentNumber = 1;
+        second.InParentText = "test";
+        second.InParentCollection = new int[] { 1, 2 };
+
+        var result = first.GetHashCode();
+
+        Assert.True(first == second);
+        Assert.False(first != second);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("GenericChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChild = "1";
+        first.GenericInParent = 2;
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InChild = "1";
+        second.GenericInParent = 2;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("GenericChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChild = "1";
+        first.GenericInParent = 2;
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void Equality_operator_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    {
+        var child = assembly.GetType("GenericChild");
+        dynamic first = Activator.CreateInstance(child);
+        first.InChild = "1";
+        first.GenericInParent = 2;
+
+        dynamic second = Activator.CreateInstance(child);
+        second.InChild = "1";
+        second.GenericInParent = 2;
+
+        var result = first.GetHashCode();
+
+        Assert.True(first == second);
+        Assert.False(first != second);
     }
 
     #endregion

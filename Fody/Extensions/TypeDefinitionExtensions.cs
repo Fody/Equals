@@ -42,6 +42,33 @@ namespace Equals.Fody.Extensions
                 return genericInstance;
             }
 
+            if (type.IsGenericParameter)
+            {
+                var genericParameter = type as GenericParameter;
+
+                var current = targetType;
+                var currentResolved = current.Resolve();
+
+                while (currentResolved.FullName != genericParameter.DeclaringType.FullName)
+                {
+                    if (currentResolved.BaseType == null)
+                    {
+                        return type;
+                    }
+                    current = currentResolved.BaseType;
+                    currentResolved = current.Resolve();
+                }
+
+                var genericInstanceType = current as GenericInstanceType;
+                if (genericInstanceType != null)
+                {
+                    var newType = genericInstanceType.GenericArguments[genericParameter.Position];
+                    return newType;
+                }
+
+                return type;
+            }
+
             if (type.HasGenericParameters)
             {
                 GenericInstanceType genericInstanceType;
@@ -57,7 +84,7 @@ namespace Equals.Fody.Extensions
                     var propertyType = type.Resolve();
 
                     TypeDefinition parentResolved;
-                    while (parent!= null && propertyType != (parentResolved = parent.Resolve()))
+                    while (parent!= null && propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
                     {
                         parentReference = parentResolved.BaseType;
                         parent = parentResolved.BaseType != null ? parentResolved.BaseType.Resolve() : null;

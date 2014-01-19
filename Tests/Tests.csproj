@@ -85,6 +85,10 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <Name>AssemblyToProcess</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ReferencedDependency\ReferencedDependency.csproj">
+      <Project>{34899a51-efea-4688-805f-0354166fca09}</Project>
+      <Name>ReferencedDependency</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProjectPath)\..\..\Tools\Pepita\PepitaGet.targets" />
