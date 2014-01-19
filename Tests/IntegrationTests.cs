@@ -272,6 +272,18 @@ public class IntegrationTests
     }
 
     [Test]
+    public void GetHashCode_should_return_value_for_null_nullable()
+    {
+        var type = assembly.GetType("ClassWithNullable");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.NullableDate = null;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreEqual(0, result);
+    }
+
+    [Test]
     public void GetHashCode_should_return_diffrent_value_for_changed_property_in_base_class()
     {
         var type = assembly.GetType("InheritedClass");
@@ -484,7 +496,7 @@ public class IntegrationTests
 
         Assert.AreNotEqual(0, result);
     }
-    
+
     #endregion
 
     #region Equals
