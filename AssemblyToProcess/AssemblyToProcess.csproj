@@ -47,6 +47,7 @@
     <Compile Include="ClassWithNullable.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ClassWithStaticProperties.cs" />
     <Compile Include="CustomEquals.cs">
       <SubType>Code</SubType>
     </Compile>
