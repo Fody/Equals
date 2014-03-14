@@ -26,7 +26,8 @@ namespace Equals.Fody.Extensions
             var currentType = type;
             do
             {
-                var currentPoperties = currentType.Properties.Where(x => x.HasThis && x.CustomAttributes.All(y => y.AttributeType.Name != ignoreAttributeName));
+                var currentPoperties = currentType.Properties.Where(
+                    x => x.HasThis && !x.HasParameters && x.CustomAttributes.All(y => y.AttributeType.Name != ignoreAttributeName));
                 properties.AddRange(currentPoperties);
                 currentType = currentType.BaseType.Resolve();
             } while (currentType.FullName != typeof(object).FullName);

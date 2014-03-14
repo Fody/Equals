@@ -539,6 +539,19 @@ public class IntegrationTests
         Assert.AreNotEqual(0, result);
     }
 
+    [Test]
+    public void GetHashCode_should_return_value_for_class_with_indexer()
+    {
+        var type = assembly.GetType("ClassWithIndexer");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
     #endregion
 
     #region Equals
@@ -732,6 +745,23 @@ public class IntegrationTests
         var result = first.Equals(second);
 
         Assert.False(result);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_class_with_indexer()
+    {
+        var type = assembly.GetType("ClassWithIndexer");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
+
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 1;
+        second.Y = 2;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
     }
 
     [Test]
