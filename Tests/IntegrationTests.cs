@@ -246,7 +246,21 @@ public class IntegrationTests
         Assert.False(first == second);
     }
 
+    [Test]
+    public void Equality_should_return_false_for_class_with_method_to_remove()
+    {
+        var type = assembly.GetType("ClassWithMethodToRemove");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
 
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 1;
+        second.Y = 3;
+
+        Assert.True(first != second);
+        Assert.False(first == second);
+    }
 
     #endregion
 
@@ -543,6 +557,19 @@ public class IntegrationTests
     public void GetHashCode_should_return_value_for_class_with_indexer()
     {
         var type = assembly.GetType("ClassWithIndexer");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void GetHashCode_should_return_value_for_class_with_method_to_remove()
+    {
+        var type = assembly.GetType("ClassWithMethodToRemove");
         dynamic first = Activator.CreateInstance(type);
         first.X = 1;
         first.Y = 2;
@@ -994,6 +1021,23 @@ public class IntegrationTests
         dynamic second = Activator.CreateInstance(type);
         second.X = 1;
         second.Y = "2";
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_class_with_method_to_remove()
+    {
+        var type = assembly.GetType("ClassWithMethodToRemove");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
+
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 1;
+        second.Y = 2;
 
         var result = first.Equals(second);
 

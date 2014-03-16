@@ -1,4 +1,5 @@
-﻿using Equals.Fody.Extensions;
+﻿using System.Linq;
+using Equals.Fody.Extensions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -10,8 +11,22 @@ namespace Equals.Fody.Injectors
     {
         public static MethodDefinition Inject(ModuleDefinition moduleDefinition)
         {
+            int mod = 0;
+            TypeDefinition typeDef = null;
+            do
+            {
+                string name = mod == 0 ? "Equals.Helpers" : "Equals.Helpers" + mod;
+                typeDef = moduleDefinition.Types.Where(x => x.FullName == name).FirstOrDefault();
+                if (typeDef != null)
+                {
+                    mod++;
+                }
+            }
+            while (typeDef != null);
+
+            string selectedName = mod == 0 ? "Helpers" : "Helpers" + mod;
             var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
-            var helperType = new TypeDefinition("Equals", "Helpers", typeAttributes);
+            var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
             helperType.CustomAttributes.MarkAsGeneratedCode();
             helperType.BaseType = ReferenceFinder.Object.TypeReference;
             moduleDefinition.Types.Add(helperType);

@@ -69,6 +69,7 @@
     <Compile Include="Extensions\CollectionInstructionExtensions.cs" />
     <Compile Include="Extensions\CollectionParameterDefinitionExtensions.cs" />
     <Compile Include="Extensions\CollectionVariableDefinitionExtension.cs" />
+    <Compile Include="Extensions\CollectionMethodDefinitionExtensions.cs" />
     <Compile Include="Extensions\ICustomAttributeProviderExtensions.cs" />
     <Compile Include="Extensions\MethodReferenceExtensions.cs" />
     <Compile Include="Extensions\PropertyDefinitionExtensions.cs" />

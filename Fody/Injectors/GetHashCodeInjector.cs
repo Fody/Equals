@@ -55,7 +55,7 @@ namespace Equals.Fody.Injectors
 
             body.OptimizeMacros();
 
-            type.Methods.Add(method);
+            type.Methods.AddOrReplace(method);
 
             return method;
         }

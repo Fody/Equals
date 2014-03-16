@@ -44,7 +44,10 @@
     <Compile Include="Child.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClassWithIndexer.cs" />
+    <Compile Include="ClassWithIndexer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithMethodToRemove.cs" />
     <Compile Include="ClassWithNullable.cs">
       <SubType>Code</SubType>
     </Compile>

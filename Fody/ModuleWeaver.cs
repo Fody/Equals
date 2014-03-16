@@ -76,7 +76,10 @@ public class ModuleWeaver
                     EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
                     var typeInterface = ReferenceFinder.IEquatable.TypeReference.MakeGenericInstanceType(typeRef);
-                    type.Interfaces.Add(typeInterface);
+                    if (!type.Interfaces.Any(x => x.FullName == typeInterface.FullName))
+                    {
+                        type.Interfaces.Add(typeInterface);
+                    }
                 }
 
                 if (!this.IsPropertySet(attribute, DoNotAddGetHashCode))

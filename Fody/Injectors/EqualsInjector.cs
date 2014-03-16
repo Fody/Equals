@@ -63,7 +63,7 @@ namespace Equals.Fody.Injectors
 
             body.OptimizeMacros();
 
-            type.Methods.Add(method);
+            type.Methods.AddOrReplace(method);
 
             return method;
         }
@@ -82,7 +82,7 @@ namespace Equals.Fody.Injectors
             AddEqualsTypeReturn(newEquals, ins, type);
 
             body.OptimizeMacros();
-            type.Methods.Add(method);
+            type.Methods.AddOrReplace(method);
 
             return method;
         }
@@ -125,7 +125,7 @@ namespace Equals.Fody.Injectors
 
             body.OptimizeMacros();
 
-            type.Methods.Add(method);
+            type.Methods.AddOrReplace(method);
 
             var methodToCall = new MethodReference(method.Name, method.ReturnType, typeRef);
             foreach (var parameter in method.Parameters)
