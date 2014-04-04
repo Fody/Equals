@@ -224,13 +224,13 @@ namespace Equals.Fody.Injectors
                 t.Add(Instruction.Create(OpCodes.Ldobj, resolvedType));
             }
             t.Add(Instruction.Create(OpCodes.Ldarg_1));
-            if (!type.IsValueType)
+            if (type.IsValueType)
             {
-                t.Add(Instruction.Create(OpCodes.Castclass, typeRef));
+                t.Add(Instruction.Create(OpCodes.Unbox_Any, typeRef));
             }
             else
             {
-                t.Add(Instruction.Create(OpCodes.Unbox_Any, typeRef));
+                t.Add(Instruction.Create(OpCodes.Castclass, typeRef));
             }
 
             t.Add(Instruction.Create(OpCodes.Call, newEquals));
