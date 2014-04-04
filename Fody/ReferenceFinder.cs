@@ -71,7 +71,7 @@ namespace Equals.Fody
             public static TypeReference TypeReference;
         }
 
-        private static ModuleDefinition moduleDefinition;
+        static ModuleDefinition moduleDefinition;
 
         public static void SetModule(ModuleDefinition module)
         {
@@ -96,7 +96,7 @@ namespace Equals.Fody
             var systemLib = assemblyResolver.Resolve("System");
             var systemLibTypes = systemLib.MainModule.Types;
 
-            var winrt = !baseLibTypes.Any(type => type.Name == "Object");
+            var winrt = baseLibTypes.All(type => type.Name != "Object");
             if (winrt)
             {
                 baseLib = assemblyResolver.Resolve("System.Runtime");

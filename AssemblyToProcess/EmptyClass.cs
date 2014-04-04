@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-[Equals]
+﻿[Equals]
 public class EmptyClass
 {
 }

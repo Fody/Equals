@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 [Equals]
 public class WithGenericParameter<T> : GenericClass<T> where T : GenericClassBaseClass

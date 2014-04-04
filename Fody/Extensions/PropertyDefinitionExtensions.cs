@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Mono.Cecil;
-using Mono.Collections.Generic;
+﻿using Mono.Cecil;
 
 namespace Equals.Fody.Extensions
 {
@@ -13,18 +10,14 @@ namespace Equals.Fody.Extensions
             if (method.DeclaringType.HasGenericParameters)
             {
                 var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
-                MethodReference newRef = new MethodReference(method.Name, method.ReturnType)
+                return new MethodReference(method.Name, method.ReturnType)
                 {
                     DeclaringType = genericInstanceType,
                     HasThis = true
                 };
 
-                return newRef;
             }
-            else
-            {
-                return method;
-            }
+            return method;
         }
     }
 }

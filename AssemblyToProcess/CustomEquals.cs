@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-[Equals]
+﻿[Equals]
 public struct CustomStructEquals
 {
     [IgnoreDuringEquals]
     public int X { get; set; }
 
     [CustomEqualsInternal]
-    private bool Custom(CustomStructEquals other)
+    bool Custom(CustomStructEquals other)
     {
         return X == 1 && other.X == 2 || X == 2 && other.X == 1;
     }
@@ -23,7 +18,7 @@ public struct CustomGenericEquals<T>
     public T Prop { get; set; }
 
     [CustomEqualsInternal]
-    private bool Custom(CustomGenericEquals<T> other)
+    bool Custom(CustomGenericEquals<T> other)
     {
         return object.Equals(Prop, other.Prop);
     }
@@ -36,7 +31,7 @@ public class CustomEquals
     public int X { get; set; }
 
     [CustomEqualsInternal]
-    private bool Custom(CustomEquals other)
+    bool Custom(CustomEquals other)
     {
         return X == 1 && other.X == 2 || X == 2 && other.X == 1;
     }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Mono.Cecil.Cil;
+﻿using System.Linq;
 using Mono.Collections.Generic;
 using Mono.Cecil;
 

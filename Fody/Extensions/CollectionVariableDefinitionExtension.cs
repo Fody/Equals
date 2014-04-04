@@ -4,7 +4,7 @@ using Mono.Collections.Generic;
 
 namespace Equals.Fody.Extensions
 {
-    public static class CollectionVariablerDefinitionExtension
+    public static class CollectionVariableDefinitionExtension
     {
         public static VariableDefinition Add(this Collection<VariableDefinition> variables, string name, TypeReference type)
         {

@@ -1,7 +1,7 @@
 ﻿public enum TypeCheck
 {
-    ExaclyTheSameTypeAsThis = 0,
-    ExaclyOfType = 1,
+    ExactlyTheSameTypeAsThis = 0,
+    ExactlyOfType = 1,
     EqualsOrSubtype = 2
 }
 

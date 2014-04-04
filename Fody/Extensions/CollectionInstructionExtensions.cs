@@ -8,8 +8,8 @@ namespace Equals.Fody.Extensions
     {
         public static void If(this Collection<Instruction> ins,
             Action<Collection<Instruction>> condition,
-            Action<Collection<Instruction>> thenStatment,
-            Action<Collection<Instruction>> elseStetment)
+            Action<Collection<Instruction>> thenStatement,
+            Action<Collection<Instruction>> elseStatement)
         {
             var ifEnd = Instruction.Create(OpCodes.Nop);
             var ifElse = Instruction.Create(OpCodes.Nop);
@@ -25,12 +25,12 @@ namespace Equals.Fody.Extensions
                 ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
             }
 
-            thenStatment(ins);
+            thenStatement(ins);
 
             ins.Add(Instruction.Create(OpCodes.Br, ifEnd));
             ins.Add(ifElse);
 
-            elseStetment(ins);
+            elseStatement(ins);
 
             ins.Add(ifEnd);
         }
@@ -38,8 +38,8 @@ namespace Equals.Fody.Extensions
         public static void IfAnd(this Collection<Instruction> ins,
             Action<Collection<Instruction>> condition1,
             Action<Collection<Instruction>> condition2,
-            Action<Collection<Instruction>> thenStatment,
-            Action<Collection<Instruction>> elseStetment)
+            Action<Collection<Instruction>> thenStatement,
+            Action<Collection<Instruction>> elseStatement)
         {
             var ifEnd = Instruction.Create(OpCodes.Nop);
             var ifElse = Instruction.Create(OpCodes.Nop);
@@ -66,19 +66,19 @@ namespace Equals.Fody.Extensions
                 ins.Add(Instruction.Create(OpCodes.Brfalse, ifElse));
             }
 
-            thenStatment(ins);
+            thenStatement(ins);
 
             ins.Add(Instruction.Create(OpCodes.Br, ifEnd));
             ins.Add(ifElse);
 
-            elseStetment(ins);
+            elseStatement(ins);
 
             ins.Add(ifEnd);
         }
 
         public static void If(this Collection<Instruction> ins,
             Action<Collection<Instruction>> condition,
-            Action<Collection<Instruction>> thenStatment)
+            Action<Collection<Instruction>> thenStatement)
         {
             var ifEnd = Instruction.Create(OpCodes.Nop);
 
@@ -93,14 +93,14 @@ namespace Equals.Fody.Extensions
                 ins.Add(Instruction.Create(OpCodes.Brfalse, ifEnd));
             }
 
-            thenStatment(ins);
+            thenStatement(ins);
 
             ins.Add(ifEnd);
         }
 
         public static void IfNot(this Collection<Instruction> ins,
             Action<Collection<Instruction>> condition,
-            Action<Collection<Instruction>> thenStatment)
+            Action<Collection<Instruction>> thenStatement)
         {
             var ifEnd = Instruction.Create(OpCodes.Nop);
 
@@ -115,7 +115,7 @@ namespace Equals.Fody.Extensions
                 ins.Add(Instruction.Create(OpCodes.Brtrue, ifEnd));
             }
 
-            thenStatment(ins);
+            thenStatement(ins);
 
             ins.Add(ifEnd);
         }

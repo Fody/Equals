@@ -17,7 +17,9 @@ public class ClassWithMethodToRemove : IEquatable<ClassWithMethodToRemove>
         return true;
     }
 
-    private static bool EqualsInternal(ClassWithMethodToRemove left, ClassWithMethodToRemove right)
+// ReSharper disable UnusedParameter.Local
+    static bool EqualsInternal(ClassWithMethodToRemove left, ClassWithMethodToRemove right)
+// ReSharper restore UnusedParameter.Local
     {
         return false;
     }

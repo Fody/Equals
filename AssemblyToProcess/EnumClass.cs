@@ -32,7 +32,7 @@ public class EnumClass
 
     public EnumClass(int normalEnum, int flagsEnum)
     {
-        this.NormalEnum = (NormalEnum)normalEnum;
-        this.FlagsEnum = (FlagsEnum)flagsEnum;
+        NormalEnum = (NormalEnum)normalEnum;
+        FlagsEnum = (FlagsEnum)flagsEnum;
     }
 }

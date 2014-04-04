@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Equals.Fody.Extensions;
 using Mono.Cecil;
 using Mono.Collections.Generic;
 
@@ -26,9 +25,9 @@ namespace Equals.Fody.Extensions
             var currentType = type;
             do
             {
-                var currentPoperties = currentType.Properties.Where(
+                var currentProperties = currentType.Properties.Where(
                     x => x.HasThis && !x.HasParameters && x.CustomAttributes.All(y => y.AttributeType.Name != ignoreAttributeName));
-                properties.AddRange(currentPoperties);
+                properties.AddRange(currentProperties);
                 currentType = currentType.BaseType.Resolve();
             } while (currentType.FullName != typeof(object).FullName);
 
@@ -73,8 +72,8 @@ namespace Equals.Fody.Extensions
             if (type.HasGenericParameters)
             {
                 GenericInstanceType genericInstanceType;
-                TypeReference parent = targetType;
-                TypeReference parentReference = targetType;
+                var parent = targetType;
+                var parentReference = targetType;
 
                 if (type.FullName == targetType.Resolve().FullName)
                 {
@@ -104,7 +103,7 @@ namespace Equals.Fody.Extensions
             return type;
         }
 
-        private static GenericInstanceType GetGenericInstanceType(TypeReference type, Collection<GenericParameter> parameters)
+        static GenericInstanceType GetGenericInstanceType(TypeReference type, Collection<GenericParameter> parameters)
         {
             var genericInstanceType = new GenericInstanceType(type);
             foreach (var genericParameter in parameters)

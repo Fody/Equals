@@ -11,13 +11,13 @@ namespace Equals.Fody.Extensions
             AddDebuggerNonUserCodeAttribute(customAttributes);
         }
 
-        private static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
+        static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
         {
             var debuggerAttribute = new CustomAttribute(ReferenceFinder.DebuggerNonUserCodeAttribute.Constructor);
             customAttributes.Add(debuggerAttribute);
         }
 
-        private static void AddCustomAttributeArgument(Collection<CustomAttribute> customAttributes)
+        static void AddCustomAttributeArgument(Collection<CustomAttribute> customAttributes)
         {
             var version = typeof (ModuleWeaver).Assembly.GetName().Version.ToString();
             var name = typeof (ModuleWeaver).Assembly.GetName().Name;

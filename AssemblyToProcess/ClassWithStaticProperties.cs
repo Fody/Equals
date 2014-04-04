@@ -1,6 +1,4 @@
-﻿using System;
-
-[Equals]
+﻿[Equals]
 public class ClassWithStaticProperties
 {
     public int X { get; set; }

@@ -12,6 +12,6 @@ public class OnlyOperator
             return false;
         }
 
-        return this.Value == 1 && second.Value == 2 || this.Value == 2 && second.Value == 1;
+        return Value == 1 && second.Value == 2 || Value == 2 && second.Value == 1;
     }
 }

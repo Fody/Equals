@@ -11,20 +11,19 @@ namespace Equals.Fody.Injectors
     {
         public static MethodDefinition Inject(ModuleDefinition moduleDefinition)
         {
-            int mod = 0;
+            var mod = 0;
             TypeDefinition typeDef = null;
             do
             {
-                string name = mod == 0 ? "Equals.Helpers" : "Equals.Helpers" + mod;
-                typeDef = moduleDefinition.Types.Where(x => x.FullName == name).FirstOrDefault();
+                var name = mod == 0 ? "Equals.Helpers" : "Equals.Helpers" + mod;
+                typeDef = moduleDefinition.Types.FirstOrDefault(x => x.FullName == name);
                 if (typeDef != null)
                 {
                     mod++;
                 }
-            }
-            while (typeDef != null);
+            } while (typeDef != null);
 
-            string selectedName = mod == 0 ? "Helpers" : "Helpers" + mod;
+            var selectedName = mod == 0 ? "Helpers" : "Helpers" + mod;
             var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
             var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
             helperType.CustomAttributes.MarkAsGeneratedCode();
@@ -37,12 +36,12 @@ namespace Equals.Fody.Injectors
 
             var left = method.Parameters.Add("left", ReferenceFinder.IEnumerable.TypeReference);
             var right = method.Parameters.Add("right", ReferenceFinder.IEnumerable.TypeReference);
-            
+
             var body = method.Body;
             var ins = body.Instructions;
 
             body.InitLocals = true;
-            
+
             var leftEnumerator = body.Variables.Add("enumerator", ReferenceFinder.IEnumerator.TypeReference);
             var rightEnumerator = body.Variables.Add("rightEnumerator", ReferenceFinder.IEnumerator.TypeReference);
             var leftHasNext = body.Variables.Add("hasNext", ReferenceFinder.Boolean.TypeReference);
@@ -51,10 +50,10 @@ namespace Equals.Fody.Injectors
             AddLeftAndRightReferenceEquals(ins, left, right);
             AddLeftAndNullReferenceEquals(ins, left);
             AddRightAndNullReferenceEquals(ins, right);
-            
+
             AddGetEnumerator(ins, left, leftEnumerator);
             AddGetEnumerator(ins, right, rightEnumerator);
-              
+
             AddCollectionLoop(ins, leftEnumerator, leftHasNext, rightEnumerator, rightHasNext);
 
             body.OptimizeMacros();
@@ -63,7 +62,7 @@ namespace Equals.Fody.Injectors
             return method;
         }
 
-        private static void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext,
+        static void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext,
             VariableDefinition rightEnumerator, VariableDefinition rightHasNext)
         {
             var loopBegin = Instruction.Create(OpCodes.Nop);
@@ -75,35 +74,29 @@ namespace Equals.Fody.Injectors
             ins.IfAnd(
                 c => AddCheckHasNext(c, leftHasNext, false),
                 c => AddCheckHasNext(c, rightHasNext, false),
-                t => AddReturnTrue(t),
-                e =>
-                {
-                    e.IfAnd(
-                        c => AddCheckHasNext(c, leftHasNext, true),
-                        c => AddCheckHasNext(c, rightHasNext, true),
-                        t =>
-                        {
-                            t.If(
-                                c => AddCheckCurrent(c, leftEnumerator, rightEnumerator),
-                                tt => AddRerurnFalse(tt));
-                        },
-                        e2 =>
-                        {
-                            ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                            ins.Add(Instruction.Create(OpCodes.Ret));
-                        });
-                });
+                AddReturnTrue,
+                e => e.IfAnd(
+                    c => AddCheckHasNext(c, leftHasNext, true),
+                    c => AddCheckHasNext(c, rightHasNext, true),
+                    t => t.If(
+                        c => AddCheckCurrent(c, leftEnumerator, rightEnumerator),
+                        AddReturnFalse),
+                    e2 =>
+                    {
+                        ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+                        ins.Add(Instruction.Create(OpCodes.Ret));
+                    }));
 
             ins.Add(Instruction.Create(OpCodes.Br, loopBegin));
         }
 
-        private static void AddRerurnFalse(Collection<Instruction> tt)
+        static void AddReturnFalse(Collection<Instruction> tt)
         {
             tt.Add(Instruction.Create(OpCodes.Ldc_I4_0));
             tt.Add(Instruction.Create(OpCodes.Ret));
         }
 
-        private static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
+        static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
         {
             c.Add(Instruction.Create(OpCodes.Ldloc, leftEnumerator));
             c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.GetCurrent));
@@ -117,20 +110,20 @@ namespace Equals.Fody.Injectors
             c.Add(Instruction.Create(OpCodes.Ceq));
         }
 
-        private static void AddReturnTrue(Collection<Instruction> t)
+        static void AddReturnTrue(Collection<Instruction> t)
         {
             t.Add(Instruction.Create(OpCodes.Ldc_I4_1));
             t.Add(Instruction.Create(OpCodes.Ret));
         }
 
-        private static void AddCheckHasNext(Collection<Instruction> ins, VariableDefinition hasNext, bool isTrue)
+        static void AddCheckHasNext(Collection<Instruction> ins, VariableDefinition hasNext, bool isTrue)
         {
             ins.Add(Instruction.Create(OpCodes.Ldloc, hasNext));
             ins.Add(Instruction.Create(isTrue ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1));
             ins.Add(Instruction.Create(OpCodes.Ceq));
         }
 
-        private static void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
+        static void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
         {
             ins.Add(Instruction.Create(OpCodes.Ldloc, enumerator));
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.MoveNext));
@@ -139,14 +132,14 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Stloc, hasNext));
         }
 
-        private static void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
+        static void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
         {
             ins.Add(Instruction.Create(OpCodes.Ldarg, argument));
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerable.GetEnumerator));
             ins.Add(Instruction.Create(OpCodes.Stloc, enumerator));
         }
 
-        private static void AddRightAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition right)
+        static void AddRightAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition right)
         {
             ins.If(
                 c =>
@@ -162,7 +155,7 @@ namespace Equals.Fody.Injectors
                 });
         }
 
-        private static void AddLeftAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition left)
+        static void AddLeftAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition left)
         {
             ins.If(
                 c =>
@@ -178,7 +171,7 @@ namespace Equals.Fody.Injectors
                 });
         }
 
-        private static void AddLeftAndRightReferenceEquals(Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
+        static void AddLeftAndRightReferenceEquals(Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
         {
             ins.If(
                 c =>

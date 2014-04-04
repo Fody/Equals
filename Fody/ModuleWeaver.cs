@@ -1,13 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Equals.Fody;
-using Equals.Fody.Extensions;
 using Equals.Fody.Injectors;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
-using Mono.Collections.Generic;
 
 public class ModuleWeaver
 {
@@ -29,90 +26,77 @@ public class ModuleWeaver
         return ModuleDefinition.GetTypes().Where(x => x.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
     }
 
-    private TypeReference GetGenericType(TypeReference type)
+    TypeReference GetGenericType(TypeReference type)
     {
         if (type.HasGenericParameters)
         {
-            var parameters = type.GenericParameters.Select(x => (TypeReference)x).ToArray();
+            var parameters = type.GenericParameters.Select(x => (TypeReference) x).ToArray();
             return type.MakeGenericInstanceType(parameters);
         }
-        else
-        {
-            return type;
-        }
+        return type;
     }
 
     public void Execute()
     {
-        ReferenceFinder.SetModule(this.ModuleDefinition);
-        ReferenceFinder.FindReferences(this.AssemblyResolver);
+        ReferenceFinder.SetModule(ModuleDefinition);
+        ReferenceFinder.FindReferences(AssemblyResolver);
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
         foreach (var type in GetMachingTypes())
         {
-            try
+            var props = type.Properties;
+            foreach (var prop in props)
             {
-                var props = type.Properties;
-                foreach (var prop in props)
-                {
-                    ModuleDefinition.Import(prop.PropertyType).Resolve();
-                }
-
-                var attribute = type.CustomAttributes.Where(x => x.AttributeType.Name == attributeName).Single();
-                var typeRef = this.GetGenericType(type);
-
-                if (!this.IsPropertySet(attribute, DoNotAddEquals))
-                {
-                    int typeCheck = 0;
-                    var typeCheckProperty = attribute.Properties.Where(x => x.Name == "TypeCheck").SingleOrDefault();
-                    if (typeCheckProperty.Name != null)
-                    {
-                        typeCheck = (int)typeCheckProperty.Argument.Value;
-                    }
-
-                    var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals);
-                    EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
-                    EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
-
-                    var typeInterface = ReferenceFinder.IEquatable.TypeReference.MakeGenericInstanceType(typeRef);
-                    if (!type.Interfaces.Any(x => x.FullName == typeInterface.FullName))
-                    {
-                        type.Interfaces.Add(typeInterface);
-                    }
-                }
-
-                if (!this.IsPropertySet(attribute, DoNotAddGetHashCode))
-                {
-                    GetHashCodeInjector.Inject(type);
-                }
-
-                if (!this.IsPropertySet(attribute, DoNotAddEqualityOperators))
-                {
-                    OperatorInjector.InjectEqualityOperator(type);
-                    OperatorInjector.InjectInequalityOperator(type);
-                }
-
-                this.RemoveFodyAttributes(type);
+                ModuleDefinition.Import(prop.PropertyType).Resolve();
             }
-            catch (WeavingException)
+
+            var attribute = type.CustomAttributes.Single(x => x.AttributeType.Name == attributeName);
+            var typeRef = GetGenericType(type);
+
+            if (!IsPropertySet(attribute, DoNotAddEquals))
             {
-                throw;
+                var typeCheck = 0;
+                var typeCheckProperty = attribute.Properties.SingleOrDefault(x => x.Name == "TypeCheck");
+                if (typeCheckProperty.Name != null)
+                {
+                    typeCheck = (int) typeCheckProperty.Argument.Value;
+                }
+
+                var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals);
+                EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
+                EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
+
+                var typeInterface = ReferenceFinder.IEquatable.TypeReference.MakeGenericInstanceType(typeRef);
+                if (type.Interfaces.All(x => x.FullName != typeInterface.FullName))
+                {
+                    type.Interfaces.Add(typeInterface);
+                }
             }
-            catch (Exception ex)
+
+            if (!IsPropertySet(attribute, DoNotAddGetHashCode))
             {
-                throw new WeavingException("Excpetion occurs occurred  procesing type: " + type.FullName + ". Report bug with code on https://github.com/Fody/Equals Error: " + ex.Message + ex.StackTrace);
+                GetHashCodeInjector.Inject(type);
             }
+
+            if (!IsPropertySet(attribute, DoNotAddEqualityOperators))
+            {
+                OperatorInjector.InjectEqualityOperator(type);
+                OperatorInjector.InjectInequalityOperator(type);
+            }
+
+            RemoveFodyAttributes(type);
+
         }
 
-        this.RemoveReference();
+        RemoveReference();
     }
 
-    private bool IsPropertySet(CustomAttribute attribute, string property)
+    bool IsPropertySet(CustomAttribute attribute, string property)
     {
         var argument = attribute.Properties.Where(x => x.Name == property)
-                                .Select(x => x.Argument)
-                                .FirstOrDefault();
+            .Select(x => x.Argument)
+            .FirstOrDefault();
         if (argument.Value == null)
         {
             return false;
@@ -121,7 +105,7 @@ public class ModuleWeaver
         return true.Equals(argument.Value);
     }
 
-    private void RemoveReference()
+    void RemoveReference()
     {
         var referenceToRemove = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == assemblyName);
         if (referenceToRemove != null)
@@ -130,7 +114,7 @@ public class ModuleWeaver
         }
     }
 
-    private void RemoveFodyAttributes(TypeDefinition type)
+    void RemoveFodyAttributes(TypeDefinition type)
     {
         type.RemoveAttribute(attributeName);
 

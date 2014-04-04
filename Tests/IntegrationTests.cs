@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using Mono.Cecil;
 using NUnit.Framework;
 
@@ -93,7 +91,7 @@ public class IntegrationTests
 
 
     [Test]
-    public void Equality_operator_shoud_return_true_for_equal_class_with_generic_property()
+    public void Equality_operator_should_return_true_for_equal_class_with_generic_property()
     {
         var genericClassType = assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -129,7 +127,7 @@ public class IntegrationTests
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
-        Guid newGuid = Guid.NewGuid();
+        var newGuid = Guid.NewGuid();
         first.Key = newGuid;
         second.Key = newGuid;
 
@@ -267,7 +265,7 @@ public class IntegrationTests
     #region GetHashCode
 
     [Test]
-    public void GetHashCode_shoud_return_value_for_class_with_generic_property()
+    public void GetHashCode_should_return_value_for_class_with_generic_property()
     {
         var genericClassType = assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -382,7 +380,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void GetHashCode_should_should_ignored_markder_properties()
+    public void GetHashCode_should_should_ignored_marked_properties()
     {
         var type = assembly.GetType("IgnoredPropertiesClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -484,17 +482,17 @@ public class IntegrationTests
     public void GetHashCode_should_return_value_for_nested_class()
     {
         var normalType = assembly.GetType("NormalClass");
-        dynamic noramlInstance = Activator.CreateInstance(normalType);
-        noramlInstance.X = 1;
-        noramlInstance.Y = "2";
-        noramlInstance.Z = 4.5;
-        noramlInstance.V = 'V';
+        dynamic normalInstance = Activator.CreateInstance(normalType);
+        normalInstance.X = 1;
+        normalInstance.Y = "2";
+        normalInstance.Z = 4.5;
+        normalInstance.V = 'V';
         var nestedType = assembly.GetType("NestedClass");
         dynamic nestedInstance = Activator.CreateInstance(nestedType);
         nestedInstance.A = 10;
         nestedInstance.B = "11";
         nestedInstance.C = 12.25;
-        nestedInstance.D = noramlInstance;
+        nestedInstance.D = normalInstance;
 
         var result = nestedInstance.GetHashCode();
 
@@ -502,7 +500,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void GetHashCode_shoud_return_value_for_class_without_generic_parameter()
+    public void GetHashCode_should_return_value_for_class_without_generic_parameter()
     {
         var withoutGenericParameterType = assembly.GetType("WithoutGenericParameter");
         var propType = assembly.GetType("GenericClassNormalClass");
@@ -521,7 +519,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void GetHashCode_shoud_return_value_for_class_with_generic_parameter()
+    public void GetHashCode_should_return_value_for_class_with_generic_parameter()
     {
         var withGenericParameterType = assembly.GetType("WithGenericParameter`1");
         var propType = assembly.GetType("GenericClassNormalClass");
@@ -584,7 +582,7 @@ public class IntegrationTests
     #region Equals
 
     [Test]
-    public void Equals_shoud_return_value_for_class_with_generic_property()
+    public void Equals_should_return_value_for_class_with_generic_property()
     {
         var genericClassType = assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -602,7 +600,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void Equals_shoud_return_value_for_class_without_generic_parameter()
+    public void Equals_should_return_value_for_class_without_generic_parameter()
     {
         var withoutGenericParameterType = assembly.GetType("WithoutGenericParameter");
         var propType = assembly.GetType("GenericClassNormalClass");
@@ -629,7 +627,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void Equals_shoud_return_value_for_class_with_generic_parameter()
+    public void Equals_should_return_value_for_class_with_generic_parameter()
     {
         var withGenericParameterType = assembly.GetType("WithGenericParameter`1");
         var propType = assembly.GetType("GenericClassNormalClass");
@@ -656,7 +654,7 @@ public class IntegrationTests
         Assert.AreNotEqual(0, result);
     }
 
-    private bool CheckEqualityOnTypesForTypeCheck(string left, string right)
+    bool CheckEqualityOnTypesForTypeCheck(string left, string right)
     {
         var leftType = assembly.GetType(left);
         dynamic leftInstance = Activator.CreateInstance(leftType);
@@ -673,20 +671,20 @@ public class IntegrationTests
     [Test]
     public void Equals_should_use_type_check_option()
     {
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeClass"));
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass"));
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass"));
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass"));
 
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("ExaclyOfTypeClass", "ExaclyOfTypeClass"));
-        Assert.False(this.CheckEqualityOnTypesForTypeCheck("ExaclyOfTypeSubClass", "ExaclyOfTypeClass"));
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("ExaclyOfTypeClass", "ExaclyOfTypeSubClass"));
-        Assert.False(this.CheckEqualityOnTypesForTypeCheck("ExaclyOfTypeSubClass", "ExaclyOfTypeSubClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeClass", "ExactlyOfTypeClass"));
+        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeSubClass", "ExactlyOfTypeClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeClass", "ExactlyOfTypeSubClass"));
+        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeSubClass", "ExactlyOfTypeSubClass"));
 
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("ExaclyTheSameTypeAsThisClass", "ExaclyTheSameTypeAsThisClass"));
-        Assert.False(this.CheckEqualityOnTypesForTypeCheck("ExaclyTheSameTypeAsThisClass", "ExaclyTheSameTypeAsThisSubClass"));
-        Assert.False(this.CheckEqualityOnTypesForTypeCheck("ExaclyTheSameTypeAsThisSubClass", "ExaclyTheSameTypeAsThisClass"));
-        Assert.True(this.CheckEqualityOnTypesForTypeCheck("ExaclyTheSameTypeAsThisSubClass", "ExaclyTheSameTypeAsThisSubClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisClass"));
+        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisSubClass"));
+        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisClass"));
+        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisSubClass"));
     }
 
     [Test]
@@ -741,7 +739,7 @@ public class IntegrationTests
     }
 
     [Test]
-    public void Equals_should_should_ignored_markder_properties()
+    public void Equals_should_should_ignored_marked_properties()
     {
         var type = assembly.GetType("IgnoredPropertiesClass");
         dynamic first = Activator.CreateInstance(type);
@@ -800,7 +798,7 @@ public class IntegrationTests
         first.Count = 2;
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new List<int>() { 1, 2, 3, 4, 5, 6 };
+        second.Collection = new List<int> { 1, 2, 3, 4, 5, 6 };
         second.Count = 2;
 
         var result = first.Equals(second);
@@ -879,10 +877,10 @@ public class IntegrationTests
     [Test]
     public void Equals_should_return_true_for_nested_class()
     {
-        var nestedInstancFirst = GetNestedClassInstance();
-        var nestedInstancSecond = GetNestedClassInstance();
+        var nestedInstanceFirst = GetNestedClassInstance();
+        var nestedInstanceSecond = GetNestedClassInstance();
 
-        var result = nestedInstancFirst.Equals(nestedInstancSecond);
+        var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
         Assert.True(result);
     }
@@ -890,11 +888,11 @@ public class IntegrationTests
     [Test]
     public void Equals_should_return_false_for_changed_nested_class()
     {
-        var nestedInstancFirst = GetNestedClassInstance();
-        var nestedInstancSecond = GetNestedClassInstance();
-        nestedInstancSecond.D.X = 11;
+        var nestedInstanceFirst = GetNestedClassInstance();
+        var nestedInstanceSecond = GetNestedClassInstance();
+        nestedInstanceSecond.D.X = 11;
 
-        var result = nestedInstancFirst.Equals(nestedInstancSecond);
+        var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
         Assert.False(result);
     }
@@ -902,29 +900,29 @@ public class IntegrationTests
     [Test]
     public void Equals_should_return_false_for_null_nested_class()
     {
-        var nestedInstancFirst = GetNestedClassInstance();
-        var nestedInstancSecond = GetNestedClassInstance();
-        nestedInstancSecond.D = null;
+        var nestedInstanceFirst = GetNestedClassInstance();
+        var nestedInstanceSecond = GetNestedClassInstance();
+        nestedInstanceSecond.D = null;
 
-        var result = nestedInstancFirst.Equals(nestedInstancSecond);
+        var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
         Assert.False(result);
     }
 
-    private dynamic GetNestedClassInstance()
+    dynamic GetNestedClassInstance()
     {
         var normalType = assembly.GetType("NormalClass");
-        dynamic noramlInstance = Activator.CreateInstance(normalType);
-        noramlInstance.X = 1;
-        noramlInstance.Y = "2";
-        noramlInstance.Z = 4.5;
-        noramlInstance.V = 'V';
+        dynamic normalInstance = Activator.CreateInstance(normalType);
+        normalInstance.X = 1;
+        normalInstance.Y = "2";
+        normalInstance.Z = 4.5;
+        normalInstance.V = 'V';
         var nestedType = assembly.GetType("NestedClass");
         dynamic nestedInstance = Activator.CreateInstance(nestedType);
         nestedInstance.A = 10;
         nestedInstance.B = "11";
         nestedInstance.C = 12.25;
-        nestedInstance.D = noramlInstance;
+        nestedInstance.D = normalInstance;
         return nestedInstance;
     }
 
