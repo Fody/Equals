@@ -132,7 +132,7 @@ namespace Equals.Fody.Injectors
                 c.Add(Instruction.Create(OpCodes.Stloc, variable));
                 c.Add(Instruction.Create(OpCodes.Ldloca, variable));
 
-                var hasValuePropertyResolved = nullablePropertyResolved.Properties.Where(x => x.Name == "HasValue").First().Resolve();
+                var hasValuePropertyResolved = nullablePropertyResolved.Properties.First(x => x.Name == "HasValue").Resolve();
                 var hasMethod = ReferenceFinder.ImportCustom(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
                 c.Add(Instruction.Create(OpCodes.Call, hasMethod));
             },
