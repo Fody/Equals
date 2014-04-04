@@ -102,7 +102,7 @@ namespace Equals.Fody.Injectors
 
             foreach (var property in properties)
             {
-                AddPropertyCode(type, collectionEquals, property, ins);
+                AddPropertyCode(type, collectionEquals, property, ins, left, right);
             }
 
             var methods = type.GetMethods();
@@ -352,7 +352,7 @@ namespace Equals.Fody.Injectors
                 AddReturnTrue);
         }
 
-        static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins)
+        static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins,ParameterDefinition left,ParameterDefinition right)
         {
             ins.IfNot(
                 c =>
@@ -363,38 +363,38 @@ namespace Equals.Fody.Injectors
                         var isCollection = propType.IsCollection();
                         if (simpleTypes.Contains(propType.FullName) || propType.IsEnum)
                         {
-                            AddSimpleValueCheck(c, property, type);
+                            AddSimpleValueCheck(c, property, type,left,right);
                         }
                         else if (!isCollection || propType.FullName == typeof (string).FullName)
                         {
-                            AddNormalCheck(type, c, property);
+                            AddNormalCheck(type, c, property,left,right);
                         }
                         else
                         {
-                            AddCollectionCheck(type, collectionEquals, c, property, propType);
+                            AddCollectionCheck(type, collectionEquals, c, property, propType,left,right);
                         }
                     }
                     else
                     {
                         var genericType = property.PropertyType.GetGenericInstanceType(type);
-                        AddNormalCheck(type, c, property);
+                        AddNormalCheck(type, c, property,left,right);
                     }
                 },
                 AddReturnFalse);
         }
 
-        static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property)
+        static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
         {
             var genericInstance = new Lazy<TypeReference>(() => property.PropertyType.GetGenericInstanceType(type));
             var getMethodImported = ReferenceFinder.ImportCustom(property.GetGetMethod(type));
 
-            c.Add(Instruction.Create(OpCodes.Ldarg_0));
+            c.Add(Instruction.Create(type.GetLdArgForType(), left));
             c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
             }
-            c.Add(Instruction.Create(OpCodes.Ldarg_1));
+            c.Add(Instruction.Create(type.GetLdArgForType(), right));
             c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
@@ -403,20 +403,20 @@ namespace Equals.Fody.Injectors
             c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
         }
 
-        static void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType)
+        static void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)
         {
             c.If(
                 AddCollectionFirstArgumentCheck,
                 AddCollectionSecondArgumentCheck,
-                e => AddCollectionEquals(type, collectionEquals, property, propType, e));
+                e => AddCollectionEquals(type, collectionEquals, property, propType, e,left,right));
         }
 
-        static void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeDefinition propType, Collection<Instruction> e)
+        static void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeDefinition propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
         {
             e.If(
                 cf =>
                 {
-                    cf.Add(Instruction.Create(OpCodes.Ldarg_1));
+                    cf.Add(Instruction.Create(type.GetLdArgForType(), right));
                     cf.Add(Instruction.Create(OpCodes.Ldnull));
                     cf.Add(Instruction.Create(OpCodes.Ceq));
                 },
@@ -426,14 +426,14 @@ namespace Equals.Fody.Injectors
                     var getMethod = property.GetGetMethod(type);
                     var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
 
-                    es.Add(Instruction.Create(OpCodes.Ldarg_0));
+                    es.Add(Instruction.Create(type.GetLdArgForType(), left));
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType)
                     {
                         es.Add(Instruction.Create(OpCodes.Box, propType));
                     }
 
-                    es.Add(Instruction.Create(OpCodes.Ldarg_1));
+                    es.Add(Instruction.Create(type.GetLdArgForType(), right));
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType)
                     {
@@ -464,15 +464,15 @@ namespace Equals.Fody.Injectors
             cf.Add(Instruction.Create(OpCodes.Ceq));
         }
 
-        static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type)
+        static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type, ParameterDefinition left, ParameterDefinition right)
         {
             var getMethod = property.GetGetMethod(type);
             var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
 
-            c.Add(Instruction.Create(OpCodes.Ldarg_0));
+            c.Add(Instruction.Create(type.GetLdArgForType(), left));
             c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
 
-            c.Add(Instruction.Create(OpCodes.Ldarg_1));
+            c.Add(Instruction.Create(type.GetLdArgForType(), right));
             c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
 
             c.Add(Instruction.Create(OpCodes.Ceq));
