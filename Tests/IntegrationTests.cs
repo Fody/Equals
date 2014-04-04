@@ -399,7 +399,7 @@ public class IntegrationTests
     {
         var type = assembly.GetType("IntCollection");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new int[] { 1, 2, 3, 4, 5, 6 };
+        instance.Collection = new[] { 1, 2, 3, 4, 5, 6 };
         instance.Count = 2;
 
         var result = instance.GetHashCode();
@@ -438,7 +438,7 @@ public class IntegrationTests
     {
         var type = assembly.GetType("OnlyIntCollection");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new int[] { 1, 2, 3, 4, 5};
+        instance.Collection = new[] { 1, 2, 3, 4, 5};
 
         var result = instance.GetHashCode();
 
@@ -664,8 +664,7 @@ public class IntegrationTests
         dynamic rightInstance = Activator.CreateInstance(rightType);
         rightInstance.A = 1;
 
-        var result = leftInstance.Equals((object) rightInstance);
-        return result;
+        return leftInstance.Equals((object) rightInstance);
     }
 
     [Test]
@@ -794,7 +793,7 @@ public class IntegrationTests
     {
         var type = assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new int[] { 1, 2, 3, 4, 5, 6 };
+        first.Collection = new[] { 1, 2, 3, 4, 5, 6 };
         first.Count = 2;
 
         dynamic second = Activator.CreateInstance(type);
@@ -811,7 +810,7 @@ public class IntegrationTests
     {
         var type = assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new int[] { 1, 2, 3, 4, 5, 6 };
+        first.Collection = new[] { 1, 2, 3, 4, 5, 6 };
         first.Count = 2;
 
         dynamic second = Activator.CreateInstance(type);
@@ -845,7 +844,7 @@ public class IntegrationTests
     {
         var type = assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new int[]{1};
+        first.Collection = new[]{1};
         first.Count = 0;
 
         dynamic second = Activator.CreateInstance(type);
@@ -866,7 +865,7 @@ public class IntegrationTests
         first.Count = 0;
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new int[] { 1 };
+        second.Collection = new[] { 1 };
         second.Count = 0;
 
         var result = first.Equals(second);
@@ -1153,18 +1152,18 @@ public class IntegrationTests
         dynamic first = Activator.CreateInstance(child);
         first.InChildNumber  = 1;
         first.InChildText = "test";
-        first.InChildCollection = new int[] { 1, 2 };
+        first.InChildCollection = new[] { 1, 2 };
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new int[] { 1, 2 };
+        first.InParentCollection = new[] { 1, 2 };
 
         dynamic second = Activator.CreateInstance(child);
         second.InChildNumber = 1;
         second.InChildText = "test";
-        second.InChildCollection = new int[] { 1, 2 };
+        second.InChildCollection = new[] { 1, 2 };
         second.InParentNumber = 1;
         second.InParentText = "test";
-        second.InParentCollection = new int[] { 1, 2 };
+        second.InParentCollection = new[] { 1, 2 };
 
         var result = first.Equals(second);
 
@@ -1178,10 +1177,10 @@ public class IntegrationTests
         dynamic first = Activator.CreateInstance(child);
         first.InChildNumber = 1;
         first.InChildText = "test";
-        first.InChildCollection = new int[] { 1, 2 };
+        first.InChildCollection = new[] { 1, 2 };
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new int[] { 1, 2 };
+        first.InParentCollection = new[] { 1, 2 };
 
         var result = first.GetHashCode();
 
@@ -1195,18 +1194,18 @@ public class IntegrationTests
         dynamic first = Activator.CreateInstance(child);
         first.InChildNumber = 1;
         first.InChildText = "test";
-        first.InChildCollection = new int[] { 1, 2 };
+        first.InChildCollection = new[] { 1, 2 };
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new int[] { 1, 2 };
+        first.InParentCollection = new[] { 1, 2 };
 
         dynamic second = Activator.CreateInstance(child);
         second.InChildNumber = 1;
         second.InChildText = "test";
-        second.InChildCollection = new int[] { 1, 2 };
+        second.InChildCollection = new[] { 1, 2 };
         second.InParentNumber = 1;
         second.InParentText = "test";
-        second.InParentCollection = new int[] { 1, 2 };
+        second.InParentCollection = new[] { 1, 2 };
 
         var result = first.GetHashCode();
 

@@ -18,7 +18,7 @@ namespace Equals.Fody.Injectors
         const int ExactlyOfType = 1;
         const int EqualsOrSubtype = 2;
 
-        static ISet<string> simpleTypes = new HashSet<string>(new[]
+        static HashSet<string> simpleTypes = new HashSet<string>(new[]
             {
                 "System.Boolean",
                 "System.Byte",
@@ -188,16 +188,18 @@ namespace Equals.Fody.Injectors
                         ins.Add(Instruction.Create(OpCodes.Ldloca, argVariable));
                     }
                     ins.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    if (!type.IsValueType)
-                    {
-                        ins.Add(Instruction.Create(OpCodes.Callvirt, imported));
-                    }
-                    else
-                    {
-                        ins.Add(Instruction.Create(OpCodes.Call, imported));
-                    }
+                    ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
                 },
                 AddReturnFalse);
+        }
+
+        public static OpCode GetCallForMethod(this MethodReference methodReference)
+        {
+            if (methodReference.DeclaringType.IsValueType)
+            {
+                return OpCodes.Call;
+            }
+            return OpCodes.Callvirt;
         }
 
         static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins, TypeReference type)
@@ -387,13 +389,13 @@ namespace Equals.Fody.Injectors
             var getMethodImported = ReferenceFinder.ImportCustom(property.GetGetMethod(type));
 
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+            c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
             }
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+            c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
             if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
@@ -425,14 +427,14 @@ namespace Equals.Fody.Injectors
                     var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
 
                     es.Add(Instruction.Create(OpCodes.Ldarg_0));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+                    es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType)
                     {
                         es.Add(Instruction.Create(OpCodes.Box, propType));
                     }
 
                     es.Add(Instruction.Create(OpCodes.Ldarg_1));
-                    es.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+                    es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType)
                     {
                         es.Add(Instruction.Create(OpCodes.Box, propType));
@@ -468,10 +470,10 @@ namespace Equals.Fody.Injectors
             var getMethodImported = ReferenceFinder.ImportCustom(getMethod);
 
             c.Add(Instruction.Create(OpCodes.Ldarg_0));
-            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+            c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
 
             c.Add(Instruction.Create(OpCodes.Ldarg_1));
-            c.Add(Instruction.Create(OpCodes.Callvirt, getMethodImported));
+            c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
 
             c.Add(Instruction.Create(OpCodes.Ceq));
         }

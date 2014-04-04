@@ -1,5 +1,5 @@
 ﻿[Equals]
-public class SimpleStruct
+public struct SimpleStruct
 {
     public int X { get; set; }
 
