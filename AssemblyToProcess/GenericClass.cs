@@ -51,6 +51,6 @@ public class GenericProperty<T>
 
     static bool  Z(T a, T b)
     {
-        return object.Equals(a,b);
+        return Equals(a,b);
     }
 }

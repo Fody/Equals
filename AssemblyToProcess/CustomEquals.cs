@@ -20,7 +20,7 @@ public struct CustomGenericEquals<T>
     [CustomEqualsInternal]
     bool Custom(CustomGenericEquals<T> other)
     {
-        return object.Equals(Prop, other.Prop);
+        return Equals(Prop, other.Prop);
     }
 }
 
