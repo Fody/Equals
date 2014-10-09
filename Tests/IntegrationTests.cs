@@ -577,6 +577,21 @@ public class IntegrationTests
         Assert.AreNotEqual(0, result);
     }
 
+    [Test]
+    public void GetHashCode_should_return_valu_for_class_with_guid_in_parent()
+    {
+        string guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
+
+        var type = assembly.GetType( "ReferenceObject" );
+        dynamic first = Activator.CreateInstance( type );
+        first.Name = "Test";
+        first.Id = Guid.Parse( guid );
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual( 0, result );
+    }
+
     #endregion
 
     #region Equals
@@ -1039,6 +1054,25 @@ public class IntegrationTests
         var result = first.Equals(second);
 
         Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_class_with_guid_in_parent()
+    {
+        string guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
+
+        var type = assembly.GetType( "ReferenceObject" );
+        dynamic first = Activator.CreateInstance( type );
+        first.Name = "Test";
+        first.Id = Guid.Parse( guid );
+
+        dynamic second = Activator.CreateInstance( type );
+        second.Name = "Test";
+        second.Id = Guid.Parse( guid );
+
+        var result = first.Equals( second );
+
+        Assert.True( result );
     }
 
     #endregion

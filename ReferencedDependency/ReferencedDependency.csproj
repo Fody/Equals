@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GuidError.cs" />
     <Compile Include="Parent.cs" />
   </ItemGroup>
   <ItemGroup>

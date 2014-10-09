@@ -51,6 +51,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,7 +74,9 @@
     <Compile Include="ClassWithIndexer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClassWithMethodToRemove.cs" />
+    <Compile Include="ClassWithMethodToRemove.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ClassWithNullable.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,6 +107,7 @@
     <Compile Include="GuidClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GuidError.cs" />
     <Compile Include="IgnoredPropertiesClass.cs">
       <SubType>Code</SubType>
     </Compile>

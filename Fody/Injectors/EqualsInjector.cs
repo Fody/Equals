@@ -385,7 +385,7 @@ namespace Equals.Fody.Injectors
 
         static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
         {
-            var genericInstance = new Lazy<TypeReference>(() => property.PropertyType.GetGenericInstanceType(type));
+            var genericInstance = new Lazy<TypeReference>(() => ReferenceFinder.ImportCustom( property.PropertyType .GetGenericInstanceType(type) ));
             var getMethodImported = ReferenceFinder.ImportCustom(property.GetGetMethod(type));
 
             c.Add(Instruction.Create(type.GetLdArgForType(), left));
