@@ -6,13 +6,10 @@ Generate Equals, GetHashCode and operators methods from properties for class dec
 
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage).
 
+## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Equals.Fody.svg?style=flat)](https://www.nuget.org/packages/Equals.Fody/)
 
-## Nuget 
+https://nuget.org/packages/Equals.Fody/
 
-Nuget package http://nuget.org/packages/Equals.Fody/
-
-To Install from the Nuget Package Manager Console 
-    
     PM> Install-Package Equals.Fody
     
 ## Your Code
