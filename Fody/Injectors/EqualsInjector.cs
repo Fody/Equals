@@ -360,8 +360,8 @@ namespace Equals.Fody.Injectors
                     if (!property.PropertyType.IsGenericParameter)
                     {
                         var propType = property.PropertyType.Resolve();
-                        var isCollection = propType.IsCollection();
-                        if (simpleTypes.Contains(propType.FullName) || propType.IsEnum)
+                        var isCollection = propType.IsCollection() || property.PropertyType.IsArray;
+                        if ((simpleTypes.Contains(propType.FullName) || propType.IsEnum) && !property.PropertyType.IsArray)
                         {
                             AddSimpleValueCheck(c, property, type,left,right);
                         }
@@ -428,14 +428,14 @@ namespace Equals.Fody.Injectors
 
                     es.Add(Instruction.Create(type.GetLdArgForType(), left));
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
-                    if (propType.IsValueType)
+                    if (propType.IsValueType && !property.PropertyType.IsArray)
                     {
                         es.Add(Instruction.Create(OpCodes.Box, propType));
                     }
 
                     es.Add(Instruction.Create(type.GetLdArgForType(), right));
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
-                    if (propType.IsValueType)
+                    if (propType.IsValueType && !property.PropertyType.IsArray)
                     {
                         es.Add(Instruction.Create(OpCodes.Box, propType));
                     }
