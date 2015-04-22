@@ -408,6 +408,18 @@ public class IntegrationTests
     }
 
     [Test]
+    public void GetHashCode_should_return_value_for_int_array()
+    {
+        var type = assembly.GetType("IntArray");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Collection = new[] { 1, 2, 3};
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
     public void GetHashCode_should_return_value_for_null_array()
     {
         var type = assembly.GetType("IntCollection");
@@ -814,6 +826,21 @@ public class IntegrationTests
         dynamic second = Activator.CreateInstance(type);
         second.Collection = new List<int> { 1, 2, 3, 4, 5, 6 };
         second.Count = 2;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_return_true_for_equal_arrays()
+    {
+        var type = assembly.GetType("IntArray");
+        dynamic first = Activator.CreateInstance(type);
+        first.Collection = new[] { 1, 2, 3};
+
+        dynamic second = Activator.CreateInstance(type);
+        second.Collection = new [] { 1, 2, 3 };
 
         var result = first.Equals(second);
 

@@ -73,7 +73,7 @@ namespace Equals.Fody.Injectors
             }
             else
             {
-                isCollection = propType.Resolve().IsCollection();
+                isCollection = propType.Resolve().IsCollection() || property.PropertyType.IsArray;
             }
 
             AddMultiplicityByMagicNumber(isFirst, ins, resultVariable, isCollection);
