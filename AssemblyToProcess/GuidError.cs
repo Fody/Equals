@@ -1,9 +1,4 @@
-﻿using System;
-
-
-[Equals]
+﻿[Equals]
 public class ReferenceObject : NameObject
 {
 }
-    
-

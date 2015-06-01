@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-[Equals()]
+﻿[Equals]
 public class IntArray
 {
     public int[] Collection { get; set; }
