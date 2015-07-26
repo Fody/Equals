@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
 [assembly: AssemblyTitle("Fody.Equals")]
 [assembly: AssemblyProduct("Fody.Equals")]
-[assembly: AssemblyVersion("1.4.1")]
-[assembly: AssemblyFileVersion("1.4.1")]
+[assembly: AssemblyVersion("1.4.2")]
+[assembly: AssemblyFileVersion("1.4.2")]
