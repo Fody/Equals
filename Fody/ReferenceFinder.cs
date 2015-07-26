@@ -80,12 +80,12 @@ namespace Equals.Fody
 
         public static MethodReference ImportCustom(MethodReference method)
         {
-            return moduleDefinition.Import(method);
+            return moduleDefinition.ImportReference(method);
         }
 
         public static TypeReference ImportCustom(TypeReference type)
         {
-            return moduleDefinition.Import(type);
+            return moduleDefinition.ImportReference(type);
         }
 
         public static void FindReferences(IAssemblyResolver assemblyResolver)
@@ -103,39 +103,51 @@ namespace Equals.Fody
                 baseLibTypes = baseLib.MainModule.Types;
             }
 
-            DateTime.TypeReference = moduleDefinition.Import( baseLibTypes.First( t => t.Name == "DateTime" ) );
+            DateTime.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "DateTime"));
 
             DateTime.TypeReference.Resolve();
 
-            Boolean.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Boolean"));
-            
-            Int32.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Int32"));
+            Boolean.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "Boolean"));
 
-            String.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "String"));
+            Int32.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "Int32"));
 
-            Type.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Type"));
-            Type.GetTypeFromHandle = moduleDefinition.Import(Type.TypeReference.Resolve().FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
+            String.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "String"));
 
-            Object.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "Object"));
-            Object.GetHashcode = moduleDefinition.Import(Object.TypeReference.Resolve().FindMethod("GetHashCode"));
-            Object.GetType = moduleDefinition.Import(Object.TypeReference.Resolve().FindMethod("GetType"));
-            Object.StaticEquals = moduleDefinition.Import(Object.TypeReference.Resolve().FindMethod("Equals", "Object", "Object"));
-            Object.ReferenceEquals = moduleDefinition.Import(Object.TypeReference.Resolve().FindMethod("ReferenceEquals", "Object", "Object"));
+            Type.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "Type"));
+            Type.GetTypeFromHandle = moduleDefinition.ImportReference(Type.TypeReference.Resolve().FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
 
-            IEnumerable.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "IEnumerable"));
-            IEnumerable.GetEnumerator = moduleDefinition.Import(IEnumerable.TypeReference.Resolve().FindMethod("GetEnumerator"));
+            Object.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "Object"));
+            Object.GetHashcode = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("GetHashCode"));
+            Object.GetType = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("GetType"));
+            Object.StaticEquals = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("Equals", "Object", "Object"));
+            Object.ReferenceEquals = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("ReferenceEquals", "Object", "Object"));
 
-            IEnumerator.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "IEnumerator"));
-            IEnumerator.MoveNext = moduleDefinition.Import(IEnumerator.TypeReference.Resolve().FindMethod("MoveNext"));
-            IEnumerator.GetCurrent = moduleDefinition.Import(IEnumerator.TypeReference.Resolve().FindMethod("get_Current"));
+            IEnumerable.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "IEnumerable"));
+            IEnumerable.GetEnumerator = moduleDefinition.ImportReference(IEnumerable.TypeReference.Resolve().FindMethod("GetEnumerator"));
 
-            IEquatable.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "IEquatable`1"));
+            IEnumerator.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "IEnumerator"));
+            IEnumerator.MoveNext = moduleDefinition.ImportReference(IEnumerator.TypeReference.Resolve().FindMethod("MoveNext"));
+            IEnumerator.GetCurrent = moduleDefinition.ImportReference(IEnumerator.TypeReference.Resolve().FindMethod("get_Current"));
 
-            GeneratedCodeAttribute.TypeReference = moduleDefinition.Import(systemLibTypes.First(t => t.Name == "GeneratedCodeAttribute"));
-            GeneratedCodeAttribute.ConstructorStringString = moduleDefinition.Import(GeneratedCodeAttribute.TypeReference.Resolve().FindMethod(".ctor", "String", "String"));
+            IEquatable.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "IEquatable`1"));
 
-            DebuggerNonUserCodeAttribute.TypeReference = moduleDefinition.Import(baseLibTypes.First(t => t.Name == "DebuggerNonUserCodeAttribute"));
-            DebuggerNonUserCodeAttribute.Constructor = moduleDefinition.Import(DebuggerNonUserCodeAttribute.TypeReference.Resolve().FindMethod(".ctor"));
+            var generatedCodeType = systemLibTypes.FirstOrDefault(t => t.Name == "GeneratedCodeAttribute");
+            if (generatedCodeType == null)
+            {
+                var systemDiagnosticsTools = assemblyResolver.Resolve("System.Diagnostics.Tools");
+                generatedCodeType = systemDiagnosticsTools.MainModule.Types.First(t => t.Name == "GeneratedCodeAttribute");
+            }
+            GeneratedCodeAttribute.TypeReference = moduleDefinition.ImportReference(generatedCodeType);
+            GeneratedCodeAttribute.ConstructorStringString = moduleDefinition.ImportReference(GeneratedCodeAttribute.TypeReference.Resolve().FindMethod(".ctor", "String", "String"));
+
+            var debuggerNonUserCodeType = baseLibTypes.FirstOrDefault(t => t.Name == "DebuggerNonUserCodeAttribute");
+            if (debuggerNonUserCodeType == null)
+            {
+                var systemDiagnosticsDebug = assemblyResolver.Resolve("System.Diagnostics.Debug");
+                debuggerNonUserCodeType = systemDiagnosticsDebug.MainModule.Types.First(t => t.Name == "DebuggerNonUserCodeAttribute");
+            }
+            DebuggerNonUserCodeAttribute.TypeReference = moduleDefinition.ImportReference(debuggerNonUserCodeType);
+            DebuggerNonUserCodeAttribute.Constructor = moduleDefinition.ImportReference(DebuggerNonUserCodeAttribute.TypeReference.Resolve().FindMethod(".ctor"));
         }
     }
 }
