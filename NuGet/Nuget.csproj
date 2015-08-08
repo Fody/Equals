@@ -22,10 +22,9 @@
     <None Include="Equals.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="FodyWeavers.xml.install.xdt" />
-    <None Include="FodyWeavers.xml.uninstall.xdt" />
     <None Include="install.ps" />
     <None Include="packages.config" />
+    <None Include="uninstall.ps" />
   </ItemGroup>
   <Target Name="Clean">
     <ItemGroup>
@@ -39,8 +38,7 @@
     <MakeDir Directories="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)Equals.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)install.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\install.ps1" />
-    <Copy SourceFiles="$(ProjectDir)FodyWeavers.xml.install.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
-    <Copy SourceFiles="$(ProjectDir)FodyWeavers.xml.uninstall.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
+    <Copy SourceFiles="$(ProjectDir)uninstall.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\uninstall.ps1" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Equals.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Equals.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)dotnet.targets" DestinationFiles="$(SolutionDir)NuGetBuild\build\dotnet\Equals.Fody.targets" />
