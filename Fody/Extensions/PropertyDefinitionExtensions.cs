@@ -10,9 +10,9 @@ namespace Equals.Fody.Extensions
             if (method.DeclaringType.HasGenericParameters)
             {
                 var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
-                return new MethodReference(method.Name, method.ReturnType)
+                method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : ReferenceFinder.ImportCustom(method.ReturnType))
                 {
-                    DeclaringType = genericInstanceType,
+                    DeclaringType = ReferenceFinder.ImportCustom(genericInstanceType),
                     HasThis = true
                 };
 

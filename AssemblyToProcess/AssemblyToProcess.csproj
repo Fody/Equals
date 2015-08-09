@@ -41,33 +41,90 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Child.cs" />
-    <Compile Include="ClassWithIndexer.cs" />
-    <Compile Include="ClassWithMethodToRemove.cs" />
-    <Compile Include="ClassWithNullable.cs" />
-    <Compile Include="ClassWithStaticProperties.cs" />
-    <Compile Include="CustomEquals.cs" />
-    <Compile Include="EmptyClass.cs" />
-    <Compile Include="EnumClass.cs" />
-    <Compile Include="EqualsOrSubtypeClass.cs" />
-    <Compile Include="ExactlyOfTypeClass.cs" />
-    <Compile Include="ExactlyTheSameTypeAsThisClass.cs" />
-    <Compile Include="GenericClass.cs" />
-    <Compile Include="GuidClass.cs" />
-    <Compile Include="GuidError.cs" />
-    <Compile Include="IgnoredPropertiesClass.cs" />
-    <Compile Include="InheritedClass.cs" />
-    <Compile Include="IntArray.cs" />
-    <Compile Include="IntCollection.cs" />
-    <Compile Include="NestedClass.cs" />
-    <Compile Include="NormalClass.cs" />
-    <Compile Include="ObjectCollection.cs" />
-    <Compile Include="OnlyIntCollection.cs" />
-    <Compile Include="OnlyOperator.cs" />
-    <Compile Include="SimpleClass.cs" />
-    <Compile Include="SimpleStruct.cs" />
-    <Compile Include="StructPropertyClass.cs" />
-    <Compile Include="StructWithOnlyOperator.cs" />
+    <Compile Include="Child.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithGenericBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithIndexer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithMethodToRemove.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithNullable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassWithStaticProperties.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CustomEquals.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EmptyClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EnumClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EqualsOrSubtypeClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExactlyOfTypeClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExactlyTheSameTypeAsThisClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GenericClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GuidClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GuidError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IgnoredPropertiesClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InheritedClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IntArray.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IntCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NestedClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NormalClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OnlyIntCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OnlyOperator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleStruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StructPropertyClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StructWithOnlyOperator.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToReference\AssemblyToReference.csproj">

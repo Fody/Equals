@@ -1322,5 +1322,31 @@ public class IntegrationTests
         Assert.False(first != second);
     }
 
+    [Test]
+    public void GetHashCode_should_return_value_class_with_generic_base()
+    {
+        var type = assembly.GetType("ClassWithGenericBase");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Prop = 1;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
+    [Test]
+    public void Equals_should_return_value_class_with_generic_base()
+    {
+        var child = assembly.GetType("ClassWithGenericBase");
+        dynamic first = Activator.CreateInstance(child);
+        first.Prop = 1;
+
+        dynamic second = Activator.CreateInstance(child);
+        second.Prop = 1;
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
     #endregion
 }
