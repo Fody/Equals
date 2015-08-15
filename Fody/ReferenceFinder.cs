@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Equals.Fody.Extensions;
 using Mono.Cecil;
+#pragma warning disable 108,114
 
 namespace Equals.Fody
 {

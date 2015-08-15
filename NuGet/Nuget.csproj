@@ -19,7 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="dotnet.targets" />
-    <None Include="Equals.nuspec">
+    <None Include="Equals.Fody.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="install.ps" />
@@ -36,7 +36,7 @@
   <Target Name="ReBuild" DependsOnTargets="NuGetBuild" />
   <Target Name="NuGetBuild" DependsOnTargets="Clean">
     <MakeDir Directories="$(SolutionDir)NuGetBuild" />
-    <Copy SourceFiles="$(ProjectDir)Equals.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)Equals.Fody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)install.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\install.ps1" />
     <Copy SourceFiles="$(ProjectDir)uninstall.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\uninstall.ps1" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Equals.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />

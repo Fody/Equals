@@ -48,7 +48,7 @@ public class ModuleWeaver
             var props = type.Properties;
             foreach (var prop in props)
             {
-                ModuleDefinition.Import(prop.PropertyType).Resolve();
+                ModuleDefinition.ImportReference(prop.PropertyType).Resolve();
             }
 
             var attribute = type.CustomAttributes.Single(x => x.AttributeType.Name == attributeName);
