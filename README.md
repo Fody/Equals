@@ -73,7 +73,7 @@ https://nuget.org/packages/Equals.Fody/
 
         public override int GetHashCode()
         {
-            return this.X.GetHashCode() * 397 ^ this.Y.GetHashCode();
+            return unchecked(this.X.GetHashCode() * 397 ^ this.Y.GetHashCode());
         }
     }
 
