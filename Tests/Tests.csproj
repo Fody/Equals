@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntegrationTests.overridden.cs" />
     <Compile Include="MockAssemblyResolver.cs" />
     <Compile Include="IntegrationTests.cs" />
   </ItemGroup>

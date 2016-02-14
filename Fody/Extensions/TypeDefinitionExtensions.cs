@@ -20,18 +20,49 @@ namespace Equals.Fody.Extensions
 
         public static PropertyDefinition[] GetPropertiesWithoutIgnores(this TypeDefinition type, string ignoreAttributeName)
         {
-            var properties = new List<PropertyDefinition>();
+            var properties = new Dictionary<string, PropertyDefinition>();
+
+            // Since we are resolving stuff from top => bottom, the top classes can exclude overridden properties. This
+            // hash set keeps track of ignored properties (even when they are not ignored in base classes) to make sure
+            // the properties are correctly ignored, see #23
+            var ignoredProperties = new HashSet<string>();
 
             var currentType = type;
+
             do
             {
-                var currentProperties = currentType.Properties.Where(
-                    x => x.HasThis && !x.HasParameters && x.CustomAttributes.All(y => y.AttributeType.Name != ignoreAttributeName));
-                properties.AddRange(currentProperties);
+                foreach (var property in currentType.Properties)
+                {
+                    var isPotentialCandidate = property.HasThis && !property.HasParameters;
+                    if (!isPotentialCandidate)
+                    {
+                        continue;
+                    }
+
+                    if (ignoredProperties.Contains(property.Name))
+                    {
+                        continue;
+                    }
+
+                    var shouldBeIgnored = property.CustomAttributes.Any(y => y.AttributeType.Name == ignoreAttributeName);
+                    if (shouldBeIgnored)
+                    {
+                        ignoredProperties.Add(property.Name);
+                        continue;
+                    }
+
+                    if (properties.ContainsKey(property.Name))
+                    {
+                        continue;
+                    }
+
+                    properties.Add(property.Name, property);
+                }
+
                 currentType = currentType.BaseType.Resolve();
             } while (currentType.FullName != typeof(object).FullName);
 
-            return properties.ToArray();
+            return properties.Values.ToArray();
         }
 
         public static TypeReference GetGenericInstanceType(this TypeReference type, TypeReference targetType)
@@ -84,7 +115,7 @@ namespace Equals.Fody.Extensions
                     var propertyType = type.Resolve();
 
                     TypeDefinition parentResolved;
-                    while (parent!= null && propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
+                    while (parent != null && propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
                     {
                         parentReference = parentResolved.BaseType;
                         parent = parentResolved.BaseType != null ? parentResolved.BaseType.Resolve() : null;

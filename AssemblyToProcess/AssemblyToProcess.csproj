@@ -92,6 +92,7 @@
     <Compile Include="InheritedClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OverridenWithIgnoredPropertiesClass.cs" />
     <Compile Include="IntArray.cs">
       <SubType>Code</SubType>
     </Compile>
