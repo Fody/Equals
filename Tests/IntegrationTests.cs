@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 
 [TestFixture]
-public class IntegrationTests
+public partial class IntegrationTests
 {
     Assembly assembly;
     List<string> warnings = new List<string>();
