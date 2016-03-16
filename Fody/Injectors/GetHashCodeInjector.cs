@@ -82,6 +82,10 @@ namespace Equals.Fody.Injectors
             {
                 variable = AddNullableProperty(property, ins, type, variable);
             }
+            else if (isCollection && property.PropertyType.FullName != "System.String")
+            {
+                AddCollectionCode(property, isFirst, ins, resultVariable, method, type);
+            }
             else if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
             {
                 LoadVariable(property, ins, type);
@@ -93,15 +97,8 @@ namespace Equals.Fody.Injectors
             }
             else
             {
-                if (isCollection)
-                {
-                    AddCollectionCode(property, isFirst, ins, resultVariable, method, type);
-                }
-                else
-                {
-                    LoadVariable(property, ins, type);
-                    AddNormalCode(property, ins, type);
-                }
+                LoadVariable(property, ins, type);
+                AddNormalCode(property, ins, type);
             }
 
             if (!isFirst && !isCollection)
@@ -193,25 +190,32 @@ namespace Equals.Fody.Injectors
 
         static void AddCollectionCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
         {
-            if (isFirst)
+            if (!property.PropertyType.IsValueType)
             {
-                ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-                ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
+                ins.If(
+                    c => LoadVariable(property, c, type),
+                    t =>
+                    {
+                        GenerateCollectionCode(property, resultVariable, method, type, t);
+                    },
+                    f => { });
             }
+            else
+            {
+                GenerateCollectionCode(property, resultVariable, method, type, ins);
+            }
+        }
 
-            ins.If(
-                c => LoadVariable(property, c, type),
-                t =>
-                {
-                    LoadVariable(property, t, type);
-                    var enumeratorVariable = method.Body.Variables.Add(property.Name + "Enumerator", ReferenceFinder.IEnumerator.TypeReference);
-                    var currentVariable = method.Body.Variables.Add(property.Name + "Current", ReferenceFinder.Object.TypeReference);
+        private static void GenerateCollectionCode(PropertyDefinition property, VariableDefinition resultVariable,
+            MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
+        {
+            LoadVariable(property, t, type);
+            var enumeratorVariable = method.Body.Variables.Add(property.Name + "Enumerator", ReferenceFinder.IEnumerator.TypeReference);
+            var currentVariable = method.Body.Variables.Add(property.Name + "Current", ReferenceFinder.Object.TypeReference);
 
-                    GetEnumerator(t, enumeratorVariable);
+            GetEnumerator(t, enumeratorVariable, property);
 
-                    AddCollectionLoop(resultVariable, t, enumeratorVariable, currentVariable);
-                },
-                f => { });
+            AddCollectionLoop(resultVariable, t, enumeratorVariable, currentVariable);
         }
 
         static void AddCollectionLoop(VariableDefinition resultVariable, Collection<Instruction> t, VariableDefinition enumeratorVariable, VariableDefinition currentVariable)
@@ -251,8 +255,14 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
         }
 
-        static void GetEnumerator(Collection<Instruction> ins, VariableDefinition variable)
+        static void GetEnumerator(Collection<Instruction> ins, VariableDefinition variable, PropertyDefinition property)
         {
+            if (property.PropertyType.IsValueType)
+            {
+                var imported = ReferenceFinder.ImportCustom(property.PropertyType);
+                ins.Add(Instruction.Create(OpCodes.Box, imported));
+            }
+
             ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerable.GetEnumerator));
             ins.Add(Instruction.Create(OpCodes.Stloc, variable));
         }

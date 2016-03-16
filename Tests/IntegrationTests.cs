@@ -604,6 +604,18 @@ public partial class IntegrationTests
         Assert.AreNotEqual( 0, result );
     }
 
+    [Test]
+    public void GetHashCode_should_return_value_for_classs_with_generic_property()
+    {
+        var type = assembly.GetType("ClassWithGenericProperty");
+        dynamic first = Activator.CreateInstance(type);
+        first.Prop = new GenericDependency<int> {Prop = 1};
+
+        var result = first.GetHashCode();
+
+        Assert.AreNotEqual(0, result);
+    }
+
     #endregion
 
     #region Equals

@@ -81,10 +81,6 @@
       <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
       <Name>Fody</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <Name>AssemblyToProcess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ReferencedDependency\ReferencedDependency.csproj">
       <Project>{34899a51-efea-4688-805f-0354166fca09}</Project>
       <Name>ReferencedDependency</Name>

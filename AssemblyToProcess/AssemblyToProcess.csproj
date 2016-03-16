@@ -47,6 +47,7 @@
     <Compile Include="ClassWithGenericBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ClassWithGenericProperty.cs" />
     <Compile Include="ClassWithIndexer.cs">
       <SubType>Code</SubType>
     </Compile>

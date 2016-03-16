@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GenericBase.cs" />
+    <Compile Include="GenericDependency.cs" />
     <Compile Include="GuidError.cs" />
     <Compile Include="Parent.cs" />
   </ItemGroup>
