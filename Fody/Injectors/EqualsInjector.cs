@@ -430,14 +430,16 @@ namespace Equals.Fody.Injectors
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType && !property.PropertyType.IsArray)
                     {
-                        es.Add(Instruction.Create(OpCodes.Box, propType));
+                        var imported = ReferenceFinder.ImportCustom(property.PropertyType);
+                        es.Add(Instruction.Create(OpCodes.Box, imported));
                     }
 
                     es.Add(Instruction.Create(type.GetLdArgForType(), right));
                     es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                     if (propType.IsValueType && !property.PropertyType.IsArray)
                     {
-                        es.Add(Instruction.Create(OpCodes.Box, propType));
+                        var imported = ReferenceFinder.ImportCustom(property.PropertyType);
+                        es.Add(Instruction.Create(OpCodes.Box, imported));
                     }
 
                     es.Add(Instruction.Create(OpCodes.Call, collectionEquals));

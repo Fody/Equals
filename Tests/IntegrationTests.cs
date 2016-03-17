@@ -1114,6 +1114,21 @@ public partial class IntegrationTests
         Assert.True( result );
     }
 
+    [Test]
+    public void Equals_should_return_for_classs_with_generic_property()
+    {
+        var type = assembly.GetType("ClassWithGenericProperty");
+        dynamic first = Activator.CreateInstance(type);
+        first.Prop = new GenericDependency<int> { Prop = 1 };
+
+        dynamic second = Activator.CreateInstance(type);
+        second.Prop = new GenericDependency<int> { Prop = 1 };
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
     #endregion
 
     #region Custom

@@ -93,7 +93,6 @@
     <Compile Include="InheritedClass.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OverridenWithIgnoredPropertiesClass.cs" />
     <Compile Include="IntArray.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,6 +114,7 @@
     <Compile Include="OnlyOperator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OverridenWithIgnoredPropertiesClass.cs" />
     <Compile Include="SimpleClass.cs">
       <SubType>Code</SubType>
     </Compile>
