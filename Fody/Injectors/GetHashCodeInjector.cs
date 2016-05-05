@@ -13,7 +13,7 @@ namespace Equals.Fody.Injectors
 
         const int magicNumber = 397;
 
-        public static MethodDefinition Inject(TypeDefinition type)
+        public static MethodDefinition Inject(TypeDefinition type, bool ignoreBaseClassProperties)
         {
             var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
             var method = new MethodDefinition("GetHashCode", methodAttributes, ReferenceFinder.Int32.TypeReference);
@@ -29,6 +29,11 @@ namespace Equals.Fody.Injectors
             ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
             var properties = ReferenceFinder.ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
+            if (ignoreBaseClassProperties)
+            {
+                properties = properties.IgnoreBaseClassProperties(type);
+            }
+
             if (properties.Length == 0)
             {
                 AddResultInit(ins, resultVariable);

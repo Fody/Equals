@@ -85,7 +85,7 @@ namespace Equals.Fody.Injectors
             return method;
         }
 
-        public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals)
+        public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
         {
             var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
             var method = new MethodDefinition("EqualsInternal", methodAttributes, ReferenceFinder.Boolean.TypeReference);
@@ -99,6 +99,10 @@ namespace Equals.Fody.Injectors
             var ins = body.Instructions;
 
             var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
+            if (ignoreBaseClassProperties)
+            {
+                properties = properties.IgnoreBaseClassProperties(type);
+            }
 
             foreach (var property in properties)
             {

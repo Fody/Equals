@@ -616,6 +616,25 @@ public partial class IntegrationTests
         Assert.AreNotEqual(0, result);
     }
 
+    [Test]
+    public void GetHashCode_should_ignore_properties_in_base_class_when_class_is_marked()
+    {
+        var type = assembly.GetType("IgnoreBaseClass");
+
+        dynamic instance = Activator.CreateInstance(type);
+        instance.A = 1;
+        instance.B = 2;
+
+        dynamic instance2 = Activator.CreateInstance(type);
+        instance2.A = 3;
+        instance2.B = 2;
+
+        var first = instance.GetHashCode();
+        var second = instance2.GetHashCode();
+
+        Assert.AreEqual(first, second);
+    }
+
     #endregion
 
     #region Equals
@@ -706,23 +725,21 @@ public partial class IntegrationTests
         return leftInstance.Equals((object) rightInstance);
     }
 
-    [Test]
-    public void Equals_should_use_type_check_option()
+    [TestCase("EqualsOrSubtypeClass", "EqualsOrSubtypeClass", true)]
+    [TestCase("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass", true)]
+    [TestCase("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass", true)]
+    [TestCase("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass", true)]
+    [TestCase("ExactlyOfTypeClass", "ExactlyOfTypeClass", true)]
+    [TestCase("ExactlyOfTypeSubClass", "ExactlyOfTypeClass", false)]
+    [TestCase("ExactlyOfTypeClass", "ExactlyOfTypeSubClass", true)]
+    [TestCase("ExactlyOfTypeSubClass", "ExactlyOfTypeSubClass", false)]
+    [TestCase("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisClass", true)]
+    [TestCase("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisSubClass", false)]
+    [TestCase("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisClass", false)]
+    [TestCase("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisSubClass", true)]
+    public void Equals_should_use_type_check_option(string left, string right, bool result)
     {
-        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeClass"));
-        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass"));
-        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass"));
-        Assert.True(CheckEqualityOnTypesForTypeCheck("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass"));
-
-        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeClass", "ExactlyOfTypeClass"));
-        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeSubClass", "ExactlyOfTypeClass"));
-        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeClass", "ExactlyOfTypeSubClass"));
-        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyOfTypeSubClass", "ExactlyOfTypeSubClass"));
-
-        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisClass"));
-        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisSubClass"));
-        Assert.False(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisClass"));
-        Assert.True(CheckEqualityOnTypesForTypeCheck("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisSubClass"));
+        Assert.AreEqual(result, CheckEqualityOnTypesForTypeCheck(left, right));
     }
 
     [Test]
@@ -1125,6 +1142,24 @@ public partial class IntegrationTests
         second.Prop = new GenericDependency<int> { Prop = 1 };
 
         var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_ignore_properties_in_base_class_when_class_is_marked()
+    {
+        var type = assembly.GetType("IgnoreBaseClass");
+
+        dynamic instance = Activator.CreateInstance(type);
+        instance.A = 1;
+        instance.B = 2;
+
+        dynamic instance2 = Activator.CreateInstance(type);
+        instance2.A = 3;
+        instance2.B = 2;
+
+        var result = instance.Equals(instance2);
 
         Assert.True(result);
     }

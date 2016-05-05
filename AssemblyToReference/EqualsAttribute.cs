@@ -13,4 +13,6 @@ public sealed class EqualsAttribute : Attribute
     public bool DoNotAddEquals { get; set; }
 
     public TypeCheck TypeCheck { get; set; }
+
+    public bool IgnoreBaseClassProperties { get; set; }
 }

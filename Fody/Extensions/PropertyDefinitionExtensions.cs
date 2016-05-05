@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using System.Linq;
+using Mono.Cecil;
 
 namespace Equals.Fody.Extensions
 {
@@ -18,6 +19,11 @@ namespace Equals.Fody.Extensions
 
             }
             return method;
+        }
+
+        public static PropertyDefinition[] IgnoreBaseClassProperties(this PropertyDefinition[] properties, TypeDefinition type)
+        {
+            return properties.Where(x => x.DeclaringType == type).ToArray();
         }
     }
 }

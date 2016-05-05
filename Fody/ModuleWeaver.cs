@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using System.Xml.Linq;
 using Equals.Fody;
 using Equals.Fody.Injectors;
@@ -16,6 +17,7 @@ public class ModuleWeaver
     public const string DoNotAddEqualityOperators = "DoNotAddEqualityOperators";
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
     public const string DoNotAddEquals = "DoNotAddEquals";
+    public const string IgnoreBaseClassProperties = "IgnoreBaseClassProperties";
 
     public ModuleDefinition ModuleDefinition { get; set; }
     public IAssemblyResolver AssemblyResolver { get; set; }
@@ -53,6 +55,7 @@ public class ModuleWeaver
 
             var attribute = type.CustomAttributes.Single(x => x.AttributeType.Name == attributeName);
             var typeRef = GetGenericType(type);
+            var ignoreBaseClassProperties = IsPropertySet(attribute, IgnoreBaseClassProperties);
 
             if (!IsPropertySet(attribute, DoNotAddEquals))
             {
@@ -63,7 +66,7 @@ public class ModuleWeaver
                     typeCheck = (int) typeCheckProperty.Argument.Value;
                 }
 
-                var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals);
+                var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals, ignoreBaseClassProperties);
                 EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
                 EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
@@ -76,7 +79,7 @@ public class ModuleWeaver
 
             if (!IsPropertySet(attribute, DoNotAddGetHashCode))
             {
-                GetHashCodeInjector.Inject(type);
+                GetHashCodeInjector.Inject(type, ignoreBaseClassProperties);
             }
 
             if (!IsPropertySet(attribute, DoNotAddEqualityOperators))

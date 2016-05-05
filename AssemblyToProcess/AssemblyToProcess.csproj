@@ -87,6 +87,7 @@
     <Compile Include="GuidError.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IgnoreBaseClass.cs" />
     <Compile Include="IgnoredPropertiesClass.cs">
       <SubType>Code</SubType>
     </Compile>
