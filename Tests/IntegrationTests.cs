@@ -16,7 +16,7 @@ public partial class IntegrationTests
 
     public IntegrationTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll");
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll"));
 #if (!DEBUG)
 
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
@@ -24,7 +24,7 @@ public partial class IntegrationTests
 
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "2.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
-        
+
         var assemblyResolver = new MockAssemblyResolver
             {
                 Directory = Path.GetDirectoryName(beforeAssemblyPath)
@@ -296,7 +296,7 @@ public partial class IntegrationTests
         instance.Text = null;
 
         var result = instance.GetHashCode();
-        
+
         Assert.AreEqual(0, result);
     }
 
@@ -1123,7 +1123,7 @@ public partial class IntegrationTests
         first.Id = Guid.Parse( guid );
 
         dynamic second = Activator.CreateInstance( type );
-        second.Name = "Test";   
+        second.Name = "Test";
         second.Id = Guid.Parse( guid );
 
         var result = first.Equals( second );

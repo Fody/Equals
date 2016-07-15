@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fody", "Fody\Fody.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget", "NuGet\Nuget.csproj", "{63786CE5-D899-43DF-AD4E-C2CA3BAC3FC2}"
 	ProjectSection(ProjectDependencies) = postProject
+		{70804914-C3D9-4737-BCB8-B3D40F305DB3} = {70804914-C3D9-4737-BCB8-B3D40F305DB3}
 		{C3578A7B-09A6-4444-9383-0DEAFA4958BD} = {C3578A7B-09A6-4444-9383-0DEAFA4958BD}
 	EndProjectSection
 EndProject
