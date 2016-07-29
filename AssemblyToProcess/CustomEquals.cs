@@ -5,9 +5,15 @@ public struct CustomStructEquals
     public int X { get; set; }
 
     [CustomEqualsInternal]
-    bool Custom(CustomStructEquals other)
+    bool CustomEquals(CustomStructEquals other)
     {
         return X == 1 && other.X == 2 || X == 2 && other.X == 1;
+    }
+
+    [CustomGetHashCode]
+    int CustomGetHashCode()
+    {
+        return 42;
     }
 }
 
@@ -18,9 +24,15 @@ public struct CustomGenericEquals<T>
     public T Prop { get; set; }
 
     [CustomEqualsInternal]
-    bool Custom(CustomGenericEquals<T> other)
+    bool CustomEquals(CustomGenericEquals<T> other)
     {
         return Equals(Prop, other.Prop);
+    }
+
+    [CustomGetHashCode]
+    int CustomGetHashCode()
+    {
+        return 42;
     }
 }
 
@@ -31,8 +43,26 @@ public class CustomEquals
     public int X { get; set; }
 
     [CustomEqualsInternal]
-    bool Custom(CustomEquals other)
+    bool CustomEqualsMethod(CustomEquals other)
     {
         return X == 1 && other.X == 2 || X == 2 && other.X == 1;
+    }
+
+    [CustomGetHashCode]
+    int CustomGetHashCode()
+    {
+        return 42;
+    }
+}
+
+[Equals]
+public class CustomGetHashCode
+{
+    public int X { get; set; }
+
+    [CustomGetHashCode]
+    int CustomGetHashCodeMethod()
+    {
+        return 42;
     }
 }

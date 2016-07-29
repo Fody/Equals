@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 using System.Xml.Linq;
 using Equals.Fody;
 using Equals.Fody.Injectors;
@@ -12,7 +11,8 @@ public class ModuleWeaver
     public const string attributeName = "EqualsAttribute";
     public const string assemblyName = "Equals";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
-    public const string customAttribute = "CustomEqualsInternalAttribute";
+    public const string customEqualsAttribute = "CustomEqualsInternalAttribute";
+    public const string customGetHashCodeAttribute = "CustomGetHashCodeAttribute";
 
     public const string DoNotAddEqualityOperators = "DoNotAddEqualityOperators";
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
@@ -133,7 +133,8 @@ public class ModuleWeaver
 
         foreach (var method in type.Methods)
         {
-            method.RemoveAttribute(customAttribute);
+            method.RemoveAttribute(customEqualsAttribute);
+            method.RemoveAttribute(customGetHashCodeAttribute);
         }
     }
 }

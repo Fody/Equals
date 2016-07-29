@@ -1216,6 +1216,44 @@ public partial class IntegrationTests
         Assert.False(first.Equals(third));
     }
 
+    [Test]
+    public void GetHashCode_should_use_custom_logic()
+    {
+        var type = assembly.GetType("CustomGetHashCode");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.X = 1;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreEqual(42, result);
+    }
+
+    [Test]
+    public void GetHashCode_should_use_custom_logic_for_structure()
+    {
+        var type = assembly.GetType("CustomStructEquals");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.X = 1;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreEqual(42, result);
+    }
+
+    [Test]
+    public void GetHashCode_should_use_custom_logic_for_generic_type()
+    {
+        var genericClassType = assembly.GetType("CustomGenericEquals`1");
+        var propType = typeof(int);
+        var type = genericClassType.MakeGenericType(propType);
+
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Prop = 1;
+
+        var result = instance.GetHashCode();
+
+        Assert.AreEqual(42, result);
+    }
     #endregion
 
     #region ParentInOtherAssembly

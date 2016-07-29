@@ -11,6 +11,8 @@ namespace Equals.Fody.Injectors
     {
         const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
 
+        const string customAttribute = "CustomGetHashCodeAttribute";
+
         const int magicNumber = 397;
 
         public static MethodDefinition Inject(TypeDefinition type, bool ignoreBaseClassProperties)
@@ -39,17 +41,35 @@ namespace Equals.Fody.Injectors
                 AddResultInit(ins, resultVariable);
             }
 
-            var isFirst = true;
-            foreach (var property in properties)
+
+            var methods = type.GetMethods();
+            var customLogic = methods
+                .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customAttribute)).ToArray();
+
+            if (customLogic.Length > 2)
             {
-                var variable = AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
+                throw new WeavingException("Only one custom method can be specified.");
+            }
 
-                if (variable != null)
+            if (customLogic.Length == 1)
+            {
+                AddCustomLogicCall(type, body, ins, customLogic[0]);
+                ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
+            }
+            else
+            {
+                var isFirst = true;
+                foreach (var property in properties)
                 {
-                    method.Body.Variables.Add(variable);
-                }
+                    var variable = AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
 
-                isFirst = false;
+                    if (variable != null)
+                    {
+                        method.Body.Variables.Add(variable);
+                    }
+
+                    isFirst = false;
+                }
             }
 
             AddReturnCode(ins, resultVariable);
@@ -59,6 +79,58 @@ namespace Equals.Fody.Injectors
             type.Methods.AddOrReplace(method);
 
             return method;
+        }
+
+        static void AddCustomLogicCall(TypeDefinition type, MethodBody body, Collection<Instruction> ins, MethodDefinition customLogic)
+        {
+            var customMethod = ReferenceFinder.ImportCustom(customLogic);
+
+            var parameters = customMethod.Parameters;
+            if (parameters.Count != 0)
+            {
+                throw new WeavingException(
+                    string.Format("Custom GetHashCode of type {0} have to have empty parameter list.", type.FullName));
+            }
+            if (customMethod.ReturnType.FullName != typeof(int).FullName)
+            {
+                throw new WeavingException(
+                    string.Format("Custom GetHashCode of type {0} have to return int.", type.FullName));
+            }
+
+            MethodReference selectedMethod;
+            TypeReference resolverType;
+            if (customMethod.DeclaringType.HasGenericParameters)
+            {
+                var genericInstanceType = type.GetGenericInstanceType(type);
+                resolverType = ReferenceFinder.ImportCustom(genericInstanceType);
+                var newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
+                {
+                    DeclaringType = resolverType,
+                    HasThis = true,
+                };
+
+                selectedMethod = newRef;
+            }
+            else
+            {
+                resolverType = type;
+                selectedMethod = customMethod;
+            }
+
+            var imported = ReferenceFinder.ImportCustom(selectedMethod);
+            if (!type.IsValueType)
+            {
+                ins.Add(Instruction.Create(OpCodes.Ldarg_0));
+            }
+            else
+            {
+                var argVariable = body.Variables.Add("argVariable", resolverType);
+                ins.Add(Instruction.Create(OpCodes.Ldarg_0));
+                ins.Add(Instruction.Create(OpCodes.Stloc, argVariable));
+
+                ins.Add(Instruction.Create(OpCodes.Ldloca, argVariable));
+            }
+            ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
         }
 
         static void AddReturnCode(Collection<Instruction> ins, VariableDefinition resultVariable)
