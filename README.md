@@ -31,6 +31,18 @@ https://nuget.org/packages/Equals.Fody/
         }
     }
 
+    [Equals]
+    public class CustomGetHashCode
+    {
+        public int X { get; set; }
+
+        [CustomGetHashCode]
+        int CustomGetHashCodeMethod()
+        {
+            return 42;
+        }
+    }
+
 ## What gets compiled
 
     public class Point : IEquatable<Point>
@@ -75,6 +87,50 @@ https://nuget.org/packages/Equals.Fody/
         {
             return unchecked(this.X.GetHashCode() * 397 ^ this.Y.GetHashCode());
         }
+    }
+
+    public class CustomGetHashCode : IEquatable<CustomGetHashCode>
+    {
+	public int X
+	{
+		get;
+		set;
+	}
+
+	private int CustomGetHashCodeMethod()
+	{
+		return 42;
+	}
+
+	private static bool EqualsInternal(CustomGetHashCode left, CustomGetHashCode right)
+	{
+		return left.X == right.X;
+	}
+
+	public override bool Equals(CustomGetHashCode other)
+	{
+		return !object.ReferenceEquals(null, other) && (object.ReferenceEquals(this, other) || CustomGetHashCode.EqualsInternal(this, other));
+	}
+
+	public override bool Equals(object obj)
+	{
+		return !object.ReferenceEquals(null, obj) && (object.ReferenceEquals(this, obj) || (base.GetType() == obj.GetType() && CustomGetHashCode.EqualsInternal(this, (CustomGetHashCode)obj)));
+	}
+
+	public override int GetHashCode()
+	{
+		return this.CustomGetHashCodeMethod();
+	}
+
+	public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right)
+	{
+		return object.Equals(left, right);
+	}
+
+	public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right)
+	{
+		return !object.Equals(left, right);
+	}
     }
 
 ## Icon
