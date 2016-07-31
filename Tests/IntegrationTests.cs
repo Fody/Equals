@@ -1225,7 +1225,7 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.AreEqual(42, result);
+        Assert.AreEqual(423, result);
     }
 
     [Test]

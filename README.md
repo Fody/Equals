@@ -36,6 +36,9 @@ https://nuget.org/packages/Equals.Fody/
     {
         public int X { get; set; }
 
+        [IgnoreDuringEquals]
+        public int Z { get; set; }
+
         [CustomGetHashCode]
         int CustomGetHashCodeMethod()
         {
@@ -97,6 +100,12 @@ https://nuget.org/packages/Equals.Fody/
 		set;
 	}
 
+        public int Z
+	{
+		get;
+		set;
+	}
+
 	private int CustomGetHashCodeMethod()
 	{
 		return 42;
@@ -119,7 +128,7 @@ https://nuget.org/packages/Equals.Fody/
 
 	public override int GetHashCode()
 	{
-		return this.CustomGetHashCodeMethod();
+		return (this.X.GetHashCode() * 397) ^ this.CustomGetHashCodeMethod();
 	}
 
 	public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right)

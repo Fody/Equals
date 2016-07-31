@@ -51,25 +51,27 @@ namespace Equals.Fody.Injectors
                 throw new WeavingException("Only one custom method can be specified.");
             }
 
+            var isFirst = true;
+            foreach (var property in properties)
+            {
+                var variable = AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
+
+                if (variable != null)
+                {
+                    method.Body.Variables.Add(variable);
+                }
+
+                isFirst = false;
+            }
+
             if (customLogic.Length == 1)
             {
+                ins.Add(Instruction.Create(OpCodes.Ldloc, resultVariable));
+                ins.Add(Instruction.Create(OpCodes.Ldc_I4, magicNumber));
+                ins.Add(Instruction.Create(OpCodes.Mul));
                 AddCustomLogicCall(type, body, ins, customLogic[0]);
+                ins.Add(Instruction.Create(OpCodes.Xor));
                 ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
-            }
-            else
-            {
-                var isFirst = true;
-                foreach (var property in properties)
-                {
-                    var variable = AddPropertyCode(property, isFirst, ins, resultVariable, method, type);
-
-                    if (variable != null)
-                    {
-                        method.Body.Variables.Add(variable);
-                    }
-
-                    isFirst = false;
-                }
             }
 
             AddReturnCode(ins, resultVariable);
@@ -113,23 +115,11 @@ namespace Equals.Fody.Injectors
             }
             else
             {
-                resolverType = type;
                 selectedMethod = customMethod;
             }
 
             var imported = ReferenceFinder.ImportCustom(selectedMethod);
-            if (!type.IsValueType)
-            {
-                ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-            }
-            else
-            {
-                var argVariable = body.Variables.Add("argVariable", resolverType);
-                ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-                ins.Add(Instruction.Create(OpCodes.Stloc, argVariable));
-
-                ins.Add(Instruction.Create(OpCodes.Ldloca, argVariable));
-            }
+            ins.Add(Instruction.Create(OpCodes.Ldarg_0));
             ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
         }
 
