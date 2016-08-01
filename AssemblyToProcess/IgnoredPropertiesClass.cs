@@ -6,3 +6,9 @@ public class IgnoredPropertiesClass
     [IgnoreDuringEquals]
     public int Y { get; set; }
 }
+
+[Equals]
+public class InheritedIgnoredPropertiesClass : IgnoredPropertiesClass
+{
+}
+

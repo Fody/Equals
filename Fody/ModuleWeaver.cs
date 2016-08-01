@@ -45,7 +45,8 @@ public class ModuleWeaver
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
-        foreach (var type in GetMachingTypes())
+        var matchingTypes = GetMachingTypes().ToArray();
+        foreach (var type in matchingTypes)
         {
             var props = type.Properties;
             foreach (var prop in props)
@@ -87,9 +88,11 @@ public class ModuleWeaver
                 OperatorInjector.InjectEqualityOperator(type);
                 OperatorInjector.InjectInequalityOperator(type);
             }
+        }
 
+        foreach (var type in matchingTypes)
+        {
             RemoveFodyAttributes(type);
-
         }
 
         RemoveReference();

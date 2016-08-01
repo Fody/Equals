@@ -395,6 +395,21 @@ public partial class IntegrationTests
     }
 
     [Test]
+    public void GetHashCode_should_should_ignored_inherited_marked_properties()
+    {
+        var type = assembly.GetType("InheritedIgnoredPropertiesClass");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.X = 1;
+        instance.Y = 2;
+
+        var firstResult = instance.GetHashCode();
+        instance.Y = 3;
+        var secondResult = instance.GetHashCode();
+
+        Assert.AreEqual(firstResult, secondResult);
+    }
+
+    [Test]
     public void GetHashCode_should_return_value_for_array()
     {
         var type = assembly.GetType("IntCollection");
@@ -797,6 +812,23 @@ public partial class IntegrationTests
     public void Equals_should_should_ignored_marked_properties()
     {
         var type = assembly.GetType("IgnoredPropertiesClass");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = 1;
+        first.Y = 2;
+
+        dynamic second = Activator.CreateInstance(type);
+        second.X = 1;
+        second.Y = 3;
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void Equals_should_should_inherited_ignored_marked_properties()
+    {
+        var type = assembly.GetType("InheritedIgnoredPropertiesClass");
         dynamic first = Activator.CreateInstance(type);
         first.X = 1;
         first.Y = 2;
