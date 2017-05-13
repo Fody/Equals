@@ -44,7 +44,7 @@ namespace Equals.Fody.Injectors
 
             var body = method.Body;
             body.InitLocals = true;
-            var result = body.Variables.Add("result", ReferenceFinder.Boolean.TypeReference);
+            var result = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
 
             var ins = body.Instructions;
 
@@ -185,7 +185,7 @@ namespace Equals.Fody.Injectors
                     }
                     else
                     {
-                        var argVariable = body.Variables.Add("argVariable", resolverType);
+                        var argVariable = body.Variables.Add(resolverType);
                         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
                         ins.Add(Instruction.Create(OpCodes.Stloc, argVariable));
 

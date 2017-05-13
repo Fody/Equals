@@ -15,7 +15,7 @@ namespace Equals.Fody.Extensions
 
         public static bool IsCollection(this TypeDefinition type)
         {
-            return !type.Name.Equals("String") && (type.Interfaces.Any(i => i.Name.Equals("IEnumerable")));
+            return !type.Name.Equals("String") && (type.Interfaces.Any(i => i.InterfaceType.Name.Equals("IEnumerable")));
         }
 
         public static PropertyDefinition[] GetPropertiesWithoutIgnores(this TypeDefinition type, string ignoreAttributeName)

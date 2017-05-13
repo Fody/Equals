@@ -6,9 +6,9 @@ namespace Equals.Fody.Extensions
 {
     public static class CollectionVariableDefinitionExtension
     {
-        public static VariableDefinition Add(this Collection<VariableDefinition> variables, string name, TypeReference type)
+        public static VariableDefinition Add(this Collection<VariableDefinition> variables, TypeReference type)
         {
-            var variable = new VariableDefinition(name, type);
+            var variable = new VariableDefinition(type);
             variables.Add(variable);
             return variable;
         }

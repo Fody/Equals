@@ -91,16 +91,16 @@ namespace Equals.Fody
 
         public static void FindReferences(IAssemblyResolver assemblyResolver)
         {
-            var baseLib = assemblyResolver.Resolve("mscorlib");
+            var baseLib = assemblyResolver.Resolve(new AssemblyNameReference("mscorlib", null));
             var baseLibTypes = baseLib.MainModule.Types;
 
-            var systemLib = assemblyResolver.Resolve("System");
+            var systemLib = assemblyResolver.Resolve(new AssemblyNameReference("System", null));
             var systemLibTypes = systemLib.MainModule.Types;
 
             var winrt = baseLibTypes.All(type => type.Name != "Object");
             if (winrt)
             {
-                baseLib = assemblyResolver.Resolve("System.Runtime");
+                baseLib = assemblyResolver.Resolve(new AssemblyNameReference("System.Runtime", null));
                 baseLibTypes = baseLib.MainModule.Types;
             }
 
@@ -135,7 +135,7 @@ namespace Equals.Fody
             var generatedCodeType = systemLibTypes.FirstOrDefault(t => t.Name == "GeneratedCodeAttribute");
             if (generatedCodeType == null)
             {
-                var systemDiagnosticsTools = assemblyResolver.Resolve("System.Diagnostics.Tools");
+                var systemDiagnosticsTools = assemblyResolver.Resolve(new AssemblyNameReference("System.Diagnostics.Tools", null));
                 generatedCodeType = systemDiagnosticsTools.MainModule.Types.First(t => t.Name == "GeneratedCodeAttribute");
             }
             GeneratedCodeAttribute.TypeReference = moduleDefinition.ImportReference(generatedCodeType);
@@ -144,7 +144,7 @@ namespace Equals.Fody
             var debuggerNonUserCodeType = baseLibTypes.FirstOrDefault(t => t.Name == "DebuggerNonUserCodeAttribute");
             if (debuggerNonUserCodeType == null)
             {
-                var systemDiagnosticsDebug = assemblyResolver.Resolve("System.Diagnostics.Debug");
+                var systemDiagnosticsDebug = assemblyResolver.Resolve(new AssemblyNameReference("System.Diagnostics.Debug", null));
                 debuggerNonUserCodeType = systemDiagnosticsDebug.MainModule.Types.First(t => t.Name == "DebuggerNonUserCodeAttribute");
             }
             DebuggerNonUserCodeAttribute.TypeReference = moduleDefinition.ImportReference(debuggerNonUserCodeType);
