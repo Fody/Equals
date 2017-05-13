@@ -21,7 +21,7 @@ namespace Equals.Fody.Injectors
             var method = new MethodDefinition("GetHashCode", methodAttributes, ReferenceFinder.Int32.TypeReference);
             method.CustomAttributes.MarkAsGeneratedCode();
 
-            var resultVariable = method.Body.Variables.Add("result", ReferenceFinder.Int32.TypeReference);
+            var resultVariable = method.Body.Variables.Add(ReferenceFinder.Int32.TypeReference);
 
             var body = method.Body;
             body.InitLocals = true;
@@ -277,8 +277,8 @@ namespace Equals.Fody.Injectors
             MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
         {
             LoadVariable(property, t, type);
-            var enumeratorVariable = method.Body.Variables.Add(property.Name + "Enumerator", ReferenceFinder.IEnumerator.TypeReference);
-            var currentVariable = method.Body.Variables.Add(property.Name + "Current", ReferenceFinder.Object.TypeReference);
+            var enumeratorVariable = method.Body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
+            var currentVariable = method.Body.Variables.Add(ReferenceFinder.Object.TypeReference);
 
             GetEnumerator(t, enumeratorVariable, property);
 

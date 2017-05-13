@@ -42,10 +42,10 @@ namespace Equals.Fody.Injectors
 
             body.InitLocals = true;
 
-            var leftEnumerator = body.Variables.Add("enumerator", ReferenceFinder.IEnumerator.TypeReference);
-            var rightEnumerator = body.Variables.Add("rightEnumerator", ReferenceFinder.IEnumerator.TypeReference);
-            var leftHasNext = body.Variables.Add("hasNext", ReferenceFinder.Boolean.TypeReference);
-            var rightHasNext = body.Variables.Add("rightHasNext", ReferenceFinder.Boolean.TypeReference);
+            var leftEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
+            var rightEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
+            var leftHasNext = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
+            var rightHasNext = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
 
             AddLeftAndRightReferenceEquals(ins, left, right);
             AddLeftAndNullReferenceEquals(ins, left);

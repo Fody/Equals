@@ -13,17 +13,15 @@ public class MockAssemblyResolver : IAssemblyResolver
         {
             return AssemblyDefinition.ReadAssembly(fileName);
         }
-        var codeBase = Assembly.Load(name.FullName).CodeBase.Replace("file:///", "");
-        return AssemblyDefinition.ReadAssembly(codeBase);
+        return Resolve(name.Name);
     }
 
     public AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
     {
-
         throw new NotImplementedException();
     }
 
-    public AssemblyDefinition Resolve(string fullName)
+    AssemblyDefinition Resolve(string fullName)
     {
         string codeBase;
         if (fullName == "System")
@@ -39,9 +37,8 @@ public class MockAssemblyResolver : IAssemblyResolver
         return AssemblyDefinition.ReadAssembly(file);
     }
 
-    public AssemblyDefinition Resolve(string fullName, ReaderParameters parameters)
+    public void Dispose()
     {
-        throw new NotImplementedException();
     }
 
     public string Directory;
