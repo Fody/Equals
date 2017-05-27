@@ -73,7 +73,7 @@ public static class TypeDefinitionExtensions
 
         if (type.IsGenericParameter)
         {
-            var genericParameter = type as GenericParameter;
+            var genericParameter = (GenericParameter)type;
 
             var current = targetType;
             var currentResolved = current.Resolve();
@@ -116,7 +116,7 @@ public static class TypeDefinitionExtensions
                 while (parent != null && propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
                 {
                     parentReference = parentResolved.BaseType;
-                    parent = parentResolved.BaseType != null ? parentResolved.BaseType.Resolve() : null;
+                    parent = parentResolved.BaseType?.Resolve();
                 }
 
                 genericInstanceType = parentReference as GenericInstanceType;
