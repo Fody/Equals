@@ -1,29 +1,26 @@
 ﻿using System.Linq;
 using Mono.Cecil;
 
-namespace Equals.Fody.Extensions
+public static class PropertyDefinitionExtensions
 {
-    public static class PropertyDefinitionExtensions
+    public static MethodReference GetGetMethod(this PropertyDefinition property, TypeReference targetType)
     {
-        public static MethodReference GetGetMethod(this PropertyDefinition property, TypeReference targetType)
+        MethodReference method = property.GetMethod;
+        if (method.DeclaringType.HasGenericParameters)
         {
-            MethodReference method = property.GetMethod;
-            if (method.DeclaringType.HasGenericParameters)
+            var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
+            method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : ReferenceFinder.ImportCustom(method.ReturnType))
             {
-                var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
-                method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : ReferenceFinder.ImportCustom(method.ReturnType))
-                {
-                    DeclaringType = ReferenceFinder.ImportCustom(genericInstanceType),
-                    HasThis = true
-                };
+                DeclaringType = ReferenceFinder.ImportCustom(genericInstanceType),
+                HasThis = true
+            };
 
-            }
-            return method;
         }
+        return method;
+    }
 
-        public static PropertyDefinition[] IgnoreBaseClassProperties(this PropertyDefinition[] properties, TypeDefinition type)
-        {
-            return properties.Where(x => x.DeclaringType == type).ToArray();
-        }
+    public static PropertyDefinition[] IgnoreBaseClassProperties(this PropertyDefinition[] properties, TypeDefinition type)
+    {
+        return properties.Where(x => x.DeclaringType == type).ToArray();
     }
 }

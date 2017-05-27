@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ReferencedDependency;
 
 [Equals]
 public class Child : Parent

@@ -4,4 +4,3 @@
     ExactlyOfType = 1,
     EqualsOrSubtype = 2
 }
-

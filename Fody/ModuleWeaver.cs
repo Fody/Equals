@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Equals.Fody;
-using Equals.Fody.Injectors;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
