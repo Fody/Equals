@@ -29,18 +29,20 @@ public partial class IntegrationTests
             {
                 Directory = Path.GetDirectoryName(beforeAssemblyPath)
             };
-        var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath,new ReaderParameters
+        var readerParameters = new ReaderParameters
             {
                 AssemblyResolver = assemblyResolver
-            });
-        var weavingTask = new ModuleWeaver
-                              {
-                                  ModuleDefinition = moduleDefinition,
-                                  AssemblyResolver = assemblyResolver,
-                              };
+            };
+        using (var moduleDefinition = ModuleDefinition.ReadModule(beforeAssemblyPath, readerParameters)) {
+            var weavingTask = new ModuleWeaver
+                {
+                    ModuleDefinition = moduleDefinition,
+                    AssemblyResolver = assemblyResolver
+                };
 
-        weavingTask.Execute();
-        moduleDefinition.Write(afterAssemblyPath);
+            weavingTask.Execute();
+            moduleDefinition.Write(afterAssemblyPath);
+        }
 
         assembly = Assembly.LoadFile(afterAssemblyPath);
     }
