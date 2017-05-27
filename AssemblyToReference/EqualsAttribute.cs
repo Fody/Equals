@@ -3,7 +3,7 @@ using System;
 /// <summary>
 /// Adds Equals,GetHashCode,==,!= methods to class.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
 public sealed class EqualsAttribute : Attribute
 {
     public bool DoNotAddEqualityOperators { get; set; }
