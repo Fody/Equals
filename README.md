@@ -1,3 +1,7 @@
+[![Chat on Gitter Status](https://img.shields.io/gitter/room/fody/fody.svg?style=flat)](https://gitter.im/Fody)
+[![NuGet Status](http://img.shields.io/nuget/v/Equals.Fody.svg?style=flat)](https://www.nuget.org/packages/Equals.Fody/)
+
+
 ## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
 ![Icon](https://raw.github.com/Fody/Equals/master/Icons/package_icon.png)
@@ -6,12 +10,14 @@ Generate Equals, GetHashCode and operators methods from properties for class dec
 
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage).
 
-## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Equals.Fody.svg?style=flat)](https://www.nuget.org/packages/Equals.Fody/)
+
+## The nuget package
 
 https://nuget.org/packages/Equals.Fody/
 
     PM> Install-Package Equals.Fody
-    
+
+
 ## Your Code
 
     [Equals]
@@ -25,7 +31,7 @@ https://nuget.org/packages/Equals.Fody/
         public int Z { get; set; }
         
         [CustomEqualsInternal]
-        private bool CustomLogic(Point other)
+        bool CustomLogic(Point other)
         {
             return Z == other.Z || Z == 0 || other.Z == 0;
         }
@@ -46,6 +52,7 @@ https://nuget.org/packages/Equals.Fody/
         }
     }
 
+
 ## What gets compiled
 
     public class Point : IEquatable<Point>
@@ -56,7 +63,7 @@ https://nuget.org/packages/Equals.Fody/
 
         public int Z { get; set; }
         
-        private bool CustomLogic(Point other)
+        bool CustomLogic(Point other)
         {
             return Z == other.Z || Z == 0 || other.Z == 0;
         }
@@ -71,7 +78,7 @@ https://nuget.org/packages/Equals.Fody/
             return !object.Equals((object)left, (object)right);
         }
 
-        private static bool EqualsInternal(Point left, Point right)
+        static bool EqualsInternal(Point left, Point right)
         {
             return left.X == right.X && left.Y == right.Y && leftt.CustomLogic(right);
         }
@@ -141,6 +148,7 @@ https://nuget.org/packages/Equals.Fody/
 		return !object.Equals(left, right);
 	}
     }
+
 
 ## Icon
 
