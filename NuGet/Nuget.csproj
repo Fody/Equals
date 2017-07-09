@@ -12,7 +12,6 @@
     <Copy SourceFiles="$(ProjectDir)Equals.Fody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(ProjectDir)install.ps" DestinationFiles="$(SolutionDir)NuGetBuild\tools\install.ps1" />
     <Copy SourceFiles="$(ProjectDir)uninstall.ps" DestinationFiles="$(SolutionDir)NuGetBuild\tools\uninstall.ps1" />
-    <Copy SourceFiles="$(ProjectDir)dotnet.targets" DestinationFiles="$(SolutionDir)NuGetBuild\build\netstandard1.0\Equals.Fody.targets" />
     <Copy SourceFiles="$(SolutionDir)AssemblyToReference\bin\$(ConfigurationName)\netstandard1.0\Equals.dll" DestinationFolder="$(SolutionDir)NuGetBuild\lib\netstandard1.0" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\net452\Equals.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\net452\Equals.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
