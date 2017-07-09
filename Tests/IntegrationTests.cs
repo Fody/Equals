@@ -16,7 +16,7 @@ public partial class IntegrationTests
 
     public IntegrationTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll"));
+        beforeAssemblyPath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\AssemblyToProcess\bin\Debug\netstandard1.0\AssemblyToProcess.dll"));
 #if (!DEBUG)
 
         beforeAssemblyPath = beforeAssemblyPath.Replace("Debug", "Release");
@@ -25,10 +25,7 @@ public partial class IntegrationTests
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "2.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
 
-        var assemblyResolver = new MockAssemblyResolver
-            {
-                Directory = Path.GetDirectoryName(beforeAssemblyPath)
-            };
+        var assemblyResolver = new TestAssemblyResolver(Path.GetDirectoryName(beforeAssemblyPath));
         var readerParameters = new ReaderParameters
             {
                 AssemblyResolver = assemblyResolver
@@ -105,7 +102,7 @@ public partial class IntegrationTests
         second.Prop = 1;
 
         Assert.True(first == second);
-        Assert.False(first != first);
+        Assert.False(first != second);
     }
 
     [Test]

@@ -89,16 +89,13 @@ public static class ReferenceFinder
     public static void FindReferences(IAssemblyResolver assemblyResolver)
     {
         var baseLib = assemblyResolver.Resolve(new AssemblyNameReference("mscorlib", null));
-        var baseLibTypes = baseLib.MainModule.Types;
+        var baseLibTypes = baseLib?.MainModule?.Types;
 
-        var systemLib = assemblyResolver.Resolve(new AssemblyNameReference("System", null));
-        var systemLibTypes = systemLib.MainModule.Types;
-
-        var winrt = baseLibTypes.All(type => type.Name != "Object");
+        var winrt = (baseLibTypes?.FirstOrDefault(type => type.Name == "Object") == null);
         if (winrt)
         {
-            baseLib = assemblyResolver.Resolve(new AssemblyNameReference("System.Runtime", null));
-            baseLibTypes = baseLib.MainModule.Types;
+            ExecuteWinRT(assemblyResolver);
+            return;
         }
 
         DateTime.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "DateTime"));
@@ -129,6 +126,9 @@ public static class ReferenceFinder
 
         IEquatable.TypeReference = moduleDefinition.ImportReference(baseLibTypes.First(t => t.Name == "IEquatable`1"));
 
+        var systemLib = assemblyResolver.Resolve(new AssemblyNameReference("System", null));
+        var systemLibTypes = systemLib.MainModule.Types;
+
         var generatedCodeType = systemLibTypes.FirstOrDefault(t => t.Name == "GeneratedCodeAttribute");
         if (generatedCodeType == null)
         {
@@ -141,6 +141,56 @@ public static class ReferenceFinder
         var debuggerNonUserCodeType = baseLibTypes.FirstOrDefault(t => t.Name == "DebuggerNonUserCodeAttribute");
         if (debuggerNonUserCodeType == null)
         {
+            var systemDiagnosticsDebug = assemblyResolver.Resolve(new AssemblyNameReference("System.Diagnostics.Debug", null));
+            debuggerNonUserCodeType = systemDiagnosticsDebug.MainModule.Types.First(t => t.Name == "DebuggerNonUserCodeAttribute");
+        }
+        DebuggerNonUserCodeAttribute.TypeReference = moduleDefinition.ImportReference(debuggerNonUserCodeType);
+        DebuggerNonUserCodeAttribute.Constructor = moduleDefinition.ImportReference(DebuggerNonUserCodeAttribute.TypeReference.Resolve().FindMethod(".ctor"));
+    }
+
+    static void ExecuteWinRT(IAssemblyResolver assemblyResolver)
+    {
+        var systemRuntime = assemblyResolver.Resolve(new AssemblyNameReference("System.Runtime", null));
+        var systemRuntimeTypes = systemRuntime.MainModule.Types;
+
+        DateTime.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "DateTime"));
+
+        DateTime.TypeReference.Resolve();
+
+        Boolean.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "Boolean"));
+
+        Int32.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "Int32"));
+
+        String.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "String"));
+
+        Type.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "Type"));
+        Type.GetTypeFromHandle = moduleDefinition.ImportReference(Type.TypeReference.Resolve().FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
+
+        Object.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "Object"));
+        Object.GetHashcode = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("GetHashCode"));
+        Object.GetType = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("GetType"));
+        Object.StaticEquals = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("Equals", "Object", "Object"));
+        Object.ReferenceEquals = moduleDefinition.ImportReference(Object.TypeReference.Resolve().FindMethod("ReferenceEquals", "Object", "Object"));
+
+        IEnumerable.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "IEnumerable"));
+        IEnumerable.GetEnumerator = moduleDefinition.ImportReference(IEnumerable.TypeReference.Resolve().FindMethod("GetEnumerator"));
+
+        IEnumerator.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "IEnumerator"));
+        IEnumerator.MoveNext = moduleDefinition.ImportReference(IEnumerator.TypeReference.Resolve().FindMethod("MoveNext"));
+        IEnumerator.GetCurrent = moduleDefinition.ImportReference(IEnumerator.TypeReference.Resolve().FindMethod("get_Current"));
+
+        IEquatable.TypeReference = moduleDefinition.ImportReference(systemRuntimeTypes.First(t => t.Name == "IEquatable`1"));
+
+        var generatedCodeType = systemRuntimeTypes.FirstOrDefault(t => t.Name == "GeneratedCodeAttribute");
+        if (generatedCodeType == null) {
+            var systemDiagnosticsTools = assemblyResolver.Resolve(new AssemblyNameReference("System.Diagnostics.Tools", null));
+            generatedCodeType = systemDiagnosticsTools.MainModule.Types.First(t => t.Name == "GeneratedCodeAttribute");
+        }
+        GeneratedCodeAttribute.TypeReference = moduleDefinition.ImportReference(generatedCodeType);
+        GeneratedCodeAttribute.ConstructorStringString = moduleDefinition.ImportReference(GeneratedCodeAttribute.TypeReference.Resolve().FindMethod(".ctor", "String", "String"));
+
+        var debuggerNonUserCodeType = systemRuntimeTypes.FirstOrDefault(t => t.Name == "DebuggerNonUserCodeAttribute");
+        if (debuggerNonUserCodeType == null) {
             var systemDiagnosticsDebug = assemblyResolver.Resolve(new AssemblyNameReference("System.Diagnostics.Debug", null));
             debuggerNonUserCodeType = systemDiagnosticsDebug.MainModule.Types.First(t => t.Name == "DebuggerNonUserCodeAttribute");
         }
