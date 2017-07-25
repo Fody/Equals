@@ -3,7 +3,7 @@
 
 ![Icon](https://raw.github.com/Fody/Equals/master/Icons/package_icon.png)
 
-Generate Equals, GetHashCode and operators methods from properties for class decorated with a `[Equals]` Attribute.
+Generate `Equals`, `GetHashCode` and operators methods from properties for class decorated with a `[Equals]` Attribute.
 
 This is an add-in for [Fody](https://github.com/Fody/Fody/); it is available via [NuGet](https://www.nuget.org/packages/Equals.Fody/):
 
