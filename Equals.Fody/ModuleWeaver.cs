@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
-public class ModuleWeaver
+public class ModuleWeaver:BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
     public const string assemblyName = "Equals";
@@ -16,10 +16,6 @@ public class ModuleWeaver
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
     public const string DoNotAddEquals = "DoNotAddEquals";
     public const string IgnoreBaseClassProperties = "IgnoreBaseClassProperties";
-
-    public ModuleDefinition ModuleDefinition { get; set; }
-    public IAssemblyResolver AssemblyResolver { get; set; }
-    public XElement Config { get; set; }
 
     public IEnumerable<TypeDefinition> GetMachingTypes()
     {
@@ -36,10 +32,10 @@ public class ModuleWeaver
         return type;
     }
 
-    public void Execute()
+    public override void Execute()
     {
         ReferenceFinder.SetModule(ModuleDefinition);
-        ReferenceFinder.FindReferences(AssemblyResolver);
+        ReferenceFinder.FindReferences(base.FindType);
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
@@ -94,6 +90,16 @@ public class ModuleWeaver
         }
 
         RemoveReference();
+    }
+
+    public override IEnumerable<string> GetAssembliesForScanning()
+    {
+        yield return "mscorlib";
+        yield return "System";
+        yield return "netstandard";
+        yield return "System.Diagnostics.Tools";
+        yield return "System.Diagnostics.Debug";
+        yield return "System.Runtime";
     }
 
     bool IsPropertySet(CustomAttribute attribute, string property)
