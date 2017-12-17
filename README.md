@@ -127,52 +127,44 @@ public class Point : IEquatable<Point>
 
 public class CustomGetHashCode : IEquatable<CustomGetHashCode>
 {
-	public int X
-	{
-		get;
-		set;
-	}
+    public int X { get; set; }
 
-        public int Z
-	{
-		get;
-		set;
-	}
+    public int Z { get; set; }
 
-	int CustomGetHashCodeMethod()
-	{
-		return 42;
-	}
+    int CustomGetHashCodeMethod()
+    {
+        return 42;
+    }
 
     static bool EqualsInternal(CustomGetHashCode left, CustomGetHashCode right)
-	{
-		return left.X == right.X;
-	}
+    {
+        return left.X == right.X;
+    }
 
-	public override bool Equals(CustomGetHashCode other)
-	{
-		return !object.ReferenceEquals(null, other) && (object.ReferenceEquals(this, other) || CustomGetHashCode.EqualsInternal(this, other));
-	}
+    public override bool Equals(CustomGetHashCode other)
+    {
+        return !object.ReferenceEquals(null, other) && (object.ReferenceEquals(this, other) || CustomGetHashCode.EqualsInternal(this, other));
+    }
 
-	public override bool Equals(object obj)
-	{
-		return !object.ReferenceEquals(null, obj) && (object.ReferenceEquals(this, obj) || (base.GetType() == obj.GetType() && CustomGetHashCode.EqualsInternal(this, (CustomGetHashCode)obj)));
-	}
+    public override bool Equals(object obj)
+    {
+        return !object.ReferenceEquals(null, obj) && (object.ReferenceEquals(this, obj) || (base.GetType() == obj.GetType() && CustomGetHashCode.EqualsInternal(this, (CustomGetHashCode)obj)));
+    }
 
-	public override int GetHashCode()
-	{
-		return (this.X.GetHashCode() * 397) ^ this.CustomGetHashCodeMethod();
-	}
+    public override int GetHashCode()
+    {
+        return (this.X.GetHashCode() * 397) ^ this.CustomGetHashCodeMethod();
+    }
 
-	public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right)
-	{
-		return object.Equals(left, right);
-	}
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right)
+    {
+        return object.Equals(left, right);
+    }
 
-	public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right)
-	{
-		return !object.Equals(left, right);
-	}
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right)
+    {
+        return !object.Equals(left, right);
+    }
 }
 ```
 
