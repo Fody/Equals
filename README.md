@@ -4,103 +4,129 @@
 
 ## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
-![Icon](https://raw.github.com/Fody/Equals/master/Icons/package_icon.png)
+![Icon](https://raw.github.com/Fody/Equals/master/package_icon.png)
 
 Generate Equals, GetHashCode and operators methods from properties for class decorated with a `[Equals]` Attribute.
 
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage).
 
 
-## The nuget package
 
-https://nuget.org/packages/Equals.Fody/
+## Usage
 
-    PM> Install-Package Equals.Fody
+See also [Fody usage](https://github.com/Fody/Fody#usage).
+
+
+### NuGet installation
+
+Install the [Equals.Fody NuGet package](https://nuget.org/packages/Equals.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
+
+```
+PM> Install-Package BasicFodyAddin.Fody
+PM> Update-Package Fody
+```
+
+The `Update-Package Fody` is required since NuGet always defaults to the oldest, and most buggy, version of any dependency.
+
+
+### Add to FodyWeavers.xml
+
+Add `<Equals/>` to [FodyWeavers.xml](https://github.com/Fody/Fody#add-fodyweaversxml)
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<Weavers>
+  <Equals/>
+</Weavers>
+```
 
 
 ## Your Code
 
-    [Equals]
-    public class Point
+```
+[Equals]
+public class Point
+{
+    public int X { get; set; }
+    
+    public int Y { get; set; }
+    
+    [IgnoreDuringEquals]
+    public int Z { get; set; }
+    
+    [CustomEqualsInternal]
+    bool CustomLogic(Point other)
     {
-        public int X { get; set; }
-        
-        public int Y { get; set; }
-        
-        [IgnoreDuringEquals]
-        public int Z { get; set; }
-        
-        [CustomEqualsInternal]
-        bool CustomLogic(Point other)
-        {
-            return Z == other.Z || Z == 0 || other.Z == 0;
-        }
+        return Z == other.Z || Z == 0 || other.Z == 0;
     }
+}
 
-    [Equals]
-    public class CustomGetHashCode
+[Equals]
+public class CustomGetHashCode
+{
+    public int X { get; set; }
+
+    [IgnoreDuringEquals]
+    public int Z { get; set; }
+
+    [CustomGetHashCode]
+    int CustomGetHashCodeMethod()
     {
-        public int X { get; set; }
-
-        [IgnoreDuringEquals]
-        public int Z { get; set; }
-
-        [CustomGetHashCode]
-        int CustomGetHashCodeMethod()
-        {
-            return 42;
-        }
+        return 42;
     }
+}
+```
 
 
 ## What gets compiled
 
-    public class Point : IEquatable<Point>
+```
+public class Point : IEquatable<Point>
+{
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public int Z { get; set; }
+    
+    bool CustomLogic(Point other)
     {
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
-        public int Z { get; set; }
-        
-        bool CustomLogic(Point other)
-        {
-            return Z == other.Z || Z == 0 || other.Z == 0;
-        }
-
-        public static bool operator ==(Point left, Point right)
-        {
-            return object.Equals((object)left, (object)right);
-        }
-
-        public static bool operator !=(Point left, Point right)
-        {
-            return !object.Equals((object)left, (object)right);
-        }
-
-        static bool EqualsInternal(Point left, Point right)
-        {
-            return left.X == right.X && left.Y == right.Y && leftt.CustomLogic(right);
-        }
-
-        public virtual bool Equals(Point right)
-        {
-            return !object.ReferenceEquals((object)null, (object)right) && (object.ReferenceEquals((object)this, (object)right) || Point.EqualsInternal(this, right));
-        }
-
-        public override bool Equals(object right)
-        {
-            return !object.ReferenceEquals((object)null, right) && (object.ReferenceEquals((object)this, right) || this.GetType() == right.GetType() && Point.EqualsInternal(this, (Point)right));
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked(this.X.GetHashCode() * 397 ^ this.Y.GetHashCode());
-        }
+        return Z == other.Z || Z == 0 || other.Z == 0;
     }
 
-    public class CustomGetHashCode : IEquatable<CustomGetHashCode>
+    public static bool operator ==(Point left, Point right)
     {
+        return object.Equals((object)left, (object)right);
+    }
+
+    public static bool operator !=(Point left, Point right)
+    {
+        return !object.Equals((object)left, (object)right);
+    }
+
+    static bool EqualsInternal(Point left, Point right)
+    {
+        return left.X == right.X && left.Y == right.Y && leftt.CustomLogic(right);
+    }
+
+    public virtual bool Equals(Point right)
+    {
+        return !object.ReferenceEquals((object)null, (object)right) && (object.ReferenceEquals((object)this, (object)right) || Point.EqualsInternal(this, right));
+    }
+
+    public override bool Equals(object right)
+    {
+        return !object.ReferenceEquals((object)null, right) && (object.ReferenceEquals((object)this, right) || this.GetType() == right.GetType() && Point.EqualsInternal(this, (Point)right));
+    }
+
+    public override int GetHashCode()
+    {
+        return unchecked(this.X.GetHashCode() * 397 ^ this.Y.GetHashCode());
+    }
+}
+
+public class CustomGetHashCode : IEquatable<CustomGetHashCode>
+{
 	public int X
 	{
 		get;
@@ -113,12 +139,12 @@ https://nuget.org/packages/Equals.Fody/
 		set;
 	}
 
-	private int CustomGetHashCodeMethod()
+	int CustomGetHashCodeMethod()
 	{
 		return 42;
 	}
 
-	private static bool EqualsInternal(CustomGetHashCode left, CustomGetHashCode right)
+    static bool EqualsInternal(CustomGetHashCode left, CustomGetHashCode right)
 	{
 		return left.X == right.X;
 	}
@@ -147,7 +173,8 @@ https://nuget.org/packages/Equals.Fody/
 	{
 		return !object.Equals(left, right);
 	}
-    }
+}
+```
 
 
 ## Icon
