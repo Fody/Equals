@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.0</TargetFrameworks>
+    <TargetFrameworks>net452;netstandard1.0;netstandard2.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <Authors>Rafał Jasica</Authors>
@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FodyPackaging" Version="2.3.1" PrivateAssets="All" />
-    <ProjectReference Include="..\Equals.Fody\Equals.Fody.csproj" PrivateAssets="All" Condition="$(TargetFramework)=='fake'"/>
+    <!-- this project targets netstandard2.0 (unecessarily) and has the below ref to work around this bug https://github.com/Microsoft/msbuild/issues/2661 -->
+    <ProjectReference Include="..\Equals.Fody\Equals.Fody.csproj" PrivateAssets="All" Condition="$(TargetFramework)=='netstandard2.0'" />
   </ItemGroup>
 </Project>
