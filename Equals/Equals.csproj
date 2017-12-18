@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FodyPackaging" Version="2.3.1" PrivateAssets="All" />
+    <ProjectReference Include="..\Equals.Fody\Equals.Fody.csproj" PrivateAssets="All" Condition="$(TargetFramework)=='fake'"/>
   </ItemGroup>
 </Project>
