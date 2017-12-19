@@ -43,7 +43,7 @@ Add `<Equals/>` to [FodyWeavers.xml](https://github.com/Fody/Fody#add-fodyweaver
 
 ## Your Code
 
-```
+```csharp
 [Equals]
 public class Point
 {
@@ -80,7 +80,7 @@ public class CustomGetHashCode
 
 ## What gets compiled
 
-```
+```csharp
 public class Point : IEquatable<Point>
 {
     public int X { get; set; }
