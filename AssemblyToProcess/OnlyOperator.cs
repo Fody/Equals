@@ -5,9 +5,7 @@ public class OnlyOperator
 
     public override bool Equals(object obj)
     {
-        var second = obj as OnlyOperator;
-
-        if (second == null)
+        if (!(obj is OnlyOperator second))
         {
             return false;
         }

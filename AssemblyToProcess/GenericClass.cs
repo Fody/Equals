@@ -19,14 +19,8 @@ public class GenericClass<T> where T : GenericClassBaseClass
 
     public int A
     {
-        get
-        {
-            return a;
-        }
-        set
-        {
-            a = value;
-        }
+        get => a;
+        set => a = value;
     }
 
     public IEnumerable<T> B { get; set; }

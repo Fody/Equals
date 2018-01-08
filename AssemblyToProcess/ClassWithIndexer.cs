@@ -7,13 +7,7 @@ public class ClassWithIndexer
 
     public int this[int index]
     {
-        get 
-        {
-            return X;
-        }
-        set 
-        {
-            X = index;
-        }
+        get => X;
+        set => X = index;
     }
 }
