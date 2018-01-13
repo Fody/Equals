@@ -4,7 +4,7 @@
 
 ## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
-![Icon](https://raw.github.com/Fody/Equals/master/package_icon.png)
+![Icon](https://raw.githubusercontent.comFody/Equals/master/package_icon.png)
 
 Generate Equals, GetHashCode and operators methods from properties for class decorated with a `[Equals]` Attribute.
 
