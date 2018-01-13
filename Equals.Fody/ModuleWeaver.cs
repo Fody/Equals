@@ -7,7 +7,6 @@ using Mono.Cecil.Rocks;
 public class ModuleWeaver:BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
-    public const string assemblyName = "Equals";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
     public const string customEqualsAttribute = "CustomEqualsInternalAttribute";
     public const string customGetHashCodeAttribute = "CustomGetHashCodeAttribute";
@@ -17,9 +16,10 @@ public class ModuleWeaver:BaseModuleWeaver
     public const string DoNotAddEquals = "DoNotAddEquals";
     public const string IgnoreBaseClassProperties = "IgnoreBaseClassProperties";
 
-    public IEnumerable<TypeDefinition> GetMachingTypes()
+    public IEnumerable<TypeDefinition> GetMatchingTypes()
     {
-        return ModuleDefinition.GetTypes().Where(x => x.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
+        return ModuleDefinition.GetTypes()
+            .Where(x => x.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
     }
 
     TypeReference GetGenericType(TypeReference type)
@@ -39,7 +39,7 @@ public class ModuleWeaver:BaseModuleWeaver
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
-        var matchingTypes = GetMachingTypes().ToArray();
+        var matchingTypes = GetMatchingTypes().ToArray();
         foreach (var type in matchingTypes)
         {
             var props = type.Properties;
@@ -88,8 +88,6 @@ public class ModuleWeaver:BaseModuleWeaver
         {
             RemoveFodyAttributes(type);
         }
-
-        RemoveReference();
     }
 
     public override IEnumerable<string> GetAssembliesForScanning()
@@ -115,15 +113,6 @@ public class ModuleWeaver:BaseModuleWeaver
         return true.Equals(argument.Value);
     }
 
-    void RemoveReference()
-    {
-        var referenceToRemove = ModuleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == assemblyName);
-        if (referenceToRemove != null)
-        {
-            ModuleDefinition.AssemblyReferences.Remove(referenceToRemove);
-        }
-    }
-
     void RemoveFodyAttributes(TypeDefinition type)
     {
         type.RemoveAttribute(attributeName);
@@ -144,4 +133,6 @@ public class ModuleWeaver:BaseModuleWeaver
             method.RemoveAttribute(customGetHashCodeAttribute);
         }
     }
+
+    public override bool ShouldCleanReference => true;
 }
