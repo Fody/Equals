@@ -165,4 +165,17 @@ public static class TypeDefinitionExtensions
         }
         return OpCodes.Ldarg;
     }
+
+
+    public static void AddReturnTrue(this Collection<Instruction> e)
+    {
+        e.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+        e.Add(Instruction.Create(OpCodes.Ret));
+    }
+
+    public static void AddReturnFalse(this Collection<Instruction> e)
+    {
+        e.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+        e.Add(Instruction.Create(OpCodes.Ret));
+    }
 }

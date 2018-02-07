@@ -53,7 +53,7 @@ public static class EqualsInjector
         ins.If(
             c => AddTypeChecking(type, typeRef, typeCheck, c),
             t => AddInternalEqualsCall(type, typeRef, newEquals, t, result),
-            AddReturnFalse);
+            TypeDefinitionExtensions.AddReturnFalse);
 
         AddReturn(ins, labelRet, result);
 
@@ -117,7 +117,7 @@ public static class EqualsInjector
             AddCustomLogicCall(type, body, ins, customLogic);
         }
 
-        AddReturnTrue(ins);
+        ins.AddReturnTrue();
 
         body.OptimizeMacros();
 
@@ -186,7 +186,7 @@ public static class EqualsInjector
                 ins.Add(Instruction.Create(OpCodes.Ldarg_1));
                 ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
             },
-            AddReturnFalse);
+            TypeDefinitionExtensions.AddReturnFalse);
     }
 
     public static OpCode GetCallForMethod(this MethodReference methodReference)
@@ -241,17 +241,6 @@ public static class EqualsInjector
         ins.Add(Instruction.Create(OpCodes.Ret));
     }
 
-    static void AddReturnTrue(Collection<Instruction> e)
-    {
-        e.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-        e.Add(Instruction.Create(OpCodes.Ret));
-    }
-
-    static void AddReturnFalse(Collection<Instruction> e)
-    {
-        e.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-        e.Add(Instruction.Create(OpCodes.Ret));
-    }
 
     static void AddTypeChecking(TypeDefinition type, TypeReference typeRef, int typeCheck, Collection<Instruction> c)
     {
@@ -327,7 +316,7 @@ public static class EqualsInjector
                 }
                 c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
             },
-            AddReturnFalse);
+            TypeDefinitionExtensions.AddReturnFalse);
 
         ins.If(
             c =>
@@ -345,7 +334,7 @@ public static class EqualsInjector
                 }
                 c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
             },
-            AddReturnTrue);
+            TypeDefinitionExtensions.AddReturnTrue);
     }
 
     static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
@@ -376,7 +365,7 @@ public static class EqualsInjector
                     AddNormalCheck(type, c, property, left, right);
                 }
             },
-            AddReturnFalse);
+            TypeDefinitionExtensions.AddReturnFalse);
     }
 
     static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)

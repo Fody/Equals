@@ -76,7 +76,7 @@ public partial class ModuleWeaver
                 c => AddCheckHasNext(c, rightHasNext, true),
                 t => t.If(
                     c => AddCheckCurrent(c, leftEnumerator, rightEnumerator),
-                    AddReturnFalse),
+                    TypeDefinitionExtensions.AddReturnFalse),
                 e2 =>
                 {
                     ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
@@ -84,12 +84,6 @@ public partial class ModuleWeaver
                 }));
 
         ins.Add(Instruction.Create(OpCodes.Br, loopBegin));
-    }
-
-    static void AddReturnFalse(Collection<Instruction> tt)
-    {
-        tt.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-        tt.Add(Instruction.Create(OpCodes.Ret));
     }
 
     static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
