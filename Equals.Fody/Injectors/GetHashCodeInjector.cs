@@ -13,7 +13,7 @@ public static class GetHashCodeInjector
 
     const int magicNumber = 397;
 
-    public static MethodDefinition Inject(TypeDefinition type, bool ignoreBaseClassProperties)
+    public static void Inject(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("GetHashCode", methodAttributes, ModuleWeaver.Int32Type);
@@ -38,7 +38,6 @@ public static class GetHashCodeInjector
         {
             AddResultInit(ins, resultVariable);
         }
-
 
         var methods = type.GetMethods();
         var customLogic = methods
@@ -67,7 +66,7 @@ public static class GetHashCodeInjector
             ins.Add(Instruction.Create(OpCodes.Ldloc, resultVariable));
             ins.Add(Instruction.Create(OpCodes.Ldc_I4, magicNumber));
             ins.Add(Instruction.Create(OpCodes.Mul));
-            AddCustomLogicCall(type, body, ins, customLogic[0]);
+            AddCustomLogicCall(type, ins, customLogic[0]);
             ins.Add(Instruction.Create(OpCodes.Xor));
             ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
         }
@@ -77,11 +76,9 @@ public static class GetHashCodeInjector
         body.OptimizeMacros();
 
         type.Methods.AddOrReplace(method);
-
-        return method;
     }
 
-    static void AddCustomLogicCall(TypeDefinition type, MethodBody body, Collection<Instruction> ins, MethodDefinition customLogic)
+    static void AddCustomLogicCall(TypeDefinition type, Collection<Instruction> ins, MethodDefinition customLogic)
     {
         var customMethod = ModuleWeaver.ImportCustom(customLogic);
 
@@ -146,7 +143,7 @@ public static class GetHashCodeInjector
         }
         else if (isCollection && property.PropertyType.FullName != "System.String")
         {
-            AddCollectionCode(property, isFirst, ins, resultVariable, method, type);
+            AddCollectionCode(property, ins, resultVariable, method, type);
         }
         else if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
         {
@@ -250,7 +247,7 @@ public static class GetHashCodeInjector
             f => f.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
     }
 
-    static void AddCollectionCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
+    static void AddCollectionCode(PropertyDefinition property, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
     {
         if (!property.PropertyType.IsValueType)
         {
@@ -268,7 +265,7 @@ public static class GetHashCodeInjector
         }
     }
 
-    private static void GenerateCollectionCode(PropertyDefinition property, VariableDefinition resultVariable,
+    static void GenerateCollectionCode(PropertyDefinition property, VariableDefinition resultVariable,
         MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
     {
         LoadVariable(property, t, type);
