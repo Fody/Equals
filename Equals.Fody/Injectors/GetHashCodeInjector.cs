@@ -7,8 +7,6 @@ using Mono.Collections.Generic;
 
 public static class GetHashCodeInjector
 {
-    const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
-
     const string customAttribute = "CustomGetHashCodeAttribute";
 
     const int magicNumber = 397;
@@ -28,7 +26,7 @@ public static class GetHashCodeInjector
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
-        var properties = ModuleWeaver.ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
+        var properties = ModuleWeaver.ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ModuleWeaver.ignoreAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
@@ -227,12 +225,6 @@ public static class GetHashCodeInjector
         }
     }
 
-    static void AddValueTypeCode(PropertyDefinition property, Collection<Instruction> ins)
-    {
-        ins.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetHashcode));
-    }
-
     static void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         ins.If(
@@ -272,7 +264,7 @@ public static class GetHashCodeInjector
         var enumeratorVariable = method.Body.Variables.Add(ModuleWeaver.IEnumeratorType);
         var currentVariable = method.Body.Variables.Add(ModuleWeaver.ObjectType);
 
-        GetEnumerator(t, enumeratorVariable, property);
+        AddGetEnumerator(t, enumeratorVariable, property);
 
         AddCollectionLoop(resultVariable, t, enumeratorVariable, currentVariable);
     }
@@ -314,7 +306,7 @@ public static class GetHashCodeInjector
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
     }
 
-    static void GetEnumerator(Collection<Instruction> ins, VariableDefinition variable, PropertyDefinition property)
+    static void AddGetEnumerator(Collection<Instruction> ins, VariableDefinition variable, PropertyDefinition property)
     {
         if (property.PropertyType.IsValueType)
         {
