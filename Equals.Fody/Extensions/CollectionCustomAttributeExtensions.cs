@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Collections.Generic;
 
-public static class CollectionCustomAttributeExtensions
+public partial class ModuleWeaver
 {
     public static void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
     {
@@ -11,7 +11,7 @@ public static class CollectionCustomAttributeExtensions
 
     static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
     {
-        var debuggerAttribute = new CustomAttribute(ModuleWeaver.DebuggerNonUserCodeAttributeConstructor);
+        var debuggerAttribute = new CustomAttribute(DebuggerNonUserCodeAttributeConstructor);
         customAttributes.Add(debuggerAttribute);
     }
 
@@ -20,9 +20,9 @@ public static class CollectionCustomAttributeExtensions
         var version = typeof (ModuleWeaver).Assembly.GetName().Version.ToString();
         var name = typeof (ModuleWeaver).Assembly.GetName().Name;
 
-        var attribute = new CustomAttribute(ModuleWeaver.GeneratedCodeAttributeConstructor);
-        attribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, name));
-        attribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, version));
+        var attribute = new CustomAttribute(GeneratedCodeAttributeConstructor);
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(StringReference, name));
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(StringReference, version));
         customAttributes.Add(attribute);
     }
 }

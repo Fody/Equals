@@ -36,7 +36,7 @@ public static class EqualsInjector
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
-        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
+       ModuleWeaver. MarkAsGeneratedCode(method.CustomAttributes);
 
         var obj = method.Parameters.Add("obj", ModuleWeaver.ObjectType);
 
@@ -66,7 +66,7 @@ public static class EqualsInjector
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
-        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
+       ModuleWeaver . MarkAsGeneratedCode(method.CustomAttributes);
         var body = method.Body;
         var ins = body.Instructions;
 
@@ -83,7 +83,7 @@ public static class EqualsInjector
     {
         var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
         var method = new MethodDefinition("EqualsInternal", methodAttributes, ModuleWeaver.BooleanType);
-        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
+        ModuleWeaver.MarkAsGeneratedCode(method.CustomAttributes);
 
         var left = method.Parameters.Add("left", typeRef);
         var right = method.Parameters.Add("right", typeRef);

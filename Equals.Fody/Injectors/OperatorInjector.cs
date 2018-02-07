@@ -19,7 +19,7 @@ public partial class ModuleWeaver
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
         var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, BooleanType);
-        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
+        MarkAsGeneratedCode(method.CustomAttributes);
 
         var parameterType = type.GetGenericInstanceType(type);
 
