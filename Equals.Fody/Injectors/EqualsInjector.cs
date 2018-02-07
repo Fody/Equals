@@ -32,7 +32,7 @@ public static class EqualsInjector
         "System.UInt16"
     });
 
-    public static MethodDefinition InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
+    public static void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
@@ -60,11 +60,9 @@ public static class EqualsInjector
         body.OptimizeMacros();
 
         type.Methods.AddOrReplace(method);
-
-        return method;
     }
 
-    public static MethodDefinition InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
+    public static void InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
@@ -79,8 +77,6 @@ public static class EqualsInjector
 
         body.OptimizeMacros();
         type.Methods.AddOrReplace(method);
-
-        return method;
     }
 
     public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
