@@ -4,7 +4,7 @@ using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
-public partial class ModuleWeaver:BaseModuleWeaver
+public partial class ModuleWeaver : BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
@@ -37,7 +37,7 @@ public partial class ModuleWeaver:BaseModuleWeaver
         SetModule(ModuleDefinition);
         FindReferences(base.FindType);
 
-        var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
+        var collectionEquals = InjectCollectionEquals(ModuleDefinition);
 
         var matchingTypes = GetMatchingTypes().ToArray();
         foreach (var type in matchingTypes)

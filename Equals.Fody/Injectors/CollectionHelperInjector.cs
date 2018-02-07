@@ -4,12 +4,12 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-public static class CollectionHelperInjector
+public partial class ModuleWeaver
 {
-    public static MethodDefinition Inject(ModuleDefinition moduleDefinition)
+    public static MethodDefinition InjectCollectionEquals(ModuleDefinition moduleDefinition)
     {
         var mod = 0;
-        TypeDefinition typeDef = null;
+        TypeDefinition typeDef;
         do
         {
             var name = mod == 0 ? "Equals.Helpers" : "Equals.Helpers" + mod;
@@ -24,25 +24,25 @@ public static class CollectionHelperInjector
         var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
         var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
         helperType.CustomAttributes.MarkAsGeneratedCode();
-        helperType.BaseType = ModuleWeaver.ObjectType;
+        helperType.BaseType = ObjectType;
         moduleDefinition.Types.Add(helperType);
 
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("CollectionEquals", methodAttributes, ModuleWeaver.BooleanType);
+        var method = new MethodDefinition("CollectionEquals", methodAttributes, BooleanType);
         helperType.Methods.Add(method);
 
-        var left = method.Parameters.Add("left", ModuleWeaver.IEnumerableType);
-        var right = method.Parameters.Add("right", ModuleWeaver.IEnumerableType);
+        var left = method.Parameters.Add("left", IEnumerableType);
+        var right = method.Parameters.Add("right", IEnumerableType);
 
         var body = method.Body;
         var ins = body.Instructions;
 
         body.InitLocals = true;
 
-        var leftEnumerator = body.Variables.Add(ModuleWeaver.IEnumeratorType);
-        var rightEnumerator = body.Variables.Add(ModuleWeaver.IEnumeratorType);
-        var leftHasNext = body.Variables.Add(ModuleWeaver.BooleanType);
-        var rightHasNext = body.Variables.Add(ModuleWeaver.BooleanType);
+        var leftEnumerator = body.Variables.Add(IEnumeratorType);
+        var rightEnumerator = body.Variables.Add(IEnumeratorType);
+        var leftHasNext = body.Variables.Add(BooleanType);
+        var rightHasNext = body.Variables.Add(BooleanType);
 
         AddLeftAndRightReferenceEquals(ins, left, right);
         AddLeftAndNullReferenceEquals(ins, left);
@@ -59,8 +59,7 @@ public static class CollectionHelperInjector
         return method;
     }
 
-    static void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext,
-        VariableDefinition rightEnumerator, VariableDefinition rightHasNext)
+    static void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext, VariableDefinition rightEnumerator, VariableDefinition rightHasNext)
     {
         var loopBegin = Instruction.Create(OpCodes.Nop);
         ins.Add(loopBegin);
@@ -96,12 +95,12 @@ public static class CollectionHelperInjector
     static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
     {
         c.Add(Instruction.Create(OpCodes.Ldloc, leftEnumerator));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetCurrent));
+        c.Add(Instruction.Create(OpCodes.Callvirt, GetCurrent));
 
         c.Add(Instruction.Create(OpCodes.Ldloc, rightEnumerator));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetCurrent));
+        c.Add(Instruction.Create(OpCodes.Callvirt, GetCurrent));
 
-        c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.StaticEquals));
+        c.Add(Instruction.Create(OpCodes.Call, StaticEquals));
 
         c.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         c.Add(Instruction.Create(OpCodes.Ceq));
@@ -123,7 +122,7 @@ public static class CollectionHelperInjector
     static void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
     {
         ins.Add(Instruction.Create(OpCodes.Ldloc, enumerator));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.MoveNext));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, MoveNext));
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Ceq));
         ins.Add(Instruction.Create(OpCodes.Stloc, hasNext));
@@ -132,7 +131,7 @@ public static class CollectionHelperInjector
     static void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
     {
         ins.Add(Instruction.Create(OpCodes.Ldarg, argument));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetEnumerator));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, GetEnumerator));
         ins.Add(Instruction.Create(OpCodes.Stloc, enumerator));
     }
 
@@ -143,7 +142,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
-                ins.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             t =>
             {
@@ -159,7 +158,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
-                ins.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             t =>
             {
@@ -175,7 +174,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
-                ins.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             t =>
             {
