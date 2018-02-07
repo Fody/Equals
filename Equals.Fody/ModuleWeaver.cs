@@ -34,8 +34,8 @@ public partial class ModuleWeaver:BaseModuleWeaver
 
     public override void Execute()
     {
-        ModuleWeaver.SetModule(ModuleDefinition);
-        ModuleWeaver.FindReferences(base.FindType);
+        SetModule(ModuleDefinition);
+        FindReferences(base.FindType);
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
@@ -65,7 +65,7 @@ public partial class ModuleWeaver:BaseModuleWeaver
                 EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
                 EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
-                var typeInterface = ModuleWeaver.IEquatableType.MakeGenericInstanceType(typeRef);
+                var typeInterface = IEquatableType.MakeGenericInstanceType(typeRef);
                 if (type.Interfaces.All(x => x.InterfaceType.FullName != typeInterface.FullName))
                 {
                     type.Interfaces.Add(new InterfaceImplementation(typeInterface));

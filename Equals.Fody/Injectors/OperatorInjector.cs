@@ -5,20 +5,20 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    public static void InjectEqualityOperator(TypeDefinition type)
+    public void InjectEqualityOperator(TypeDefinition type)
     {
         AddOperator(type, true);
     }
 
-    public static void InjectInequalityOperator(TypeDefinition type)
+    public void InjectInequalityOperator(TypeDefinition type)
     {
         AddOperator(type, false);
     }
 
-    static void AddOperator(TypeDefinition type, bool isEquality)
+    void AddOperator(TypeDefinition type, bool isEquality)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
-        var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ModuleWeaver.BooleanType);
+        var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, BooleanType);
         method.CustomAttributes.MarkAsGeneratedCode();
 
         var parameterType = type.GetGenericInstanceType(type);
@@ -37,7 +37,7 @@ public partial class ModuleWeaver
         type.Methods.AddOrReplace(method);
     }
 
-    static void AddStaticEqualsCall(TypeDefinition type, Collection<Instruction> ins)
+    void AddStaticEqualsCall(TypeDefinition type, Collection<Instruction> ins)
     {
         if (type.IsValueType)
         {
@@ -53,6 +53,6 @@ public partial class ModuleWeaver
             ins.Add(Instruction.Create(OpCodes.Ldarg_1));
         }
 
-        ins.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.StaticEquals));
+        ins.Add(Instruction.Create(OpCodes.Call, StaticEquals));
     }
 }
