@@ -9,9 +9,9 @@ public static class PropertyDefinitionExtensions
         if (method.DeclaringType.HasGenericParameters)
         {
             var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
-            method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : ModuleWeaver.ImportCustom(method.ReturnType))
+            method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : property.Module.ImportReference(method.ReturnType))
             {
-                DeclaringType = ModuleWeaver.ImportCustom(genericInstanceType),
+                DeclaringType = property.Module.ImportReference(genericInstanceType),
                 HasThis = true
             };
 
@@ -21,6 +21,7 @@ public static class PropertyDefinitionExtensions
 
     public static PropertyDefinition[] IgnoreBaseClassProperties(this PropertyDefinition[] properties, TypeDefinition type)
     {
-        return properties.Where(x => x.DeclaringType == type).ToArray();
+        return properties.Where(x => x.DeclaringType == type)
+            .ToArray();
     }
 }

@@ -6,15 +6,15 @@ using Mono.Collections.Generic;
 
 public static class TypeDefinitionExtensions
 {
-    public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method,
-        params string[] paramTypes)
+    public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes)
     {
         return typeDefinition.Methods.First(x => x.Name == method && x.IsMatch(paramTypes));
     }
 
     public static bool IsCollection(this TypeDefinition type)
     {
-        return !type.Name.Equals("String") && (type.Interfaces.Any(i => i.InterfaceType.Name.Equals("IEnumerable")));
+        return !type.Name.Equals("String") &&
+               type.Interfaces.Any(i => i.InterfaceType.Name.Equals("IEnumerable"));
     }
 
     public static PropertyDefinition[] GetPropertiesWithoutIgnores(this TypeDefinition type, string ignoreAttributeName)
@@ -32,7 +32,8 @@ public static class TypeDefinitionExtensions
         {
             foreach (var property in currentType.Properties)
             {
-                var isPotentialCandidate = property.HasThis && !property.HasParameters;
+                var isPotentialCandidate = property.HasThis &&
+                                           !property.HasParameters;
                 if (!isPotentialCandidate)
                 {
                     continue;
@@ -139,6 +140,7 @@ public static class TypeDefinitionExtensions
         }
         return genericInstanceType;
     }
+
     public static void AddNegateValue(this Collection<Instruction> ins)
     {
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
