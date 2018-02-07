@@ -3,7 +3,7 @@ using Mono.Collections.Generic;
 
 public static class CollectionCustomAttributeExtensions
 {
-    public static void MarkAsGeneratedCode(this Collection<CustomAttribute> customAttributes)
+    public static void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
     {
         AddCustomAttributeArgument(customAttributes);
         AddDebuggerNonUserCodeAttribute(customAttributes);

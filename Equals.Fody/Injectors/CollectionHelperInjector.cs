@@ -23,7 +23,7 @@ public partial class ModuleWeaver
         var selectedName = mod == 0 ? "Helpers" : "Helpers" + mod;
         var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
         var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
-        helperType.CustomAttributes.MarkAsGeneratedCode();
+        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(helperType.CustomAttributes);
         helperType.BaseType = ObjectType;
         moduleDefinition.Types.Add(helperType);
 
@@ -54,7 +54,7 @@ public partial class ModuleWeaver
         AddCollectionLoop(ins, leftEnumerator, leftHasNext, rightEnumerator, rightHasNext);
 
         body.OptimizeMacros();
-        method.CustomAttributes.MarkAsGeneratedCode();
+        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
 
         return method;
     }

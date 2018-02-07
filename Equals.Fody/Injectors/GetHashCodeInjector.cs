@@ -15,7 +15,7 @@ public partial class ModuleWeaver
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("GetHashCode", methodAttributes, Int32Type);
-        method.CustomAttributes.MarkAsGeneratedCode();
+        CollectionCustomAttributeExtensions.MarkAsGeneratedCode(method.CustomAttributes);
 
         var resultVariable = method.Body.Variables.Add(Int32Type);
 
