@@ -4,7 +4,7 @@ using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
-public class ModuleWeaver:BaseModuleWeaver
+public partial class ModuleWeaver:BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
@@ -34,8 +34,8 @@ public class ModuleWeaver:BaseModuleWeaver
 
     public override void Execute()
     {
-        ReferenceFinder.SetModule(ModuleDefinition);
-        ReferenceFinder.FindReferences(base.FindType);
+        ModuleWeaver.SetModule(ModuleDefinition);
+        ModuleWeaver.FindReferences(base.FindType);
 
         var collectionEquals = CollectionHelperInjector.Inject(ModuleDefinition);
 
@@ -65,7 +65,7 @@ public class ModuleWeaver:BaseModuleWeaver
                 EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
                 EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
-                var typeInterface = ReferenceFinder.IEquatableType.MakeGenericInstanceType(typeRef);
+                var typeInterface = ModuleWeaver.IEquatableType.MakeGenericInstanceType(typeRef);
                 if (type.Interfaces.All(x => x.InterfaceType.FullName != typeInterface.FullName))
                 {
                     type.Interfaces.Add(new InterfaceImplementation(typeInterface));

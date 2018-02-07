@@ -2,7 +2,7 @@
 using Mono.Cecil;
 #pragma warning disable 108,114
 
-public static class ReferenceFinder
+public partial class ModuleWeaver
 {
     public static MethodReference GetTypeFromHandle;
 
@@ -29,7 +29,7 @@ public static class ReferenceFinder
 
     public static void SetModule(ModuleDefinition module)
     {
-        ReferenceFinder.module = module;
+        ModuleWeaver.module = module;
     }
 
     public static MethodReference ImportCustom(MethodReference method)

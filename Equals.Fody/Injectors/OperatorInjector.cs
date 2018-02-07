@@ -18,7 +18,7 @@ public static class OperatorInjector
     static MethodDefinition AddOperator(TypeDefinition type, bool isEquality)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
-        var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ReferenceFinder.BooleanType);
+        var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ModuleWeaver.BooleanType);
         method.CustomAttributes.MarkAsGeneratedCode();
 
         var parameterType = type.GetGenericInstanceType(type);
@@ -71,6 +71,6 @@ public static class OperatorInjector
             ins.Add(Instruction.Create(OpCodes.Ldarg_1));
         }
 
-        ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.StaticEquals));
+        ins.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.StaticEquals));
     }
 }
