@@ -3,19 +3,19 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-public static class OperatorInjector
+public partial class ModuleWeaver
 {
-    public static MethodDefinition InjectEqualityOperator(TypeDefinition type)
+    public static void InjectEqualityOperator(TypeDefinition type)
     {
-        return AddOperator(type, true);
+        AddOperator(type, true);
     }
 
-    public static MethodDefinition InjectInequalityOperator(TypeDefinition type)
+    public static void InjectInequalityOperator(TypeDefinition type)
     {
-        return AddOperator(type, false);
+        AddOperator(type, false);
     }
 
-    static MethodDefinition AddOperator(TypeDefinition type, bool isEquality)
+    static void AddOperator(TypeDefinition type, bool isEquality)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
         var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, ModuleWeaver.BooleanType);
@@ -30,29 +30,11 @@ public static class OperatorInjector
         var ins = body.Instructions;
 
         AddStaticEqualsCall(type, ins);
-        AddReturnValue(isEquality, ins);
+        ins.AddReturnValue(isEquality);
 
         body.OptimizeMacros();
 
         type.Methods.AddOrReplace(method);
-
-        return method;
-    }
-
-    static void AddReturnValue(bool isEquality, Collection<Instruction> ins)
-    {
-        if (!isEquality)
-        {
-            AddNegateValue(ins);
-        }
-
-        ins.Add(Instruction.Create(OpCodes.Ret));
-    }
-
-    static void AddNegateValue(Collection<Instruction> ins)
-    {
-        ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-        ins.Add(Instruction.Create(OpCodes.Ceq));
     }
 
     static void AddStaticEqualsCall(TypeDefinition type, Collection<Instruction> ins)

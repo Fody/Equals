@@ -20,9 +20,9 @@ public static class CollectionCustomAttributeExtensions
         var version = typeof (ModuleWeaver).Assembly.GetName().Version.ToString();
         var name = typeof (ModuleWeaver).Assembly.GetName().Name;
 
-        var generatedAttribute = new CustomAttribute(ModuleWeaver.GeneratedCodeAttributeConstructor);
-        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, name));
-        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, version));
-        customAttributes.Add(generatedAttribute);
+        var attribute = new CustomAttribute(ModuleWeaver.GeneratedCodeAttributeConstructor);
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, name));
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleWeaver.StringReference, version));
+        customAttributes.Add(attribute);
     }
 }

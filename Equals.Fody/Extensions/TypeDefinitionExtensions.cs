@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
 public static class TypeDefinitionExtensions
@@ -137,5 +138,20 @@ public static class TypeDefinitionExtensions
             genericInstanceType.GenericArguments.Add(genericParameter);
         }
         return genericInstanceType;
+    }
+    public static void AddNegateValue(this Collection<Instruction> ins)
+    {
+        ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+        ins.Add(Instruction.Create(OpCodes.Ceq));
+    }
+
+    public static void AddReturnValue(this Collection<Instruction> ins, bool isEquality)
+    {
+        if (!isEquality)
+        {
+            ins.AddNegateValue();
+        }
+
+        ins.Add(Instruction.Create(OpCodes.Ret));
     }
 }
