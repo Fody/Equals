@@ -183,13 +183,4 @@ public static class CollectionHelperInjector
                 ins.Add(Instruction.Create(OpCodes.Ret));
             });
     }
-
-    public static OpCode GetLdArgForType(this TypeReference type)
-    {
-        if (type.IsValueType)
-        {
-            return OpCodes.Ldarga;
-        }
-        return OpCodes.Ldarg;
-    }
 }
