@@ -39,8 +39,8 @@ public static class CollectionHelperInjector
 
         body.InitLocals = true;
 
-        var leftEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
-        var rightEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
+        var leftEnumerator = body.Variables.Add(ReferenceFinder.IEnumeratorType);
+        var rightEnumerator = body.Variables.Add(ReferenceFinder.IEnumeratorType);
         var leftHasNext = body.Variables.Add(ReferenceFinder.BooleanType);
         var rightHasNext = body.Variables.Add(ReferenceFinder.BooleanType);
 
@@ -96,10 +96,10 @@ public static class CollectionHelperInjector
     static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
     {
         c.Add(Instruction.Create(OpCodes.Ldloc, leftEnumerator));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.GetCurrent));
+        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetCurrent));
 
         c.Add(Instruction.Create(OpCodes.Ldloc, rightEnumerator));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.GetCurrent));
+        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetCurrent));
 
         c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.StaticEquals));
 
@@ -123,7 +123,7 @@ public static class CollectionHelperInjector
     static void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
     {
         ins.Add(Instruction.Create(OpCodes.Ldloc, enumerator));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.MoveNext));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.MoveNext));
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Ceq));
         ins.Add(Instruction.Create(OpCodes.Stloc, hasNext));

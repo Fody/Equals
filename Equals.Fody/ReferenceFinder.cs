@@ -19,28 +19,11 @@ public static class ReferenceFinder
     public static TypeReference Int32Type;
     public static TypeReference IEnumerableType;
     public static MethodReference GetEnumerator;
-
-
-    public static class IEnumerator
-    {
-        public static TypeReference IEnumeratorType;
-        public static MethodReference MoveNext;
-        public static MethodReference GetCurrent;
-    }
-
-    public static class IEquatable
-    {
-        public static TypeReference TypeReference;
-    }
-
-    public static class GeneratedCodeAttribute
-    {
-    }
-
-    public static class DebuggerNonUserCodeAttribute
-    {
-        public static MethodReference DebuggerNonUserCodeAttributeConstructor;
-    }
+    public static TypeReference IEquatableType;
+    public static TypeReference IEnumeratorType;
+    public static MethodReference MoveNext;
+    public static MethodReference GetCurrent;
+    public static MethodReference DebuggerNonUserCodeAttributeConstructor;
 
     static ModuleDefinition module;
 
@@ -82,16 +65,16 @@ public static class ReferenceFinder
         GetEnumerator = module.ImportReference(enumerableType.FindMethod("GetEnumerator"));
 
         var ienumeratorDefinition = typeFinder("System.Collections.IEnumerator");
-        IEnumerator.IEnumeratorType = module.ImportReference(ienumeratorDefinition);
-        IEnumerator.MoveNext = module.ImportReference(ienumeratorDefinition.FindMethod("MoveNext"));
-        IEnumerator.GetCurrent = module.ImportReference(ienumeratorDefinition.FindMethod("get_Current"));
+        IEnumeratorType = module.ImportReference(ienumeratorDefinition);
+        MoveNext = module.ImportReference(ienumeratorDefinition.FindMethod("MoveNext"));
+        GetCurrent = module.ImportReference(ienumeratorDefinition.FindMethod("get_Current"));
 
-        IEquatable.TypeReference = module.ImportReference(typeFinder("System.IEquatable`1"));
+        IEquatableType = module.ImportReference(typeFinder("System.IEquatable`1"));
 
         var generatedCodeType = typeFinder("System.CodeDom.Compiler.GeneratedCodeAttribute");
         GeneratedCodeAttributeConstructor = module.ImportReference(generatedCodeType.FindMethod(".ctor", "String", "String"));
 
         var debuggerNonUserCodeType = typeFinder("System.Diagnostics.DebuggerNonUserCodeAttribute");
-        DebuggerNonUserCodeAttribute.DebuggerNonUserCodeAttributeConstructor = module.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
+        DebuggerNonUserCodeAttributeConstructor = module.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
     }
 }

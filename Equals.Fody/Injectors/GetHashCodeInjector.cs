@@ -272,7 +272,7 @@ public static class GetHashCodeInjector
         MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
     {
         LoadVariable(property, t, type);
-        var enumeratorVariable = method.Body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
+        var enumeratorVariable = method.Body.Variables.Add(ReferenceFinder.IEnumeratorType);
         var currentVariable = method.Body.Variables.Add(ReferenceFinder.ObjectType);
 
         GetEnumerator(t, enumeratorVariable, property);
@@ -286,7 +286,7 @@ public static class GetHashCodeInjector
             c =>
             {
                 c.Add(Instruction.Create(OpCodes.Ldloc, enumeratorVariable));
-                c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.MoveNext));
+                c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.MoveNext));
             },
             b =>
             {
@@ -295,7 +295,7 @@ public static class GetHashCodeInjector
                 b.Add(Instruction.Create(OpCodes.Mul));
 
                 b.Add(Instruction.Create(OpCodes.Ldloc, enumeratorVariable));
-                b.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.GetCurrent));
+                b.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetCurrent));
                 b.Add(Instruction.Create(OpCodes.Stloc, currentVariable));
 
                 b.If(

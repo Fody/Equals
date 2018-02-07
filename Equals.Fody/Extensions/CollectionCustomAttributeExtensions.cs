@@ -11,7 +11,7 @@ public static class CollectionCustomAttributeExtensions
 
     static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
     {
-        var debuggerAttribute = new CustomAttribute(ReferenceFinder.DebuggerNonUserCodeAttribute.DebuggerNonUserCodeAttributeConstructor);
+        var debuggerAttribute = new CustomAttribute(ReferenceFinder.DebuggerNonUserCodeAttributeConstructor);
         customAttributes.Add(debuggerAttribute);
     }
 
