@@ -8,7 +8,7 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="2.3.19" PrivateAssets="None" />
-    <PackageReference Include="FodyPackaging" Version="2.3.19" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="2.3.25" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="2.3.25" PrivateAssets="All" />
   </ItemGroup>
 </Project>

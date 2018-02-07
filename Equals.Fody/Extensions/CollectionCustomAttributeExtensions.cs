@@ -11,7 +11,7 @@ public static class CollectionCustomAttributeExtensions
 
     static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
     {
-        var debuggerAttribute = new CustomAttribute(ReferenceFinder.DebuggerNonUserCodeAttribute.Constructor);
+        var debuggerAttribute = new CustomAttribute(ReferenceFinder.DebuggerNonUserCodeAttribute.DebuggerNonUserCodeAttributeConstructor);
         customAttributes.Add(debuggerAttribute);
     }
 
@@ -20,9 +20,9 @@ public static class CollectionCustomAttributeExtensions
         var version = typeof (ModuleWeaver).Assembly.GetName().Version.ToString();
         var name = typeof (ModuleWeaver).Assembly.GetName().Name;
 
-        var generatedAttribute = new CustomAttribute(ReferenceFinder.GeneratedCodeAttribute.ConstructorStringString);
-        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ReferenceFinder.String.TypeReference, name));
-        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ReferenceFinder.String.TypeReference, version));
+        var generatedAttribute = new CustomAttribute(ReferenceFinder.GeneratedCodeAttributeConstructor);
+        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ReferenceFinder.StringReference, name));
+        generatedAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ReferenceFinder.StringReference, version));
         customAttributes.Add(generatedAttribute);
     }
 }

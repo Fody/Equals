@@ -4,44 +4,26 @@ using Mono.Cecil;
 
 public static class ReferenceFinder
 {
-    public static class Type
-    {
-        public static MethodReference GetTypeFromHandle;
-    }
+    public static MethodReference GetTypeFromHandle;
 
-    public static class Object
-    {
-        public static TypeReference TypeReference;
-        public static MethodReference StaticEquals;
-        public static MethodReference ReferenceEquals;
-        public static MethodReference GetType;
-        public static MethodReference GetHashcode;
-    }
 
-    public static class Boolean
-    {
-        public static TypeReference TypeReference;
-    }
+    public static TypeReference ObjectType;
+    public static MethodReference StaticEquals;
+    public static MethodReference ReferenceEquals;
+    public static MethodReference GetType;
+    public static MethodReference GetHashcode;
+    public static MethodReference GeneratedCodeAttributeConstructor;
+    public static TypeReference BooleanType;
 
-    public static class String
-    {
-        public static TypeReference TypeReference;
-    }
+    public static TypeReference StringReference;
+    public static TypeReference Int32Type;
+    public static TypeReference IEnumerableType;
+    public static MethodReference GetEnumerator;
 
-    public static class Int32
-    {
-        public static TypeReference TypeReference;
-    }
-
-    public static class IEnumerable
-    {
-        public static TypeReference TypeReference;
-        public static MethodReference GetEnumerator;
-    }
 
     public static class IEnumerator
     {
-        public static TypeReference TypeReference;
+        public static TypeReference IEnumeratorType;
         public static MethodReference MoveNext;
         public static MethodReference GetCurrent;
     }
@@ -53,64 +35,63 @@ public static class ReferenceFinder
 
     public static class GeneratedCodeAttribute
     {
-        public static MethodReference ConstructorStringString;
     }
 
     public static class DebuggerNonUserCodeAttribute
     {
-        public static MethodReference Constructor;
+        public static MethodReference DebuggerNonUserCodeAttributeConstructor;
     }
 
-    static ModuleDefinition moduleDefinition;
+    static ModuleDefinition module;
 
     public static void SetModule(ModuleDefinition module)
     {
-        moduleDefinition = module;
+        ReferenceFinder.module = module;
     }
 
     public static MethodReference ImportCustom(MethodReference method)
     {
-        return moduleDefinition.ImportReference(method);
+        return module.ImportReference(method);
     }
 
     public static TypeReference ImportCustom(TypeReference type)
     {
-        return moduleDefinition.ImportReference(type);
+        return module.ImportReference(type);
     }
 
     public static void FindReferences(Func<string, TypeDefinition> typeFinder)
     {
-        Boolean.TypeReference = moduleDefinition.ImportReference(typeFinder("System.Boolean"));
+        BooleanType = module.ImportReference(typeFinder("System.Boolean"));
 
-        Int32.TypeReference = moduleDefinition.ImportReference(typeFinder("System.Int32"));
+        Int32Type = module.ImportReference(typeFinder("System.Int32"));
 
-        String.TypeReference = moduleDefinition.ImportReference(typeFinder("System.String"));
+        StringReference = module.ImportReference(typeFinder("System.String"));
 
         var typeDefinition = typeFinder("System.Type");
-        Type.GetTypeFromHandle = moduleDefinition.ImportReference(typeDefinition.FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
+        GetTypeFromHandle = module.ImportReference(typeDefinition.FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
 
         var objectDefinition = typeFinder("System.Object");
-        Object.TypeReference = moduleDefinition.ImportReference(objectDefinition);
-        Object.GetHashcode = moduleDefinition.ImportReference(objectDefinition.FindMethod("GetHashCode"));
-        Object.GetType = moduleDefinition.ImportReference(objectDefinition.FindMethod("GetType"));
-        Object.StaticEquals = moduleDefinition.ImportReference(objectDefinition.FindMethod("Equals", "Object", "Object"));
-        Object.ReferenceEquals = moduleDefinition.ImportReference(objectDefinition.FindMethod("ReferenceEquals", "Object", "Object"));
+        ObjectType = module.ImportReference(objectDefinition);
+        GetHashcode = module.ImportReference(objectDefinition.FindMethod("GetHashCode"));
+        GetType = module.ImportReference(objectDefinition.FindMethod("GetType"));
+        StaticEquals = module.ImportReference(objectDefinition.FindMethod("Equals", "Object", "Object"));
+        ReferenceEquals = module.ImportReference(objectDefinition.FindMethod("ReferenceEquals", "Object", "Object"));
 
         var enumerableType = typeFinder("System.Collections.IEnumerable");
-        IEnumerable.TypeReference = moduleDefinition.ImportReference(enumerableType);
-        IEnumerable.GetEnumerator = moduleDefinition.ImportReference(enumerableType.FindMethod("GetEnumerator"));
+        IEnumerableType = module.ImportReference(enumerableType);
+        GetEnumerator = module.ImportReference(enumerableType.FindMethod("GetEnumerator"));
 
         var ienumeratorDefinition = typeFinder("System.Collections.IEnumerator");
-        IEnumerator.TypeReference = moduleDefinition.ImportReference(ienumeratorDefinition);
-        IEnumerator.MoveNext = moduleDefinition.ImportReference(ienumeratorDefinition.FindMethod("MoveNext"));
-        IEnumerator.GetCurrent = moduleDefinition.ImportReference(ienumeratorDefinition.FindMethod("get_Current"));
+        IEnumerator.IEnumeratorType = module.ImportReference(ienumeratorDefinition);
+        IEnumerator.MoveNext = module.ImportReference(ienumeratorDefinition.FindMethod("MoveNext"));
+        IEnumerator.GetCurrent = module.ImportReference(ienumeratorDefinition.FindMethod("get_Current"));
 
-        IEquatable.TypeReference = moduleDefinition.ImportReference(typeFinder("System.IEquatable`1"));
+        IEquatable.TypeReference = module.ImportReference(typeFinder("System.IEquatable`1"));
 
         var generatedCodeType = typeFinder("System.CodeDom.Compiler.GeneratedCodeAttribute");
-        GeneratedCodeAttribute.ConstructorStringString = moduleDefinition.ImportReference(generatedCodeType.FindMethod(".ctor", "String", "String"));
+        GeneratedCodeAttributeConstructor = module.ImportReference(generatedCodeType.FindMethod(".ctor", "String", "String"));
 
         var debuggerNonUserCodeType = typeFinder("System.Diagnostics.DebuggerNonUserCodeAttribute");
-        DebuggerNonUserCodeAttribute.Constructor = moduleDefinition.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
+        DebuggerNonUserCodeAttribute.DebuggerNonUserCodeAttributeConstructor = module.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
     }
 }

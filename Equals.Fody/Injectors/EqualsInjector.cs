@@ -35,14 +35,14 @@ public static class EqualsInjector
     public static MethodDefinition InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+        var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.BooleanType);
         method.CustomAttributes.MarkAsGeneratedCode();
 
-        var obj = method.Parameters.Add("obj", ReferenceFinder.Object.TypeReference);
+        var obj = method.Parameters.Add("obj", ReferenceFinder.ObjectType);
 
         var body = method.Body;
         body.InitLocals = true;
-        var result = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
+        var result = body.Variables.Add(ReferenceFinder.BooleanType);
 
         var ins = body.Instructions;
 
@@ -67,7 +67,7 @@ public static class EqualsInjector
     public static MethodDefinition InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+        var method = new MethodDefinition("Equals", methodAttributes, ReferenceFinder.BooleanType);
         method.CustomAttributes.MarkAsGeneratedCode();
         var body = method.Body;
         var ins = body.Instructions;
@@ -86,7 +86,7 @@ public static class EqualsInjector
     public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("EqualsInternal", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+        var method = new MethodDefinition("EqualsInternal", methodAttributes, ReferenceFinder.BooleanType);
         method.CustomAttributes.MarkAsGeneratedCode();
 
         var left = method.Parameters.Add("left", typeRef);
@@ -293,10 +293,10 @@ public static class EqualsInjector
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.GetType));
+        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldtoken, typeRef));
-        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Type.GetTypeFromHandle));
+        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.GetTypeFromHandle));
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
 
@@ -309,10 +309,10 @@ public static class EqualsInjector
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.GetType));
+        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldarg_1));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetType));
+        c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetType));
 
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
@@ -329,7 +329,7 @@ public static class EqualsInjector
                 {
                     c.Add(Instruction.Create(OpCodes.Box, resolvedType));
                 }
-                c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
+                c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.ReferenceEquals));
             },
             AddReturnFalse);
 
@@ -347,7 +347,7 @@ public static class EqualsInjector
                 {
                     c.Add(Instruction.Create(OpCodes.Box, resolvedType));
                 }
-                c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
+                c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.ReferenceEquals));
             },
             AddReturnTrue);
     }
@@ -400,7 +400,7 @@ public static class EqualsInjector
         {
             c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
+        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.StaticEquals));
     }
 
     static void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)

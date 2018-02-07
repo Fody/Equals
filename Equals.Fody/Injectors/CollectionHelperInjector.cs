@@ -24,25 +24,25 @@ public static class CollectionHelperInjector
         var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
         var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
         helperType.CustomAttributes.MarkAsGeneratedCode();
-        helperType.BaseType = ReferenceFinder.Object.TypeReference;
+        helperType.BaseType = ReferenceFinder.ObjectType;
         moduleDefinition.Types.Add(helperType);
 
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("CollectionEquals", methodAttributes, ReferenceFinder.Boolean.TypeReference);
+        var method = new MethodDefinition("CollectionEquals", methodAttributes, ReferenceFinder.BooleanType);
         helperType.Methods.Add(method);
 
-        var left = method.Parameters.Add("left", ReferenceFinder.IEnumerable.TypeReference);
-        var right = method.Parameters.Add("right", ReferenceFinder.IEnumerable.TypeReference);
+        var left = method.Parameters.Add("left", ReferenceFinder.IEnumerableType);
+        var right = method.Parameters.Add("right", ReferenceFinder.IEnumerableType);
 
         var body = method.Body;
         var ins = body.Instructions;
 
         body.InitLocals = true;
 
-        var leftEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
-        var rightEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
-        var leftHasNext = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
-        var rightHasNext = body.Variables.Add(ReferenceFinder.Boolean.TypeReference);
+        var leftEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
+        var rightEnumerator = body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
+        var leftHasNext = body.Variables.Add(ReferenceFinder.BooleanType);
+        var rightHasNext = body.Variables.Add(ReferenceFinder.BooleanType);
 
         AddLeftAndRightReferenceEquals(ins, left, right);
         AddLeftAndNullReferenceEquals(ins, left);
@@ -101,7 +101,7 @@ public static class CollectionHelperInjector
         c.Add(Instruction.Create(OpCodes.Ldloc, rightEnumerator));
         c.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerator.GetCurrent));
 
-        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.StaticEquals));
+        c.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.StaticEquals));
 
         c.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         c.Add(Instruction.Create(OpCodes.Ceq));
@@ -132,7 +132,7 @@ public static class CollectionHelperInjector
     static void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
     {
         ins.Add(Instruction.Create(OpCodes.Ldarg, argument));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerable.GetEnumerator));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetEnumerator));
         ins.Add(Instruction.Create(OpCodes.Stloc, enumerator));
     }
 
@@ -143,7 +143,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
-                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.ReferenceEquals));
             },
             t =>
             {
@@ -159,7 +159,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
-                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.ReferenceEquals));
             },
             t =>
             {
@@ -175,7 +175,7 @@ public static class CollectionHelperInjector
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
-                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.Object.ReferenceEquals));
+                ins.Add(Instruction.Create(OpCodes.Call, ReferenceFinder.ReferenceEquals));
             },
             t =>
             {

@@ -16,10 +16,10 @@ public static class GetHashCodeInjector
     public static MethodDefinition Inject(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("GetHashCode", methodAttributes, ReferenceFinder.Int32.TypeReference);
+        var method = new MethodDefinition("GetHashCode", methodAttributes, ReferenceFinder.Int32Type);
         method.CustomAttributes.MarkAsGeneratedCode();
 
-        var resultVariable = method.Body.Variables.Add(ReferenceFinder.Int32.TypeReference);
+        var resultVariable = method.Body.Variables.Add(ReferenceFinder.Int32Type);
 
         var body = method.Body;
         body.InitLocals = true;
@@ -154,7 +154,7 @@ public static class GetHashCodeInjector
             if (property.PropertyType.FullName != "System.Int32")
             {
                 ins.Add(Instruction.Create(OpCodes.Box, propType));
-                ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetHashcode));
             }
         }
         else
@@ -205,7 +205,7 @@ public static class GetHashCodeInjector
 
                 t.Add(Instruction.Create(OpCodes.Call, imp2));
                 t.Add(Instruction.Create(OpCodes.Box, nullableProperty));
-                t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetHashcode));
             },
             e => e.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
         return variable;
@@ -233,7 +233,7 @@ public static class GetHashCodeInjector
     static void AddValueTypeCode(PropertyDefinition property, Collection<Instruction> ins)
     {
         ins.Add(Instruction.Create(OpCodes.Box, property.PropertyType));
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetHashcode));
     }
 
     static void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
@@ -245,7 +245,7 @@ public static class GetHashCodeInjector
             t =>
             {
                 LoadVariable(property, t, type);
-                t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                t.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetHashcode));
             },
             f => f.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
     }
@@ -272,8 +272,8 @@ public static class GetHashCodeInjector
         MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
     {
         LoadVariable(property, t, type);
-        var enumeratorVariable = method.Body.Variables.Add(ReferenceFinder.IEnumerator.TypeReference);
-        var currentVariable = method.Body.Variables.Add(ReferenceFinder.Object.TypeReference);
+        var enumeratorVariable = method.Body.Variables.Add(ReferenceFinder.IEnumerator.IEnumeratorType);
+        var currentVariable = method.Body.Variables.Add(ReferenceFinder.ObjectType);
 
         GetEnumerator(t, enumeratorVariable, property);
 
@@ -303,7 +303,7 @@ public static class GetHashCodeInjector
                     bt =>
                     {
                         bt.Add(Instruction.Create(OpCodes.Ldloc, currentVariable));
-                        bt.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.Object.GetHashcode));
+                        bt.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetHashcode));
                     },
                     et => et.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
                 b.Add(Instruction.Create(OpCodes.Xor));
@@ -325,7 +325,7 @@ public static class GetHashCodeInjector
             ins.Add(Instruction.Create(OpCodes.Box, imported));
         }
 
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.IEnumerable.GetEnumerator));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, ReferenceFinder.GetEnumerator));
         ins.Add(Instruction.Create(OpCodes.Stloc, variable));
     }
 }
