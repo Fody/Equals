@@ -11,7 +11,7 @@ public static class GetHashCodeInjector
 
     const int magicNumber = 397;
 
-    public static void Inject(TypeDefinition type, bool ignoreBaseClassProperties)
+    public static void InjectGetHashCode(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("GetHashCode", methodAttributes, ModuleWeaver.Int32Type);

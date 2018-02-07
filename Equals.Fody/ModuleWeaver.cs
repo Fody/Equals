@@ -74,7 +74,7 @@ public partial class ModuleWeaver:BaseModuleWeaver
 
             if (!IsPropertySet(attribute, DoNotAddGetHashCode))
             {
-                GetHashCodeInjector.Inject(type, ignoreBaseClassProperties);
+                GetHashCodeInjector.InjectGetHashCode(type, ignoreBaseClassProperties);
             }
 
             if (!IsPropertySet(attribute, DoNotAddEqualityOperators))
