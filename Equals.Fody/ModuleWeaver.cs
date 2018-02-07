@@ -79,8 +79,8 @@ public partial class ModuleWeaver:BaseModuleWeaver
 
             if (!IsPropertySet(attribute, DoNotAddEqualityOperators))
             {
-                OperatorInjector.InjectEqualityOperator(type);
-                OperatorInjector.InjectInequalityOperator(type);
+                InjectEqualityOperator(type);
+                InjectInequalityOperator(type);
             }
         }
 
