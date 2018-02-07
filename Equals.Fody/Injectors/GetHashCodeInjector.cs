@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-public static class GetHashCodeInjector
+public partial class ModuleWeaver
 {
     const string customAttribute = "CustomGetHashCodeAttribute";
 
@@ -14,10 +14,10 @@ public static class GetHashCodeInjector
     public static void InjectGetHashCode(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("GetHashCode", methodAttributes, ModuleWeaver.Int32Type);
+        var method = new MethodDefinition("GetHashCode", methodAttributes, Int32Type);
         method.CustomAttributes.MarkAsGeneratedCode();
 
-        var resultVariable = method.Body.Variables.Add(ModuleWeaver.Int32Type);
+        var resultVariable = method.Body.Variables.Add(Int32Type);
 
         var body = method.Body;
         body.InitLocals = true;
@@ -26,7 +26,7 @@ public static class GetHashCodeInjector
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
-        var properties = ModuleWeaver.ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ModuleWeaver.ignoreAttributeName);
+        var properties = ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
@@ -78,7 +78,7 @@ public static class GetHashCodeInjector
 
     static void AddCustomLogicCall(TypeDefinition type, Collection<Instruction> ins, MethodDefinition customLogic)
     {
-        var customMethod = ModuleWeaver.ImportCustom(customLogic);
+        var customMethod = ImportCustom(customLogic);
 
         var parameters = customMethod.Parameters;
         if (parameters.Count != 0)
@@ -94,7 +94,7 @@ public static class GetHashCodeInjector
         if (customMethod.DeclaringType.HasGenericParameters)
         {
             var genericInstanceType = type.GetGenericInstanceType(type);
-            var resolverType = ModuleWeaver.ImportCustom(genericInstanceType);
+            var resolverType = ImportCustom(genericInstanceType);
             var newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
             {
                 DeclaringType = resolverType,
@@ -108,7 +108,7 @@ public static class GetHashCodeInjector
             selectedMethod = customMethod;
         }
 
-        var imported = ModuleWeaver.ImportCustom(selectedMethod);
+        var imported = ImportCustom(selectedMethod);
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
         ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
     }
@@ -123,7 +123,7 @@ public static class GetHashCodeInjector
     {
         VariableDefinition variable = null;
         bool isCollection;
-        var propType = ModuleWeaver.ImportCustom(property.PropertyType.GetGenericInstanceType(type));
+        var propType = ImportCustom(property.PropertyType.GetGenericInstanceType(type));
         if (property.PropertyType.IsGenericParameter)
         {
             isCollection = false;
@@ -149,7 +149,7 @@ public static class GetHashCodeInjector
             if (property.PropertyType.FullName != "System.Int32")
             {
                 ins.Add(Instruction.Create(OpCodes.Box, propType));
-                ins.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetHashcode));
+                ins.Add(Instruction.Create(OpCodes.Callvirt, GetHashcode));
             }
         }
         else
@@ -173,13 +173,13 @@ public static class GetHashCodeInjector
 
     static VariableDefinition AddNullableProperty(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type, VariableDefinition variable)
     {
+        var getMethod = ImportCustom(property.GetGetMethod(type));
         ins.If(c =>
             {
                 var nullablePropertyResolved = property.PropertyType.Resolve();
-                var nullablePropertyImported = ModuleWeaver.ImportCustom(property.PropertyType);
+                var nullablePropertyImported = ImportCustom(property.PropertyType);
 
                 ins.Add(Instruction.Create(OpCodes.Ldarg_0));
-                var getMethod = ModuleWeaver.ImportCustom(property.GetGetMethod(type));
                 c.Add(Instruction.Create(OpCodes.Call, getMethod));
 
                 variable = new VariableDefinition(getMethod.ReturnType);
@@ -187,20 +187,20 @@ public static class GetHashCodeInjector
                 c.Add(Instruction.Create(OpCodes.Ldloca, variable));
 
                 var hasValuePropertyResolved = nullablePropertyResolved.Properties.First(x => x.Name == "HasValue").Resolve();
-                var hasMethod = ModuleWeaver.ImportCustom(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
+                var hasMethod = ImportCustom(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
                 c.Add(Instruction.Create(OpCodes.Call, hasMethod));
             },
             t =>
             {
-                var nullableProperty = ModuleWeaver.ImportCustom(property.PropertyType);
+                var nullableProperty = ImportCustom(property.PropertyType);
 
                 t.Add(Instruction.Create(OpCodes.Ldarg_0));
                 var imp = property.GetGetMethod(type);
-                var imp2 = ModuleWeaver.ImportCustom(imp);
+                var imp2 = ImportCustom(imp);
 
                 t.Add(Instruction.Create(OpCodes.Call, imp2));
                 t.Add(Instruction.Create(OpCodes.Box, nullableProperty));
-                t.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetHashcode));
+                t.Add(Instruction.Create(OpCodes.Callvirt, GetHashcode));
             },
             e => e.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
         return variable;
@@ -209,7 +209,7 @@ public static class GetHashCodeInjector
     static void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         var get = property.GetGetMethod(type);
-        var imported = ModuleWeaver.ImportCustom(get);
+        var imported = ImportCustom(get);
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
         ins.Add(Instruction.Create(OpCodes.Call, imported));
     }
@@ -234,7 +234,7 @@ public static class GetHashCodeInjector
             t =>
             {
                 LoadVariable(property, t, type);
-                t.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetHashcode));
+                t.Add(Instruction.Create(OpCodes.Callvirt, GetHashcode));
             },
             f => f.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
     }
@@ -261,8 +261,8 @@ public static class GetHashCodeInjector
         MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
     {
         LoadVariable(property, t, type);
-        var enumeratorVariable = method.Body.Variables.Add(ModuleWeaver.IEnumeratorType);
-        var currentVariable = method.Body.Variables.Add(ModuleWeaver.ObjectType);
+        var enumeratorVariable = method.Body.Variables.Add(IEnumeratorType);
+        var currentVariable = method.Body.Variables.Add(ObjectType);
 
         AddGetEnumerator(t, enumeratorVariable, property);
 
@@ -275,7 +275,7 @@ public static class GetHashCodeInjector
             c =>
             {
                 c.Add(Instruction.Create(OpCodes.Ldloc, enumeratorVariable));
-                c.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.MoveNext));
+                c.Add(Instruction.Create(OpCodes.Callvirt, MoveNext));
             },
             b =>
             {
@@ -284,7 +284,7 @@ public static class GetHashCodeInjector
                 b.Add(Instruction.Create(OpCodes.Mul));
 
                 b.Add(Instruction.Create(OpCodes.Ldloc, enumeratorVariable));
-                b.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetCurrent));
+                b.Add(Instruction.Create(OpCodes.Callvirt, GetCurrent));
                 b.Add(Instruction.Create(OpCodes.Stloc, currentVariable));
 
                 b.If(
@@ -292,7 +292,7 @@ public static class GetHashCodeInjector
                     bt =>
                     {
                         bt.Add(Instruction.Create(OpCodes.Ldloc, currentVariable));
-                        bt.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetHashcode));
+                        bt.Add(Instruction.Create(OpCodes.Callvirt, GetHashcode));
                     },
                     et => et.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
                 b.Add(Instruction.Create(OpCodes.Xor));
@@ -310,11 +310,11 @@ public static class GetHashCodeInjector
     {
         if (property.PropertyType.IsValueType)
         {
-            var imported = ModuleWeaver.ImportCustom(property.PropertyType);
+            var imported = ImportCustom(property.PropertyType);
             ins.Add(Instruction.Create(OpCodes.Box, imported));
         }
 
-        ins.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetEnumerator));
+        ins.Add(Instruction.Create(OpCodes.Callvirt, GetEnumerator));
         ins.Add(Instruction.Create(OpCodes.Stloc, variable));
     }
 }
