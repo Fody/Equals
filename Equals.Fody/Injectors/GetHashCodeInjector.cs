@@ -7,11 +7,11 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-  public   const string CustomGetHashCodeAttribute = "CustomGetHashCodeAttribute";
+  public const string CustomGetHashCodeAttribute = "CustomGetHashCodeAttribute";
 
     const int magicNumber = 397;
 
-    public static void InjectGetHashCode(TypeDefinition type, bool ignoreBaseClassProperties)
+    public void InjectGetHashCode(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("GetHashCode", methodAttributes, Int32Type);
@@ -119,7 +119,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Ret));
     }
 
-    static VariableDefinition AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
+    VariableDefinition AddPropertyCode(PropertyDefinition property, bool isFirst, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
     {
         VariableDefinition variable = null;
         bool isCollection;
@@ -239,7 +239,7 @@ public partial class ModuleWeaver
             f => f.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
     }
 
-    static void AddCollectionCode(PropertyDefinition property, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
+    void AddCollectionCode(PropertyDefinition property, Collection<Instruction> ins, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type)
     {
         if (!property.PropertyType.IsValueType)
         {
@@ -257,8 +257,7 @@ public partial class ModuleWeaver
         }
     }
 
-    static void GenerateCollectionCode(PropertyDefinition property, VariableDefinition resultVariable,
-        MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
+    void GenerateCollectionCode(PropertyDefinition property, VariableDefinition resultVariable, MethodDefinition method, TypeDefinition type, Collection<Instruction> t)
     {
         LoadVariable(property, t, type);
         var enumeratorVariable = method.Body.Variables.Add(IEnumeratorType);

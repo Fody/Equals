@@ -29,7 +29,7 @@ public partial class ModuleWeaver
         "System.UInt16"
     });
 
-    public static void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
+    public void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
@@ -76,7 +76,7 @@ public partial class ModuleWeaver
         type.Methods.AddOrReplace(method);
     }
 
-    public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
+    public MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
         var method = new MethodDefinition("EqualsInternal", methodAttributes, BooleanType);
@@ -231,7 +231,7 @@ public partial class ModuleWeaver
     }
 
 
-    static void AddTypeChecking(TypeDefinition type, TypeReference typeRef, int typeCheck, Collection<Instruction> c)
+    void AddTypeChecking(TypeDefinition type, TypeReference typeRef, int typeCheck, Collection<Instruction> c)
     {
         switch (typeCheck)
         {
@@ -258,7 +258,7 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Isinst, typeRef));
     }
 
-    static void AddExactlyOfType(TypeDefinition type, TypeReference typeRef, Collection<Instruction> c)
+    void AddExactlyOfType(TypeDefinition type, TypeReference typeRef, Collection<Instruction> c)
     {
         c.Add(Instruction.Create(OpCodes.Ldarg_0));
         if (type.IsValueType)
@@ -326,7 +326,7 @@ public partial class ModuleWeaver
             TypeDefinitionExtensions.AddReturnTrue);
     }
 
-    static void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
+    void AddPropertyCode(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
     {
         ins.IfNot(
             c =>
@@ -357,7 +357,7 @@ public partial class ModuleWeaver
             TypeDefinitionExtensions.AddReturnFalse);
     }
 
-    static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
+    void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
     {
         var genericInstance = new Lazy<TypeReference>(() => ImportCustom(property.PropertyType.GetGenericInstanceType(type)));
         var getMethodImported = ImportCustom(property.GetGetMethod(type));

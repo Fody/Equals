@@ -4,11 +4,10 @@ using Mono.Cecil;
 
 public partial class ModuleWeaver
 {
-    public static MethodReference GetTypeFromHandle;
+    public MethodReference GetTypeFromHandle;
 
-
-    public static TypeReference ObjectType;
-    public static MethodReference StaticEquals;
+    public TypeReference ObjectType;
+    public MethodReference StaticEquals;
     public static MethodReference ReferenceEquals;
     public static MethodReference GetType;
     public static MethodReference GetHashcode;
@@ -42,7 +41,7 @@ public partial class ModuleWeaver
         return module.ImportReference(type);
     }
 
-    public static void FindReferences(Func<string, TypeDefinition> typeFinder)
+    public void FindReferences(Func<string, TypeDefinition> typeFinder)
     {
         BooleanType = module.ImportReference(typeFinder("System.Boolean"));
 

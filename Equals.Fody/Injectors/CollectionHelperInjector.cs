@@ -6,7 +6,7 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    public static MethodDefinition InjectCollectionEquals(ModuleDefinition moduleDefinition)
+    public MethodDefinition InjectCollectionEquals(ModuleDefinition moduleDefinition)
     {
         var mod = 0;
         TypeDefinition typeDef;
@@ -59,7 +59,7 @@ public partial class ModuleWeaver
         return method;
     }
 
-    static void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext, VariableDefinition rightEnumerator, VariableDefinition rightHasNext)
+    void AddCollectionLoop(Collection<Instruction> ins, VariableDefinition leftEnumerator, VariableDefinition leftHasNext, VariableDefinition rightEnumerator, VariableDefinition rightHasNext)
     {
         var loopBegin = Instruction.Create(OpCodes.Nop);
         ins.Add(loopBegin);
@@ -86,7 +86,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Br, loopBegin));
     }
 
-    static void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
+    void AddCheckCurrent(Collection<Instruction> c, VariableDefinition leftEnumerator, VariableDefinition rightEnumerator)
     {
         c.Add(Instruction.Create(OpCodes.Ldloc, leftEnumerator));
         c.Add(Instruction.Create(OpCodes.Callvirt, GetCurrent));
