@@ -33,8 +33,7 @@ public partial class ModuleWeaver : BaseModuleWeaver
 
     public override void Execute()
     {
-        SetModule(ModuleDefinition);
-        FindReferences(base.FindType);
+        FindReferences(FindType);
 
         var collectionEquals = InjectCollectionEquals(ModuleDefinition);
 
