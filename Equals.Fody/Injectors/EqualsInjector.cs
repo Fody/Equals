@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
-public static class EqualsInjector
+public partial class ModuleWeaver
 {
     const int ExactlyTheSameTypeAsThis = 0;
     const int ExactlyOfType = 1;
@@ -32,14 +32,14 @@ public static class EqualsInjector
     public static void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
-       ModuleWeaver. MarkAsGeneratedCode(method.CustomAttributes);
+        var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
+        MarkAsGeneratedCode(method.CustomAttributes);
 
-        var obj = method.Parameters.Add("obj", ModuleWeaver.ObjectType);
+        var obj = method.Parameters.Add("obj", ObjectType);
 
         var body = method.Body;
         body.InitLocals = true;
-        var result = body.Variables.Add(ModuleWeaver.BooleanType);
+        var result = body.Variables.Add(BooleanType);
 
         var ins = body.Instructions;
 
@@ -62,8 +62,8 @@ public static class EqualsInjector
     public static void InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, ModuleWeaver.BooleanType);
-       ModuleWeaver . MarkAsGeneratedCode(method.CustomAttributes);
+        var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
+        MarkAsGeneratedCode(method.CustomAttributes);
         var body = method.Body;
         var ins = body.Instructions;
 
@@ -79,8 +79,8 @@ public static class EqualsInjector
     public static MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("EqualsInternal", methodAttributes, ModuleWeaver.BooleanType);
-        ModuleWeaver.MarkAsGeneratedCode(method.CustomAttributes);
+        var method = new MethodDefinition("EqualsInternal", methodAttributes, BooleanType);
+        MarkAsGeneratedCode(method.CustomAttributes);
 
         var left = method.Parameters.Add("left", typeRef);
         var right = method.Parameters.Add("right", typeRef);
@@ -89,7 +89,7 @@ public static class EqualsInjector
         body.InitLocals = true;
         var ins = body.Instructions;
 
-        var properties = type.GetPropertiesWithoutIgnores(ModuleWeaver.ignoreAttributeName);
+        var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
@@ -102,7 +102,7 @@ public static class EqualsInjector
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == ModuleWeaver.customEqualsAttribute)).ToArray();
+            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customEqualsAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {
@@ -134,7 +134,7 @@ public static class EqualsInjector
         ins.IfNot(
             c =>
             {
-                var customMethod = ModuleWeaver.ImportCustom(customLogic[0]);
+                var customMethod = ImportCustom(customLogic[0]);
 
                 var parameters = customMethod.Parameters;
                 if (parameters.Count != 1)
@@ -151,7 +151,7 @@ public static class EqualsInjector
                 if (customMethod.DeclaringType.HasGenericParameters)
                 {
                     var genericInstanceType = type.GetGenericInstanceType(type);
-                    resolverType = ModuleWeaver.ImportCustom(genericInstanceType);
+                    resolverType = ImportCustom(genericInstanceType);
                     var newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
                     {
                         DeclaringType = resolverType,
@@ -167,7 +167,7 @@ public static class EqualsInjector
                     selectedMethod = customMethod;
                 }
 
-                var imported = ModuleWeaver.ImportCustom(selectedMethod);
+                var imported = ImportCustom(selectedMethod);
                 if (!type.IsValueType)
                 {
                     ins.Add(Instruction.Create(OpCodes.Ldarg_0));
@@ -186,14 +186,6 @@ public static class EqualsInjector
             TypeDefinitionExtensions.AddReturnFalse);
     }
 
-    public static OpCode GetCallForMethod(this MethodReference methodReference)
-    {
-        if (methodReference.DeclaringType.IsValueType)
-        {
-            return OpCodes.Call;
-        }
-        return OpCodes.Callvirt;
-    }
 
     static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins, TypeReference type)
     {
@@ -275,10 +267,10 @@ public static class EqualsInjector
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.GetType));
+        c.Add(Instruction.Create(OpCodes.Call, GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldtoken, typeRef));
-        c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.GetTypeFromHandle));
+        c.Add(Instruction.Create(OpCodes.Call, GetTypeFromHandle));
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
 
@@ -291,10 +283,10 @@ public static class EqualsInjector
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.GetType));
+        c.Add(Instruction.Create(OpCodes.Call, GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldarg_1));
-        c.Add(Instruction.Create(OpCodes.Callvirt, ModuleWeaver.GetType));
+        c.Add(Instruction.Create(OpCodes.Callvirt, GetType));
 
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
@@ -311,7 +303,7 @@ public static class EqualsInjector
                 {
                     c.Add(Instruction.Create(OpCodes.Box, resolvedType));
                 }
-                c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
+                c.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             TypeDefinitionExtensions.AddReturnFalse);
 
@@ -329,7 +321,7 @@ public static class EqualsInjector
                 {
                     c.Add(Instruction.Create(OpCodes.Box, resolvedType));
                 }
-                c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.ReferenceEquals));
+                c.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             TypeDefinitionExtensions.AddReturnTrue);
     }
@@ -367,8 +359,8 @@ public static class EqualsInjector
 
     static void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
     {
-        var genericInstance = new Lazy<TypeReference>(() => ModuleWeaver.ImportCustom(property.PropertyType.GetGenericInstanceType(type)));
-        var getMethodImported = ModuleWeaver.ImportCustom(property.GetGetMethod(type));
+        var genericInstance = new Lazy<TypeReference>(() => ImportCustom(property.PropertyType.GetGenericInstanceType(type)));
+        var getMethodImported = ImportCustom(property.GetGetMethod(type));
 
         c.Add(Instruction.Create(type.GetLdArgForType(), left));
         c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
@@ -382,7 +374,7 @@ public static class EqualsInjector
         {
             c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
         }
-        c.Add(Instruction.Create(OpCodes.Call, ModuleWeaver.StaticEquals));
+        c.Add(Instruction.Create(OpCodes.Call, StaticEquals));
     }
 
     static void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)
@@ -406,13 +398,13 @@ public static class EqualsInjector
             es =>
             {
                 var getMethod = property.GetGetMethod(type);
-                var getMethodImported = ModuleWeaver.ImportCustom(getMethod);
+                var getMethodImported = ImportCustom(getMethod);
 
                 es.Add(Instruction.Create(type.GetLdArgForType(), left));
                 es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                 if (propType.IsValueType && !property.PropertyType.IsArray)
                 {
-                    var imported = ModuleWeaver.ImportCustom(property.PropertyType);
+                    var imported = ImportCustom(property.PropertyType);
                     es.Add(Instruction.Create(OpCodes.Box, imported));
                 }
 
@@ -420,7 +412,7 @@ public static class EqualsInjector
                 es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                 if (propType.IsValueType && !property.PropertyType.IsArray)
                 {
-                    var imported = ModuleWeaver.ImportCustom(property.PropertyType);
+                    var imported = ImportCustom(property.PropertyType);
                     es.Add(Instruction.Create(OpCodes.Box, imported));
                 }
 
@@ -451,7 +443,7 @@ public static class EqualsInjector
     static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type, ParameterDefinition left, ParameterDefinition right)
     {
         var getMethod = property.GetGetMethod(type);
-        var getMethodImported = ModuleWeaver.ImportCustom(getMethod);
+        var getMethodImported = ImportCustom(getMethod);
 
         c.Add(Instruction.Create(type.GetLdArgForType(), left));
         c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));

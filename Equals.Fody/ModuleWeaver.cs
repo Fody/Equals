@@ -60,9 +60,9 @@ public partial class ModuleWeaver : BaseModuleWeaver
                     typeCheck = (int) typeCheckProperty.Argument.Value;
                 }
 
-                var newEquals = EqualsInjector.InjectEqualsInternal(type, typeRef, collectionEquals, ignoreBaseClassProperties);
-                EqualsInjector.InjectEqualsType(type, typeRef, newEquals);
-                EqualsInjector.InjectEqualsObject(type, typeRef, newEquals, typeCheck);
+                var newEquals = InjectEqualsInternal(type, typeRef, collectionEquals, ignoreBaseClassProperties);
+                InjectEqualsType(type, typeRef, newEquals);
+                InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
                 var typeInterface = IEquatableType.MakeGenericInstanceType(typeRef);
                 if (type.Interfaces.All(x => x.InterfaceType.FullName != typeInterface.FullName))

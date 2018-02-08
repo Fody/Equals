@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 public static class MethodReferenceExtensions
 {
@@ -20,5 +21,14 @@ public static class MethodReferenceExtensions
         }
 
         return true;
+    }
+
+    public static OpCode GetCallForMethod(this MethodReference methodReference)
+    {
+        if (methodReference.DeclaringType.IsValueType)
+        {
+            return OpCodes.Call;
+        }
+        return OpCodes.Callvirt;
     }
 }
