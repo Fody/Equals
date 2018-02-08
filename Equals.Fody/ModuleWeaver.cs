@@ -9,7 +9,6 @@ public partial class ModuleWeaver : BaseModuleWeaver
     public const string attributeName = "EqualsAttribute";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
     public const string customEqualsAttribute = "CustomEqualsInternalAttribute";
-    public const string customGetHashCodeAttribute = "CustomGetHashCodeAttribute";
 
     public const string DoNotAddEqualityOperators = "DoNotAddEqualityOperators";
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
@@ -130,7 +129,7 @@ public partial class ModuleWeaver : BaseModuleWeaver
         foreach (var method in type.Methods)
         {
             method.RemoveAttribute(customEqualsAttribute);
-            method.RemoveAttribute(customGetHashCodeAttribute);
+            method.RemoveAttribute(CustomGetHashCodeAttribute);
         }
     }
 

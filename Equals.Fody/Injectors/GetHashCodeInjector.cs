@@ -7,7 +7,7 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    const string customAttribute = "CustomGetHashCodeAttribute";
+  public   const string CustomGetHashCodeAttribute = "CustomGetHashCodeAttribute";
 
     const int magicNumber = 397;
 
@@ -39,7 +39,7 @@ public partial class ModuleWeaver
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customAttribute)).ToArray();
+            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == CustomGetHashCodeAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {
