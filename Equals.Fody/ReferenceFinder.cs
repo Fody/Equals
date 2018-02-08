@@ -8,21 +8,21 @@ public partial class ModuleWeaver
 
     public TypeReference ObjectType;
     public MethodReference StaticEquals;
-    public static MethodReference ReferenceEquals;
-    public static MethodReference GetType;
-    public static MethodReference GetHashcode;
-    public static MethodReference GeneratedCodeAttributeConstructor;
-    public static TypeReference BooleanType;
+    public MethodReference ReferenceEquals;
+    public MethodReference GetType;
+    public MethodReference GetHashcode;
+    public MethodReference GeneratedCodeAttributeConstructor;
+    public TypeReference BooleanType;
 
-    public static TypeReference StringReference;
-    public static TypeReference Int32Type;
-    public static TypeReference IEnumerableType;
-    public static MethodReference GetEnumerator;
-    public static TypeReference IEquatableType;
-    public static TypeReference IEnumeratorType;
-    public static MethodReference MoveNext;
-    public static MethodReference GetCurrent;
-    public static MethodReference DebuggerNonUserCodeAttributeConstructor;
+    public TypeReference StringReference;
+    public TypeReference Int32Type;
+    public TypeReference IEnumerableType;
+    public MethodReference GetEnumerator;
+    public TypeReference IEquatableType;
+    public TypeReference IEnumeratorType;
+    public MethodReference MoveNext;
+    public MethodReference GetCurrent;
+    public MethodReference DebuggerNonUserCodeAttributeConstructor;
 
     static ModuleDefinition module;
 

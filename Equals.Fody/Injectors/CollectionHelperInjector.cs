@@ -113,7 +113,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Ceq));
     }
 
-    static void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
+    void AddMoveNext(Collection<Instruction> ins, VariableDefinition enumerator, VariableDefinition hasNext)
     {
         ins.Add(Instruction.Create(OpCodes.Ldloc, enumerator));
         ins.Add(Instruction.Create(OpCodes.Callvirt, MoveNext));
@@ -122,14 +122,14 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Stloc, hasNext));
     }
 
-    static void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
+    void AddGetEnumerator(Collection<Instruction> ins, ParameterDefinition argument, VariableDefinition enumerator)
     {
         ins.Add(Instruction.Create(OpCodes.Ldarg, argument));
         ins.Add(Instruction.Create(OpCodes.Callvirt, GetEnumerator));
         ins.Add(Instruction.Create(OpCodes.Stloc, enumerator));
     }
 
-    static void AddRightAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition right)
+    void AddRightAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition right)
     {
         ins.If(
             c =>
@@ -145,7 +145,7 @@ public partial class ModuleWeaver
             });
     }
 
-    static void AddLeftAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition left)
+    void AddLeftAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition left)
     {
         ins.If(
             c =>
@@ -161,7 +161,7 @@ public partial class ModuleWeaver
             });
     }
 
-    static void AddLeftAndRightReferenceEquals(Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
+    void AddLeftAndRightReferenceEquals(Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
     {
         ins.If(
             c =>

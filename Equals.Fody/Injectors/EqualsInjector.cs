@@ -59,7 +59,7 @@ public partial class ModuleWeaver
         type.Methods.AddOrReplace(method);
     }
 
-    public static void InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
+    public void InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
@@ -274,7 +274,7 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
 
-    static void AddExactlyTheSameTypeAsThis(TypeDefinition type, Collection<Instruction> c)
+    void AddExactlyTheSameTypeAsThis(TypeDefinition type, Collection<Instruction> c)
     {
         c.Add(Instruction.Create(OpCodes.Ldarg_0));
         if (type.IsValueType)
@@ -291,7 +291,7 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
 
-    static void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins, bool skipBoxingSecond)
+    void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins, bool skipBoxingSecond)
     {
         var resolvedType = type.IsValueType ? type.GetGenericInstanceType(type) : null;
         ins.If(

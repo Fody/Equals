@@ -3,19 +3,19 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    public static void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
+    public void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
     {
         AddCustomAttributeArgument(customAttributes);
         AddDebuggerNonUserCodeAttribute(customAttributes);
     }
 
-    static void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
+    void AddDebuggerNonUserCodeAttribute(Collection<CustomAttribute> customAttributes)
     {
         var debuggerAttribute = new CustomAttribute(DebuggerNonUserCodeAttributeConstructor);
         customAttributes.Add(debuggerAttribute);
     }
 
-    static void AddCustomAttributeArgument(Collection<CustomAttribute> customAttributes)
+    void AddCustomAttributeArgument(Collection<CustomAttribute> customAttributes)
     {
         var version = typeof (ModuleWeaver).Assembly.GetName().Version.ToString();
         var name = typeof (ModuleWeaver).Assembly.GetName().Name;

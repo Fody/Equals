@@ -171,7 +171,7 @@ public partial class ModuleWeaver
         return variable;
     }
 
-    static VariableDefinition AddNullableProperty(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type, VariableDefinition variable)
+    VariableDefinition AddNullableProperty(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type, VariableDefinition variable)
     {
         var getMethod = ImportCustom(property.GetGetMethod(type));
         ins.If(c =>
@@ -225,7 +225,7 @@ public partial class ModuleWeaver
         }
     }
 
-    static void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
+    void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         ins.If(
             c =>
@@ -268,7 +268,7 @@ public partial class ModuleWeaver
         AddCollectionLoop(resultVariable, t, enumeratorVariable, currentVariable);
     }
 
-    static void AddCollectionLoop(VariableDefinition resultVariable, Collection<Instruction> t, VariableDefinition enumeratorVariable, VariableDefinition currentVariable)
+    void AddCollectionLoop(VariableDefinition resultVariable, Collection<Instruction> t, VariableDefinition enumeratorVariable, VariableDefinition currentVariable)
     {
         t.While(
             c =>
@@ -305,7 +305,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
     }
 
-    static void AddGetEnumerator(Collection<Instruction> ins, VariableDefinition variable, PropertyDefinition property)
+    void AddGetEnumerator(Collection<Instruction> ins, VariableDefinition variable, PropertyDefinition property)
     {
         if (property.PropertyType.IsValueType)
         {
