@@ -129,12 +129,12 @@ public partial class ModuleWeaver
         return methodToCall;
     }
 
-    static void AddCustomLogicCall(TypeDefinition type, MethodBody body, Collection<Instruction> ins, MethodDefinition[] customLogic)
+    void AddCustomLogicCall(TypeDefinition type, MethodBody body, Collection<Instruction> ins, MethodDefinition[] customLogic)
     {
         ins.IfNot(
             c =>
             {
-                var customMethod = ImportCustom(customLogic[0]);
+                var customMethod = ModuleDefinition.ImportReference(customLogic[0]);
 
                 var parameters = customMethod.Parameters;
                 if (parameters.Count != 1)
@@ -167,7 +167,7 @@ public partial class ModuleWeaver
                     selectedMethod = customMethod;
                 }
 
-                var imported = ImportCustom(selectedMethod);
+                var imported = ModuleDefinition.ImportReference(selectedMethod);
                 if (!type.IsValueType)
                 {
                     ins.Add(Instruction.Create(OpCodes.Ldarg_0));
@@ -360,7 +360,7 @@ public partial class ModuleWeaver
     void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
     {
         var genericInstance = new Lazy<TypeReference>(() => ImportCustom(property.PropertyType.GetGenericInstanceType(type)));
-        var getMethodImported = ImportCustom(property.GetGetMethod(type));
+        var getMethodImported = ModuleDefinition.ImportReference(property.GetGetMethod(type));
 
         c.Add(Instruction.Create(type.GetLdArgForType(), left));
         c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
@@ -377,7 +377,7 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Call, StaticEquals));
     }
 
-    static void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)
+    void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)
     {
         c.If(
             AddCollectionFirstArgumentCheck,
@@ -385,7 +385,7 @@ public partial class ModuleWeaver
             e => AddCollectionEquals(type, collectionEquals, property, propType, e, left, right));
     }
 
-    static void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeDefinition propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
+    void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeDefinition propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
     {
         e.If(
             cf =>
@@ -398,7 +398,7 @@ public partial class ModuleWeaver
             es =>
             {
                 var getMethod = property.GetGetMethod(type);
-                var getMethodImported = ImportCustom(getMethod);
+                var getMethodImported = ModuleDefinition.ImportReference(getMethod);
 
                 es.Add(Instruction.Create(type.GetLdArgForType(), left));
                 es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
@@ -440,10 +440,10 @@ public partial class ModuleWeaver
         cf.Add(Instruction.Create(OpCodes.Ceq));
     }
 
-    static void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type, ParameterDefinition left, ParameterDefinition right)
+    void AddSimpleValueCheck(Collection<Instruction> c, PropertyDefinition property, TypeDefinition type, ParameterDefinition left, ParameterDefinition right)
     {
         var getMethod = property.GetGetMethod(type);
-        var getMethodImported = ImportCustom(getMethod);
+        var getMethodImported = ModuleDefinition.ImportReference(getMethod);
 
         c.Add(Instruction.Create(type.GetLdArgForType(), left));
         c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));

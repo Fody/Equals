@@ -76,9 +76,9 @@ public partial class ModuleWeaver
         type.Methods.AddOrReplace(method);
     }
 
-    static void AddCustomLogicCall(TypeDefinition type, Collection<Instruction> ins, MethodDefinition customLogic)
+    void AddCustomLogicCall(TypeDefinition type, Collection<Instruction> ins, MethodDefinition customLogic)
     {
-        var customMethod = ImportCustom(customLogic);
+        var customMethod = ModuleDefinition.ImportReference(customLogic);
 
         var parameters = customMethod.Parameters;
         if (parameters.Count != 0)
@@ -108,7 +108,7 @@ public partial class ModuleWeaver
             selectedMethod = customMethod;
         }
 
-        var imported = ImportCustom(selectedMethod);
+        var imported = ModuleDefinition.ImportReference(selectedMethod);
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
         ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
     }
@@ -173,7 +173,7 @@ public partial class ModuleWeaver
 
     VariableDefinition AddNullableProperty(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type, VariableDefinition variable)
     {
-        var getMethod = ImportCustom(property.GetGetMethod(type));
+        var getMethod = ModuleDefinition.ImportReference(property.GetGetMethod(type));
         ins.If(c =>
             {
                 var nullablePropertyResolved = property.PropertyType.Resolve();
@@ -187,7 +187,7 @@ public partial class ModuleWeaver
                 c.Add(Instruction.Create(OpCodes.Ldloca, variable));
 
                 var hasValuePropertyResolved = nullablePropertyResolved.Properties.First(x => x.Name == "HasValue").Resolve();
-                var hasMethod = ImportCustom(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
+                var hasMethod = ModuleDefinition.ImportReference(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
                 c.Add(Instruction.Create(OpCodes.Call, hasMethod));
             },
             t =>
@@ -196,7 +196,7 @@ public partial class ModuleWeaver
 
                 t.Add(Instruction.Create(OpCodes.Ldarg_0));
                 var imp = property.GetGetMethod(type);
-                var imp2 = ImportCustom(imp);
+                var imp2 = ModuleDefinition.ImportReference(imp);
 
                 t.Add(Instruction.Create(OpCodes.Call, imp2));
                 t.Add(Instruction.Create(OpCodes.Box, nullableProperty));
@@ -206,10 +206,10 @@ public partial class ModuleWeaver
         return variable;
     }
 
-    static void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
+    void LoadVariable(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         var get = property.GetGetMethod(type);
-        var imported = ImportCustom(get);
+        var imported = ModuleDefinition.ImportReference(get);
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
         ins.Add(Instruction.Create(OpCodes.Call, imported));
     }
