@@ -31,16 +31,6 @@ public partial class ModuleWeaver
         ModuleWeaver.module = module;
     }
 
-    public static MethodReference ImportCustom(MethodReference method)
-    {
-        return module.ImportReference(method);
-    }
-
-    public static TypeReference ImportCustom(TypeReference type)
-    {
-        return module.ImportReference(type);
-    }
-
     public void FindReferences(Func<string, TypeDefinition> typeFinder)
     {
         BooleanType = module.ImportReference(typeFinder("System.Boolean"));

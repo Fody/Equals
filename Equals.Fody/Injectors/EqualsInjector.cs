@@ -151,7 +151,7 @@ public partial class ModuleWeaver
                 if (customMethod.DeclaringType.HasGenericParameters)
                 {
                     var genericInstanceType = type.GetGenericInstanceType(type);
-                    resolverType = ImportCustom(genericInstanceType);
+                    resolverType = ModuleDefinition.ImportReference(genericInstanceType);
                     var newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
                     {
                         DeclaringType = resolverType,
@@ -359,7 +359,7 @@ public partial class ModuleWeaver
 
     void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
     {
-        var genericInstance = new Lazy<TypeReference>(() => ImportCustom(property.PropertyType.GetGenericInstanceType(type)));
+        var genericInstance = new Lazy<TypeReference>(() => ModuleDefinition.ImportReference(property.PropertyType.GetGenericInstanceType(type)));
         var getMethodImported = ModuleDefinition.ImportReference(property.GetGetMethod(type));
 
         c.Add(Instruction.Create(type.GetLdArgForType(), left));
@@ -404,7 +404,7 @@ public partial class ModuleWeaver
                 es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                 if (propType.IsValueType && !property.PropertyType.IsArray)
                 {
-                    var imported = ImportCustom(property.PropertyType);
+                    var imported = ModuleDefinition.ImportReference(property.PropertyType);
                     es.Add(Instruction.Create(OpCodes.Box, imported));
                 }
 
@@ -412,7 +412,7 @@ public partial class ModuleWeaver
                 es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
                 if (propType.IsValueType && !property.PropertyType.IsArray)
                 {
-                    var imported = ImportCustom(property.PropertyType);
+                    var imported = ModuleDefinition.ImportReference(property.PropertyType);
                     es.Add(Instruction.Create(OpCodes.Box, imported));
                 }
 

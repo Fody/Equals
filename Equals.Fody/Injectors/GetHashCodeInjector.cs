@@ -26,7 +26,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
-        var properties = ImportCustom(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
+        var properties = ModuleDefinition.ImportReference(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
@@ -94,7 +94,7 @@ public partial class ModuleWeaver
         if (customMethod.DeclaringType.HasGenericParameters)
         {
             var genericInstanceType = type.GetGenericInstanceType(type);
-            var resolverType = ImportCustom(genericInstanceType);
+            var resolverType = ModuleDefinition.ImportReference(genericInstanceType);
             var newRef = new MethodReference(customMethod.Name, customMethod.ReturnType)
             {
                 DeclaringType = resolverType,
@@ -123,7 +123,7 @@ public partial class ModuleWeaver
     {
         VariableDefinition variable = null;
         bool isCollection;
-        var propType = ImportCustom(property.PropertyType.GetGenericInstanceType(type));
+        var propType = ModuleDefinition.ImportReference(property.PropertyType.GetGenericInstanceType(type));
         if (property.PropertyType.IsGenericParameter)
         {
             isCollection = false;
@@ -177,7 +177,7 @@ public partial class ModuleWeaver
         ins.If(c =>
             {
                 var nullablePropertyResolved = property.PropertyType.Resolve();
-                var nullablePropertyImported = ImportCustom(property.PropertyType);
+                var nullablePropertyImported = ModuleDefinition.ImportReference(property.PropertyType);
 
                 ins.Add(Instruction.Create(OpCodes.Ldarg_0));
                 c.Add(Instruction.Create(OpCodes.Call, getMethod));
@@ -192,7 +192,7 @@ public partial class ModuleWeaver
             },
             t =>
             {
-                var nullableProperty = ImportCustom(property.PropertyType);
+                var nullableProperty = ModuleDefinition.ImportReference(property.PropertyType);
 
                 t.Add(Instruction.Create(OpCodes.Ldarg_0));
                 var imp = property.GetGetMethod(type);
@@ -309,7 +309,7 @@ public partial class ModuleWeaver
     {
         if (property.PropertyType.IsValueType)
         {
-            var imported = ImportCustom(property.PropertyType);
+            var imported = ModuleDefinition.ImportReference(property.PropertyType);
             ins.Add(Instruction.Create(OpCodes.Box, imported));
         }
 
