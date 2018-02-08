@@ -10,7 +10,6 @@ using Mono.Collections.Generic;
 public static class EqualsInjector
 {
     const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
-    const string customAttribute = "CustomEqualsInternalAttribute";
 
     const int ExactlyTheSameTypeAsThis = 0;
     const int ExactlyOfType = 1;
@@ -105,7 +104,7 @@ public static class EqualsInjector
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customAttribute)).ToArray();
+            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == ModuleWeaver.customEqualsAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {
