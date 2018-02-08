@@ -9,8 +9,6 @@ using Mono.Collections.Generic;
 
 public static class EqualsInjector
 {
-    const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
-
     const int ExactlyTheSameTypeAsThis = 0;
     const int ExactlyOfType = 1;
     const int EqualsOrSubtype = 2;
@@ -91,7 +89,7 @@ public static class EqualsInjector
         body.InitLocals = true;
         var ins = body.Instructions;
 
-        var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
+        var properties = type.GetPropertiesWithoutIgnores(ModuleWeaver.ignoreAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
