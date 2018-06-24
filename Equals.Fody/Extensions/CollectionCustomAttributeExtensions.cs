@@ -21,8 +21,8 @@ public partial class ModuleWeaver
         var name = typeof (ModuleWeaver).Assembly.GetName().Name;
 
         var attribute = new CustomAttribute(GeneratedCodeAttributeConstructor);
-        attribute.ConstructorArguments.Add(new CustomAttributeArgument(StringReference, name));
-        attribute.ConstructorArguments.Add(new CustomAttributeArgument(StringReference, version));
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(TypeSystem.StringReference, name));
+        attribute.ConstructorArguments.Add(new CustomAttributeArgument(TypeSystem.StringReference, version));
         customAttributes.Add(attribute);
     }
 }

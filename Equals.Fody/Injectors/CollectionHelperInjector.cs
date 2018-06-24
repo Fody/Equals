@@ -24,11 +24,11 @@ public partial class ModuleWeaver
         var typeAttributes = TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
         var helperType = new TypeDefinition("Equals", selectedName, typeAttributes);
         MarkAsGeneratedCode(helperType.CustomAttributes);
-        helperType.BaseType = ObjectType;
+        helperType.BaseType = TypeSystem.ObjectReference;
         moduleDefinition.Types.Add(helperType);
 
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("CollectionEquals", methodAttributes, BooleanType);
+        var method = new MethodDefinition("CollectionEquals", methodAttributes, TypeSystem.BooleanReference);
         helperType.Methods.Add(method);
 
         var left = method.Parameters.Add("left", IEnumerableType);
@@ -41,8 +41,8 @@ public partial class ModuleWeaver
 
         var leftEnumerator = body.Variables.Add(IEnumeratorType);
         var rightEnumerator = body.Variables.Add(IEnumeratorType);
-        var leftHasNext = body.Variables.Add(BooleanType);
-        var rightHasNext = body.Variables.Add(BooleanType);
+        var leftHasNext = body.Variables.Add(TypeSystem.BooleanReference);
+        var rightHasNext = body.Variables.Add(TypeSystem.BooleanReference);
 
         AddLeftAndRightReferenceEquals(ins, left, right);
         AddLeftAndNullReferenceEquals(ins, left);

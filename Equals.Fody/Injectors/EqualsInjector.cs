@@ -32,14 +32,14 @@ public partial class ModuleWeaver
     public void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
+        var method = new MethodDefinition("Equals", methodAttributes, TypeSystem.BooleanReference);
         MarkAsGeneratedCode(method.CustomAttributes);
 
-        var obj = method.Parameters.Add("obj", ObjectType);
+        var obj = method.Parameters.Add("obj", TypeSystem.ObjectReference);
 
         var body = method.Body;
         body.InitLocals = true;
-        var result = body.Variables.Add(BooleanType);
+        var result = body.Variables.Add(TypeSystem.BooleanReference);
 
         var ins = body.Instructions;
 
@@ -62,7 +62,7 @@ public partial class ModuleWeaver
     public void InjectEqualsType(TypeDefinition type, TypeReference typeRef, MethodReference newEquals)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("Equals", methodAttributes, BooleanType);
+        var method = new MethodDefinition("Equals", methodAttributes, TypeSystem.BooleanReference);
         MarkAsGeneratedCode(method.CustomAttributes);
         var body = method.Body;
         var ins = body.Instructions;
@@ -79,7 +79,7 @@ public partial class ModuleWeaver
     public MethodReference InjectEqualsInternal(TypeDefinition type, TypeReference typeRef, MethodDefinition collectionEquals, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static;
-        var method = new MethodDefinition("EqualsInternal", methodAttributes, BooleanType);
+        var method = new MethodDefinition("EqualsInternal", methodAttributes, TypeSystem.BooleanReference);
         MarkAsGeneratedCode(method.CustomAttributes);
 
         var left = method.Parameters.Add("left", typeRef);

@@ -148,7 +148,7 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void Equality_operator_should_return_false_for_collections_with_diffrent_size()
+    public void Equality_operator_should_return_false_for_collections_with_different_size()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -297,7 +297,7 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void GetHashCode_should_return_diffrent_value_for_changed_property_in_base_class()
+    public void GetHashCode_should_return_different_value_for_changed_property_in_base_class()
     {
         var type = testResult.Assembly.GetType("InheritedClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -592,7 +592,7 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void GetHashCode_should_return_value_for_classs_with_generic_property()
+    public void GetHashCode_should_return_value_for_class_with_generic_property2()
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);
@@ -817,7 +817,7 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void Equals_should_return_false_for_diffrent_value_for_changed_property_in_base_class()
+    public void Equals_should_return_false_for_different_value_for_changed_property_in_base_class()
     {
         var type = testResult.Assembly.GetType("InheritedClass");
         dynamic first = Activator.CreateInstance(type);
@@ -1138,7 +1138,7 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void Equals_should_return_for_classs_with_generic_property()
+    public void Equals_should_return_for_class_with_generic_property()
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);

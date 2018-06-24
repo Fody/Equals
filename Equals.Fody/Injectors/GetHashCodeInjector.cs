@@ -14,10 +14,10 @@ public partial class ModuleWeaver
     public void InjectGetHashCode(TypeDefinition type, bool ignoreBaseClassProperties)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-        var method = new MethodDefinition("GetHashCode", methodAttributes, Int32Type);
+        var method = new MethodDefinition("GetHashCode", methodAttributes, TypeSystem.Int32Reference);
         MarkAsGeneratedCode(method.CustomAttributes);
 
-        var resultVariable = method.Body.Variables.Add(Int32Type);
+        var resultVariable = method.Body.Variables.Add(TypeSystem.Int32Reference);
 
         var body = method.Body;
         body.InitLocals = true;
@@ -261,7 +261,7 @@ public partial class ModuleWeaver
     {
         LoadVariable(property, t, type);
         var enumeratorVariable = method.Body.Variables.Add(IEnumeratorType);
-        var currentVariable = method.Body.Variables.Add(ObjectType);
+        var currentVariable = method.Body.Variables.Add(TypeSystem.ObjectReference);
 
         AddGetEnumerator(t, enumeratorVariable, property);
 
