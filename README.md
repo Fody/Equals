@@ -22,7 +22,7 @@ See also [Fody usage](https://github.com/Fody/Fody#usage).
 Install the [Equals.Fody NuGet package](https://nuget.org/packages/Equals.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
 
 ```
-PM> Install-Package BasicFodyAddin.Fody
+PM> Install-Package Equals.Fody
 PM> Update-Package Fody
 ```
 
