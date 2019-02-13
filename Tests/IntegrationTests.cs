@@ -405,6 +405,18 @@ public partial class IntegrationTests
 
         Assert.NotEqual(0, result);
     }
+    
+    [Fact]
+    public void GetHashCode_should_return_value_for_string_array()
+    {
+        var type = testResult.Assembly.GetType("StringArray");
+        dynamic instance = Activator.CreateInstance(type);
+        instance.Collection = new[] { "one", "two", "three"};
+
+        var result = instance.GetHashCode();
+
+        Assert.NotEqual(0, result);
+    }
 
     [Fact]
     public void GetHashCode_should_return_value_for_null_array()
@@ -876,6 +888,21 @@ public partial class IntegrationTests
 
         dynamic second = Activator.CreateInstance(type);
         second.Collection = new [] { 1, 2, 3 };
+
+        var result = first.Equals(second);
+
+        Assert.True(result);
+    }
+    
+    [Fact]
+    public void Equals_should_return_true_for_equal_string_arrays()
+    {
+        var type = testResult.Assembly.GetType("StringArray");
+        dynamic first = Activator.CreateInstance(type);
+        first.Collection = new[] { "one", "two", "three"};
+
+        dynamic second = Activator.CreateInstance(type);
+        second.Collection = new[] { "one", "two", "three"};
 
         var result = first.Equals(second);
 
