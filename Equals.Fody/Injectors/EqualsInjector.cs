@@ -335,17 +335,18 @@ public partial class ModuleWeaver
                 {
                     var propType = property.PropertyType.Resolve();
                     var isCollection = propType.IsCollection() || property.PropertyType.IsArray;
-                    if ((simpleTypes.Contains(propType.FullName) || propType.IsEnum) && !property.PropertyType.IsArray)
+                    var fullName = property.PropertyType.FullName;
+                    if ((simpleTypes.Contains(fullName) || propType.IsEnum) && !property.PropertyType.IsArray)
                     {
                         AddSimpleValueCheck(c, property, type, left, right);
                     }
-                    else if (!isCollection || propType.FullName == typeof(string).FullName)
+                    else if (!isCollection || fullName == typeof(string).FullName)
                     {
                         AddNormalCheck(type, c, property, left, right);
                     }
                     else
                     {
-                        AddCollectionCheck(type, collectionEquals, c, property, propType, left, right);
+                        AddCollectionCheck(type, collectionEquals, c, property, property.PropertyType, left, right);
                     }
                 }
                 else
@@ -377,7 +378,7 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Call, StaticEquals));
     }
 
-    void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeDefinition propType, ParameterDefinition left, ParameterDefinition right)
+    void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeReference propType, ParameterDefinition left, ParameterDefinition right)
     {
         c.If(
             AddCollectionFirstArgumentCheck,
@@ -385,7 +386,7 @@ public partial class ModuleWeaver
             e => AddCollectionEquals(type, collectionEquals, property, propType, e, left, right));
     }
 
-    void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeDefinition propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
+    void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeReference propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
     {
         e.If(
             cf =>
