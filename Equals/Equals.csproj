@@ -7,6 +7,9 @@
     <Authors>Rafał Jasica, Simon Cropp</Authors>
     <NoWarn>CS1591</NoWarn>
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
+    <PackageIconUrl>https://raw.githubusercontent.com/Fody/Equals/master/package_icon.png</PackageIconUrl>
+    <PackageProjectUrl>http://github.com/Fody/Equals</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fody" Version="4.0.2" PrivateAssets="None" />
