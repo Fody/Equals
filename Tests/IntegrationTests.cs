@@ -1,8 +1,10 @@
 ﻿using Fody;
+using Xunit.Abstractions;
 
-public partial class IntegrationTests
+public partial class IntegrationTests :
+    XunitLoggingBase
 {
-#pragma warning disable 618
+
     static TestResult testResult;
 #pragma warning restore 618
 
@@ -10,5 +12,9 @@ public partial class IntegrationTests
     {
         var weavingTask = new ModuleWeaver();
         testResult = weavingTask.ExecuteTestRun("AssemblyToProcess.dll");
+    }
+
+    public IntegrationTests(ITestOutputHelper output) : base(output)
+    {
     }
 }
