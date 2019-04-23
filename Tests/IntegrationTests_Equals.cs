@@ -21,6 +21,33 @@ public partial class IntegrationTests
         Assert.True(first.Equals(second));
         Assert.False(first.Equals(third));
     }
+    
+    [Fact]
+    public void Equals_should_return_true_for_StructWithArray()
+    {
+        var type = testResult.Assembly.GetType("StructWithArray");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = new[]{1,2};
+        first.Y = new[]{3,4};
+        dynamic second = Activator.CreateInstance(type);
+        second.X = new[]{1,2};
+        second.Y = new[]{3,4};
+
+        Assert.True(first.Equals(second));
+    }
+    [Fact]
+    public void Equals_should_return_false_for_StructWithArray()
+    {
+        var type = testResult.Assembly.GetType("StructWithArray");
+        dynamic first = Activator.CreateInstance(type);
+        first.X = new[]{1,2};
+        first.Y = new[]{3,4};
+        dynamic second = Activator.CreateInstance(type);
+        second.X = new[]{1,2};
+        second.Y = new[]{1,4};
+
+        Assert.False(first.Equals(second));
+    }
 
     [Fact]
     public void Equals_should_return_value_for_class_without_generic_parameter()

@@ -45,7 +45,7 @@ public partial class ModuleWeaver
 
         var labelRet = Instruction.Create(OpCodes.Nop);
 
-        AddCheckEqualsReference(type, ins, true);
+        AddCheckEqualsReference(type, ins);
 
         ins.If(
             c => AddTypeChecking(type, typeRef, typeCheck, c),
@@ -69,7 +69,7 @@ public partial class ModuleWeaver
 
         var other = method.Parameters.Add("other", typeRef);
 
-        AddCheckEqualsReference(type, ins, false);
+        AddCheckEqualsReference(type, ins);
         AddEqualsTypeReturn(newEquals, ins, type);
 
         body.OptimizeMacros();
@@ -291,18 +291,17 @@ public partial class ModuleWeaver
         c.Add(Instruction.Create(OpCodes.Ceq));
     }
 
-    void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins, bool skipBoxingSecond)
+    void AddCheckEqualsReference(TypeDefinition type, Collection<Instruction> ins)
     {
-        var resolvedType = type.IsValueType ? type.GetGenericInstanceType(type) : null;
+        if (type.IsValueType)
+        {
+            return;
+        }
         ins.If(
             c =>
             {
                 c.Add(Instruction.Create(OpCodes.Ldnull));
                 c.Add(Instruction.Create(OpCodes.Ldarg_1));
-                if (type.IsValueType && !skipBoxingSecond)
-                {
-                    c.Add(Instruction.Create(OpCodes.Box, resolvedType));
-                }
                 c.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             TypeDefinitionExtensions.AddReturnFalse);
@@ -311,16 +310,7 @@ public partial class ModuleWeaver
             c =>
             {
                 c.Add(Instruction.Create(OpCodes.Ldarg_0));
-                if (type.IsValueType)
-                {
-                    c.Add(Instruction.Create(OpCodes.Ldobj, resolvedType));
-                    c.Add(Instruction.Create(OpCodes.Box, resolvedType));
-                }
                 c.Add(Instruction.Create(OpCodes.Ldarg_1));
-                if (type.IsValueType && !skipBoxingSecond)
-                {
-                    c.Add(Instruction.Create(OpCodes.Box, resolvedType));
-                }
                 c.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
             TypeDefinitionExtensions.AddReturnTrue);
@@ -380,6 +370,12 @@ public partial class ModuleWeaver
 
     void AddCollectionCheck(TypeDefinition type, MethodDefinition collectionEquals, Collection<Instruction> c, PropertyDefinition property, TypeReference propType, ParameterDefinition left, ParameterDefinition right)
     {
+        if (type.IsValueType)
+        {
+            AddCollectionEquals(type, collectionEquals, property, propType, c, left, right);
+            return;
+        }
+
         c.If(
             AddCollectionFirstArgumentCheck,
             AddCollectionSecondArgumentCheck,
@@ -388,6 +384,11 @@ public partial class ModuleWeaver
 
     void AddCollectionEquals(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeReference propType, Collection<Instruction> e, ParameterDefinition left, ParameterDefinition right)
     {
+        if (type.IsValueType)
+        {
+            AddCollectionCall(type, collectionEquals, property, propType, left, right, e);
+            return;
+        }
         e.If(
             cf =>
             {
@@ -396,29 +397,31 @@ public partial class ModuleWeaver
                 cf.Add(Instruction.Create(OpCodes.Ceq));
             },
             t => t.Add(Instruction.Create(OpCodes.Ldc_I4_0)),
-            es =>
-            {
-                var getMethod = property.GetGetMethod(type);
-                var getMethodImported = ModuleDefinition.ImportReference(getMethod);
+            es => { AddCollectionCall(type, collectionEquals, property, propType, left, right, es); });
+    }
+    
+    void AddCollectionCall(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeReference propType, ParameterDefinition left, ParameterDefinition right, Collection<Instruction> es)
+    {
+        var getMethod = property.GetGetMethod(type);
+        var getMethodImported = ModuleDefinition.ImportReference(getMethod);
 
-                es.Add(Instruction.Create(type.GetLdArgForType(), left));
-                es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
-                if (propType.IsValueType && !property.PropertyType.IsArray)
-                {
-                    var imported = ModuleDefinition.ImportReference(property.PropertyType);
-                    es.Add(Instruction.Create(OpCodes.Box, imported));
-                }
+        es.Add(Instruction.Create(type.GetLdArgForType(), left));
+        es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
+        if (propType.IsValueType && !property.PropertyType.IsArray)
+        {
+            var imported = ModuleDefinition.ImportReference(property.PropertyType);
+            es.Add(Instruction.Create(OpCodes.Box, imported));
+        }
 
-                es.Add(Instruction.Create(type.GetLdArgForType(), right));
-                es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
-                if (propType.IsValueType && !property.PropertyType.IsArray)
-                {
-                    var imported = ModuleDefinition.ImportReference(property.PropertyType);
-                    es.Add(Instruction.Create(OpCodes.Box, imported));
-                }
+        es.Add(Instruction.Create(type.GetLdArgForType(), right));
+        es.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
+        if (propType.IsValueType && !property.PropertyType.IsArray)
+        {
+            var imported = ModuleDefinition.ImportReference(property.PropertyType);
+            es.Add(Instruction.Create(OpCodes.Box, imported));
+        }
 
-                es.Add(Instruction.Create(OpCodes.Call, collectionEquals));
-            });
+        es.Add(Instruction.Create(OpCodes.Call, collectionEquals));
     }
 
     static void AddCollectionSecondArgumentCheck(Collection<Instruction> t)
