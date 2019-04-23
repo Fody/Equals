@@ -6,11 +6,10 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_use_custom_logic()
     {
-        var type = testResult.Assembly.GetType("CustomEquals");
-        dynamic first = Activator.CreateInstance(type);
+        var first = testResult.GetInstance("CustomEquals");
         first.X = 1;
 
-        dynamic second = Activator.CreateInstance(type);
+        var second = testResult.GetInstance("CustomEquals");
         second.X = 2;
 
         var result = first.Equals(second);
@@ -21,11 +20,10 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_use_custom_logic_for_structure()
     {
-        var type = testResult.Assembly.GetType("CustomStructEquals");
-        dynamic first = Activator.CreateInstance(type);
+        var first = testResult.GetInstance("CustomStructEquals");
         first.X = 1;
 
-        dynamic second = Activator.CreateInstance(type);
+        var second = testResult.GetInstance("CustomStructEquals");
         second.X = 2;
 
         var result = first.Equals(second);
@@ -54,8 +52,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_use_custom_logic()
     {
-        var type = testResult.Assembly.GetType("CustomGetHashCode");
-        dynamic instance = Activator.CreateInstance(type);
+        var instance = testResult.GetInstance("CustomGetHashCode");
         instance.X = 1;
 
         var result = instance.GetHashCode();
@@ -66,8 +63,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_use_custom_logic_for_structure()
     {
-        var type = testResult.Assembly.GetType("CustomStructEquals");
-        dynamic instance = Activator.CreateInstance(type);
+        var instance = testResult.GetInstance("CustomStructEquals");
         instance.X = 1;
 
         var result = instance.GetHashCode();

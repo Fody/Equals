@@ -14,7 +14,8 @@ public partial class IntegrationTests :
         testResult = weavingTask.ExecuteTestRun("AssemblyToProcess.dll");
     }
 
-    public IntegrationTests(ITestOutputHelper output) : base(output)
+    public IntegrationTests(ITestOutputHelper output) :
+        base(output)
     {
     }
 }

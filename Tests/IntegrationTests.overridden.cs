@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 public partial class IntegrationTests
 {
@@ -8,12 +7,11 @@ public partial class IntegrationTests
     [InlineData("123", "456")]
     public void Equals_should_ignore_marked_overridden_properties(string location1, string location2)
     {
-        var type = testResult.Assembly.GetType("ProjectClass");
-        dynamic first = Activator.CreateInstance(type);
+        var first = testResult.GetInstance("ProjectClass");
         first.Location = location1;
         first.X = 42;
 
-        dynamic second = Activator.CreateInstance(type);
+        var second = testResult.GetInstance("ProjectClass");
         second.Location = location2;
         second.X = 42;
 
