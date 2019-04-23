@@ -235,7 +235,7 @@ public partial class IntegrationTests
 
         dynamic propInstance = Activator.CreateInstance(propType);
 
-        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array[0] = propInstance;
 
         instance.B = array;
@@ -249,7 +249,7 @@ public partial class IntegrationTests
     public void GetHashCode_should_return_value_for_enums()
     {
         var type = testResult.Assembly.GetType("EnumClass");
-        dynamic instance = Activator.CreateInstance(type, new object[] { 3, 6 });
+        dynamic instance = Activator.CreateInstance(type, 3, 6);
 
         var result = instance.GetHashCode();
 
@@ -287,7 +287,7 @@ public partial class IntegrationTests
         instance.Z = 12;
         instance.A = 1;
         dynamic propInstance = Activator.CreateInstance(propType);
-        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] {1});
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array[0] = propInstance;
         instance.B = array;
 
@@ -307,7 +307,7 @@ public partial class IntegrationTests
         instance.X = 12;
         instance.A = 1;
         dynamic propInstance = Activator.CreateInstance(propType);
-        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] {1});
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array[0] = propInstance;
         instance.B = array;
 

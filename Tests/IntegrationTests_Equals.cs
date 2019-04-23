@@ -32,14 +32,14 @@ public partial class IntegrationTests
         instance.Z = 12;
         instance.A = 1;
         dynamic propInstance = Activator.CreateInstance(propType);
-        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array[0] = propInstance;
         instance.B = array;
 
         dynamic instance2 = Activator.CreateInstance(withoutGenericParameterType);
         instance2.Z = 12;
         instance2.A = 1;
-        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), 1);
         dynamic propInstance2 = Activator.CreateInstance(propType);
         array2[0] = propInstance2;
         instance2.B = array2;
@@ -60,7 +60,7 @@ public partial class IntegrationTests
         instance.X = 12;
         instance.A = 1;
         dynamic propInstance = Activator.CreateInstance(propType);
-        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array[0] = propInstance;
         instance.B = array;
 
@@ -68,7 +68,7 @@ public partial class IntegrationTests
         instance2.X = 12;
         instance2.A = 1;
         dynamic propInstance2 = Activator.CreateInstance(propType);
-        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), new object[] { 1 });
+        dynamic array2 = Activator.CreateInstance(propType.MakeArrayType(), 1);
         array2[0] = propInstance2;
         instance2.B = array;
 
@@ -125,8 +125,8 @@ public partial class IntegrationTests
     public void Equals_should_return_true_for_enums()
     {
         var type = testResult.Assembly.GetType("EnumClass");
-        dynamic first = Activator.CreateInstance(type, new object[] { 3, 6 });
-        dynamic second = Activator.CreateInstance(type, new object[] { 3, 6 });
+        dynamic first = Activator.CreateInstance(type, 3, 6);
+        dynamic second = Activator.CreateInstance(type, 3, 6);
 
         var result = ((object)first).Equals((object)second);
 
@@ -146,7 +146,7 @@ public partial class IntegrationTests
                 instance.A = 1;
                 dynamic propInstance = Activator.CreateInstance(propType);
 
-                dynamic array = Activator.CreateInstance(propType.MakeArrayType(), new object[] {1});
+                dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
                 array[0] = propInstance;
 
                 instance.B = array;
