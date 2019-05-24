@@ -8,7 +8,7 @@
     <NoWarn>CS1591</NoWarn>
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
     <PackageIconUrl>https://raw.githubusercontent.com/Fody/Equals/master/package_icon.png</PackageIconUrl>
-    <PackageProjectUrl>http://github.com/Fody/Equals</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Fody/Equals</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
