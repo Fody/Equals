@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Equals.Fody;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
@@ -75,15 +76,16 @@ public partial class ModuleWeaver : BaseModuleWeaver
                 InjectGetHashCode(type, ignoreBaseClassProperties);
             }
 
-            if (!IsPropertySet(attribute, DoNotAddEqualityOperators))
+            if (IsPropertySet(attribute, DoNotAddEqualityOperators))
             {
-                InjectEqualityOperator(type);
-                InjectInequalityOperator(type);
+                WeavingInstruction.AssertNotHasWeavingInstruction(type);
             }
             else
             {
-                // TODO: verify there's no equality operators calling Equals.Weave()!
-                // throw if that's not the case
+                WeavingInstruction.AssertHasWeavingInstruction(type);
+
+                InjectEqualityOperator(type);
+                InjectInequalityOperator(type);
             }
         }
 
