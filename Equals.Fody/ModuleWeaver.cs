@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
@@ -25,7 +25,7 @@ public partial class ModuleWeaver : BaseModuleWeaver
     {
         if (type.HasGenericParameters)
         {
-            var parameters = type.GenericParameters.Select(x => (TypeReference) x).ToArray();
+            var parameters = type.GenericParameters.Select(x => (TypeReference)x).ToArray();
             return type.MakeGenericInstanceType(parameters);
         }
         return type;
@@ -56,7 +56,7 @@ public partial class ModuleWeaver : BaseModuleWeaver
                 var typeCheckProperty = attribute.Properties.SingleOrDefault(x => x.Name == "TypeCheck");
                 if (typeCheckProperty.Name != null)
                 {
-                    typeCheck = (int) typeCheckProperty.Argument.Value;
+                    typeCheck = (int)typeCheckProperty.Argument.Value;
                 }
 
                 var newEquals = InjectEqualsInternal(type, typeRef, collectionEquals, ignoreBaseClassProperties);
@@ -79,6 +79,11 @@ public partial class ModuleWeaver : BaseModuleWeaver
             {
                 InjectEqualityOperator(type);
                 InjectInequalityOperator(type);
+            }
+            else
+            {
+                // TODO: verify there's no equality operators calling Equals.Weave()!
+                // throw if that's not the case
             }
         }
 
