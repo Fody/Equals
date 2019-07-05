@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Equals.Fody;
 using Mono.Cecil;
 #pragma warning disable 108,114
 
@@ -19,6 +21,8 @@ public partial class ModuleWeaver
     public MethodReference MoveNext;
     public MethodReference GetCurrent;
     public MethodReference DebuggerNonUserCodeAttributeConstructor;
+
+    public WeavingInstruction WeavingInstruction;
 
     public void FindReferences(Func<string, TypeDefinition> typeFinder)
     {
@@ -46,5 +50,12 @@ public partial class ModuleWeaver
 
         var debuggerNonUserCodeType = typeFinder("System.Diagnostics.DebuggerNonUserCodeAttribute");
         DebuggerNonUserCodeAttributeConstructor = ModuleDefinition.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
+
+        var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.Single(x => x.Name == "Equals");
+        var equalsAssembly = ModuleDefinition.AssemblyResolver.Resolve(equalsAssemblyReference);
+        var operatorType = equalsAssembly.MainModule.Types.Single(x => x.Name == "Operator");
+        var weaveMethod = operatorType.Methods.Single(x => x.Name == "Weave");
+
+        WeavingInstruction = new WeavingInstruction(weaveMethod);
     }
 }

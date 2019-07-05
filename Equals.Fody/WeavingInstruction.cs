@@ -6,17 +6,23 @@ using Mono.Cecil.Cil;
 
 namespace Equals.Fody
 {
-    static class WeavingInstruction
+    public class WeavingInstruction
     {
         private static readonly Instruction NotWeavingInstruction = Instruction.Create(OpCodes.Throw);
+        private readonly MethodDefinition _weaveMethod;
 
-        public static void AssertHasWeavingInstruction(TypeDefinition type)
+        public WeavingInstruction(MethodDefinition weaveMethod)
+        {
+            _weaveMethod = weaveMethod;
+        }
+
+        public void AssertHasWeavingInstruction(TypeDefinition type)
         {
             AssertHasWeavingInstruction(type, Operator.Equality);
             AssertHasWeavingInstruction(type, Operator.Inequality);
         }
 
-        static void AssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
+        void AssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
         {
             if (!@operator.TryGetOperator(type, out var operatorMethod))
             {
@@ -31,13 +37,13 @@ namespace Equals.Fody
             }
         }
 
-        public static void AssertNotHasWeavingInstruction(TypeDefinition type)
+        public void AssertNotHasWeavingInstruction(TypeDefinition type)
         {
             AssertNotHasWeavingInstruction(type, Operator.Equality);
             AssertNotHasWeavingInstruction(type, Operator.Inequality);
         }
 
-        static void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
+        void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
         {
             if (@operator.TryGetOperator(type, out var operatorMethod))
             {
@@ -49,21 +55,21 @@ namespace Equals.Fody
             }
         }
 
-        static bool IsWeavingInstruction(MethodDefinition method)
+        bool IsWeavingInstruction(MethodDefinition method)
         {
             var firstInstruction = method.Body.Instructions.FirstOrDefault() ?? NotWeavingInstruction;
             return IsWeavingInstruction(firstInstruction);
         }
 
-        static bool IsWeavingInstruction(Instruction instruction) =>
+        bool IsWeavingInstruction(Instruction instruction) =>
             instruction.OpCode == OpCodes.Call &&
             IsOperatorWeaveTarget(instruction.Operand);
 
-        static bool IsOperatorWeaveTarget(object operand)
+        bool IsOperatorWeaveTarget(object operand)
         {
             if (operand is MethodReference method)
             {
-                return method.DeclaringType.Name == "Operator" && method.Name == "Weave";
+                return method.Resolve() == _weaveMethod;
             }
 
             return false;
