@@ -1,21 +1,15 @@
 ﻿using Fody;
+using Xunit;
 using Xunit.Abstractions;
 
 public partial class IntegrationTests :
-    XunitLoggingBase
+    XunitLoggingBase, IClassFixture<AssemblyToProcessFixture>
 {
-    // TODO use xunit features to create this just for the test collection - to ensure we don't fail the bad case tests, too
-    static TestResult testResult;
+    readonly TestResult _testResult;
 #pragma warning restore 618
 
-    static IntegrationTests()
+    public IntegrationTests(ITestOutputHelper output, AssemblyToProcessFixture fixture) : base(output)
     {
-        var weavingTask = new ModuleWeaver();
-        testResult = weavingTask.ExecuteTestRun("AssemblyToProcess.dll");
-    }
-
-    public IntegrationTests(ITestOutputHelper output) :
-        base(output)
-    {
+        _testResult = fixture.TestResult;
     }
 }
