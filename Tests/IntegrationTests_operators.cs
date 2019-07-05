@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 public partial class IntegrationTests
@@ -202,5 +203,28 @@ public partial class IntegrationTests
 
         Assert.True(first != second);
         Assert.False(first == second);
+    }
+
+    [Fact]
+    public void When_opting_out_of_operators_should_not_add_operators()
+    {
+        var type = testResult.Assembly.GetType("DoNotAddEqualityOperators");
+
+        var methodNames = type.GetMethods().Select(x => x.Name).ToList();
+
+        Assert.DoesNotContain("op_Equality", methodNames);
+        Assert.DoesNotContain("op_Inequality", methodNames);
+    }
+
+    [Fact]
+    public void When_opting_out_of_operators_should_not_replace_operators()
+    {
+        var type = testResult.Assembly.GetType("DoNotReplaceEqualityOperators");
+
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        Assert.True(first == second);
+        Assert.True(first != second);
     }
 }
