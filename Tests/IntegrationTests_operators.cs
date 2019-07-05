@@ -3,7 +3,7 @@ using Xunit;
 
 public partial class IntegrationTests
 {
-    /// To ensure that the equivalency operator actually uses the overridne object.Equals(object) method the overriden method behaves unexpectedly
+    /// To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
     /// See OnlyOperator.Equals(object)!
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_instances()
@@ -44,7 +44,7 @@ public partial class IntegrationTests
         second.Value = 2;
 
         Assert.True(first == second);
-        Assert.False(first != second);
+        Assert.True(second != first);
     }
 
 

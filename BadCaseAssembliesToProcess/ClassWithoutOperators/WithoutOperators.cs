@@ -1,0 +1,4 @@
+﻿[Equals]
+public class WithoutOperators
+{
+}

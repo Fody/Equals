@@ -1,0 +1,4 @@
+﻿[Equals]
+public struct WithoutOperators
+{
+}
