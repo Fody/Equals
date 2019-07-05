@@ -1,24 +1,15 @@
-﻿using Mono.Cecil;
+﻿using Equals.Fody;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    public void InjectEqualityOperator(TypeDefinition type)
-    {
-        AddOperator(type, true);
-    }
-
-    public void InjectInequalityOperator(TypeDefinition type)
-    {
-        AddOperator(type, false);
-    }
-
-    void AddOperator(TypeDefinition type, bool isEquality)
+    public void InjectOperator(TypeDefinition type, Operator @operator)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
-        var method = new MethodDefinition(isEquality ? "op_Equality" : "op_Inequality", methodAttributes, TypeSystem.BooleanReference);
+        var method = new MethodDefinition(@operator.MethodName, methodAttributes, TypeSystem.BooleanReference);
         MarkAsGeneratedCode(method.CustomAttributes);
 
         var parameterType = type.GetGenericInstanceType(type);
@@ -30,7 +21,7 @@ public partial class ModuleWeaver
         var ins = body.Instructions;
 
         AddStaticEqualsCall(type, ins);
-        ins.AddReturnValue(isEquality);
+        ins.AddReturnValue(@operator.IsEquality);
 
         body.OptimizeMacros();
 

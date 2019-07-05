@@ -84,8 +84,8 @@ public partial class ModuleWeaver : BaseModuleWeaver
             {
                 WeavingInstruction.AssertHasWeavingInstruction(type);
 
-                InjectEqualityOperator(type);
-                InjectInequalityOperator(type);
+                InjectOperator(type, Operator.Equality);
+                InjectOperator(type, Operator.Inequality);
             }
         }
 

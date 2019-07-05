@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 
@@ -9,7 +8,6 @@ namespace Equals.Fody
     {
         public static readonly Operator Equality = new Operator("op_Equality", true, "==");
         public static readonly Operator Inequality = new Operator("op_Inequality", false, "!=");
-        public static readonly IReadOnlyList<Operator> Both = new[] { Equality, Inequality };
 
         private Operator(string methodName, bool isEquality, string sourceMethodName)
         {
