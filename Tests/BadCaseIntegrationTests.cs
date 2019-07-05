@@ -63,7 +63,7 @@ namespace Tests
                 () => weavingTask.ExecuteTestRun("ClassWithoutWeavingInstruction.dll"));
 
             Assert.Equal(
-                "TType WithoutWeavingInstruction marked with the [Equals] attribute contains op_Equality, but it does not contain the instruciton to weave it. Either set implement the method like `public static bool operator ==(T left, T right) => Operator.Weave();` or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.",
+                "TType WithoutWeavingInstruction marked with the [Equals] attribute contains op_Equality, but it does not contain the instruction to weave it. Either set implement the method like `public static bool operator ==(T left, T right) => Operator.Weave();` or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.",
                 exception.Message);
         }
 
@@ -74,7 +74,7 @@ namespace Tests
                 () => weavingTask.ExecuteTestRun("StructWithoutWeavingInstruction.dll"));
 
             Assert.Equal(
-                "TType WithoutWeavingInstruction marked with the [Equals] attribute contains op_Equality, but it does not contain the instruciton to weave it. Either set implement the method like `public static bool operator ==(T left, T right) => Operator.Weave();` or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.",
+                "TType WithoutWeavingInstruction marked with the [Equals] attribute contains op_Equality, but it does not contain the instruction to weave it. Either set implement the method like `public static bool operator ==(T left, T right) => Operator.Weave();` or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.",
                 exception.Message);
         }
     }

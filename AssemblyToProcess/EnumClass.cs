@@ -35,4 +35,7 @@ public class EnumClass
         NormalEnum = (NormalEnum)normalEnum;
         FlagsEnum = (FlagsEnum)flagsEnum;
     }
+
+    public static bool operator ==(EnumClass left, EnumClass right) => Operator.Weave();
+    public static bool operator !=(EnumClass left, EnumClass right) => Operator.Weave();
 }

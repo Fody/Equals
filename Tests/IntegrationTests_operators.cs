@@ -203,20 +203,4 @@ public partial class IntegrationTests
         Assert.True(first != second);
         Assert.False(first == second);
     }
-
-    [Fact]
-    public void Equality_should_return_false_for_class_with_method_to_remove()
-    {
-        var type = testResult.Assembly.GetType("ClassWithMethodToRemove");
-        dynamic first = Activator.CreateInstance(type);
-        first.X = 1;
-        first.Y = 2;
-
-        dynamic second = Activator.CreateInstance(type);
-        second.X = 1;
-        second.Y = 3;
-
-        Assert.True(first != second);
-        Assert.False(first == second);
-    }
 }

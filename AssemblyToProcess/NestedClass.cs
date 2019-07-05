@@ -8,4 +8,7 @@ public class NestedClass
     public double C { get; set; }
 
     public NormalClass D { get; set; }
+
+    public static bool operator ==(NestedClass left, NestedClass right) => Operator.Weave();
+    public static bool operator !=(NestedClass left, NestedClass right) => Operator.Weave();
 }

@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net452;netcoreapp2.0</TargetFrameworks>
-    <NoWarn>CS0659</NoWarn>
+    <NoWarn>CS0659;CS0660;CS0661</NoWarn>
     <DisableFody>true</DisableFody>
   </PropertyGroup>
   <ItemGroup>

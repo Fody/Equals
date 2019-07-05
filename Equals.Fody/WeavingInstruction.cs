@@ -18,7 +18,7 @@ namespace Equals.Fody
 
         static void AssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
         {
-            if (!@operator.TryGetOperator(type, out MethodDefinition operatorMethod))
+            if (!@operator.TryGetOperator(type, out var operatorMethod))
             {
                 throw CreateException(
                     $"Type {type.Name} marked with the [Equals] attribute does not contain {@operator.MethodName}. Fix this by adding a method {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
@@ -27,7 +27,7 @@ namespace Equals.Fody
             if (!IsWeavingInstruction(operatorMethod))
             {
                 throw CreateException(
-                    $"TType {type.Name} marked with the [Equals] attribute contains {@operator.MethodName}, but it does not contain the instruciton to weave it. Either set implement the method like {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
+                    $"TType {type.Name} marked with the [Equals] attribute contains {@operator.MethodName}, but it does not contain the instruction to weave it. Either set implement the method like {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
             }
         }
 
@@ -39,7 +39,7 @@ namespace Equals.Fody
 
         static void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
         {
-            if (@operator.TryGetOperator(type, out MethodDefinition operatorMethod))
+            if (@operator.TryGetOperator(type, out var operatorMethod))
             {
                 if (IsWeavingInstruction(operatorMethod))
                 {

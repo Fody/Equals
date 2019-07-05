@@ -8,4 +8,7 @@ public class NormalClass
     public double Z { get; set; }
 
     public char V { get; set; }
+
+    public static bool operator ==(NormalClass left, NormalClass right) => Operator.Weave();
+    public static bool operator !=(NormalClass left, NormalClass right) => Operator.Weave();
 }
