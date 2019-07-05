@@ -14,6 +14,8 @@ public class ProjectBaseClass
 
     public int X { get; set; }
 
-    public static bool operator ==(ProjectBaseClass left, ProjectBaseClass right) => Operator.Weave();
-    public static bool operator !=(ProjectBaseClass left, ProjectBaseClass right) => Operator.Weave();
+    // TODO: adding the following code here leads to a PEVerify problem. It shouldn't (but should throw an exception at runtime instead!)
+    // TODO: or should we also scan base-classes for replacement instructions?!
+    //public static bool operator ==(ProjectBaseClass left, ProjectBaseClass right) => Operator.Weave();
+    //public static bool operator !=(ProjectBaseClass left, ProjectBaseClass right) => Operator.Weave();
 }
