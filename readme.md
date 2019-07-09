@@ -81,7 +81,7 @@ public class CustomGetHashCode
 
 Note:
 - unless you specify `[Equals(DoNotAddEqualityOperators = true)]`, you must always add the `==` and `!=` method stubs with the `Operator.Weave()` implementation (if you want to know why, see [#10](https://github.com/Fody/Equals/issues/10)).
-- implementing a custom hash code method (marked by `[CustomGetHashCode]` is optional.
+- implementing a custom hash code method (marked by `[CustomGetHashCode]`) is optional.
 
 ## What gets compiled
 
@@ -171,6 +171,7 @@ public class CustomGetHashCode : IEquatable<CustomGetHashCode>
         return !object.Equals(left, right);
     }
 }
+```
 
 ## Configurability
 
@@ -181,15 +182,15 @@ Through properties on the `[Equals]` attribute the following options can be set:
  - `DoNotAddEquals` => do not override the `bool Equals(object other)` method, do not add and implement `IEquatable<T>`
  - `IgnoreBaseClassProperties` => equality and hash code do not consider properties of base classes.
  - `TypeCheck` can be used to affect the equality logic.
- -- `ExactlyTheSameTypeAsThis` (*default*): only equal, when the other object is of the same type as `this`. Imagine we have a class `Foo` with `[Equals]` and we have a sub-`class Bar : Foo`:
- --- `Foo` may equal `Foo` 
- --- `Bar` may equal `Bar`
- --- but `Foo` may never equal `Bar`
- -- `ExactlyOfType`: only equal, when the other object is of the same as the method is added to. Consider a class `Foo` with `[Equals(TypeCheck = ExactlyOfType)]` and a sub-`class Bar : Foo`:
- --- `Foo` may equal `Foo`
- --- `Bar` may never equal `Bar`
- --- `Foo` may never equal `Bar`
- -- `EqualsOrSubtype`: equal, when the other object is of same type as the method is added to, or is of a sub type.
+   - `ExactlyTheSameTypeAsThis` (*default*): only equal, when the other object is of the same type as `this`. Imagine we have a class `Foo` with `[Equals]` and we have a sub-`class Bar : Foo`:
+     - `Foo` may equal `Foo` 
+     - `Bar` may equal `Bar`
+     - but `Foo` may never equal `Bar`
+   - `ExactlyOfType`: only equal, when the other object is of the same as the method is added to. Consider a class `Foo` with `[Equals(TypeCheck = ExactlyOfType)]` and a sub-`class Bar : Foo`:
+     - `Foo` may equal `Foo`
+     - `Bar` may never equal `Bar`
+     - `Foo` may never equal `Bar`
+   - `EqualsOrSubtype`: equal, when the other object is of same type as the method is added to, or is of a sub type.
 
 ## Icon
 
