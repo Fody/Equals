@@ -1,6 +1,15 @@
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg?style=flat&max-age=86400)](https://gitter.im/Fody/Fody)
 [![NuGet Status](http://img.shields.io/nuget/v/Equals.Fody.svg?style=flat&max-age=86400)](https://www.nuget.org/packages/Equals.Fody/)
 
+## Breaking Changes in Version 3
+
+To prevent issue #10 the `!=` and `==` are not weaved fully automatically anymore.
+Instead, you must add stubs like
+
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    
+**or** opt out of operator weaving by `[Equals(DoNotAddEqualityOperators = true)]`.
 
 ## This is an add-in for [Fody](https://github.com/Fody/Home/)
 
@@ -81,6 +90,9 @@ public class CustomGetHashCode
 
 Note:
 - unless you specify `[Equals(DoNotAddEqualityOperators = true)]`, you must always add the `==` and `!=` method stubs with the `Operator.Weave()` implementation (if you want to know why, see [#10](https://github.com/Fody/Equals/issues/10)).
+- adding the `==` and `!=` operators will result in compiler warnings CS0660 and CS0661, which tell you to implement custom `Equals` and `GetHashCode` implementations. Equals.Fody is doing this for you, but after the compiler runs. To suppress the false-positives you can either do so
+  - per project, by adding `<PropertyGroup><NoWarn>CS0660;CS0661</NoWarn></PropertyGroup>` to the project file
+  - per source file, by adding `#pragma warning disable CS0660, CS0661`.
 - implementing a custom hash code method (marked by `[CustomGetHashCode]`) is optional.
 
 ## What gets compiled
