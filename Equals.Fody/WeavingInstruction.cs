@@ -8,12 +8,12 @@ namespace Equals.Fody
 {
     public class WeavingInstruction
     {
-        private static readonly Instruction NotWeavingInstruction = Instruction.Create(OpCodes.Throw);
-        private readonly MethodDefinition _weaveMethod;
+        static Instruction NotWeavingInstruction = Instruction.Create(OpCodes.Throw);
+        MethodDefinition weaveMethod;
 
         public WeavingInstruction(MethodDefinition weaveMethod)
         {
-            _weaveMethod = weaveMethod;
+            this.weaveMethod = weaveMethod;
         }
 
         public void AssertHasWeavingInstruction(TypeDefinition type)
@@ -69,7 +69,7 @@ namespace Equals.Fody
         {
             if (operand is MethodReference method)
             {
-                return method.Resolve() == _weaveMethod;
+                return method.Resolve() == weaveMethod;
             }
 
             return false;
