@@ -9,7 +9,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_instances()
     {
-        var type = _testResult.Assembly.GetType("OnlyOperator");
+        var type = testResult.Assembly.GetType("OnlyOperator");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -23,7 +23,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_false_for_not_class_equal_instances()
     {
-        var type = _testResult.Assembly.GetType("OnlyOperator");
+        var type = testResult.Assembly.GetType("OnlyOperator");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -37,7 +37,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_equal_struct_instances()
     {
-        var type = _testResult.Assembly.GetType("StructWithOnlyOperator");
+        var type = testResult.Assembly.GetType("StructWithOnlyOperator");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -52,7 +52,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_with_generic_property()
     {
-        var genericClassType = _testResult.Assembly.GetType("GenericProperty`1");
+        var genericClassType = testResult.Assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
         var type = genericClassType.MakeGenericType(propType);
 
@@ -70,7 +70,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_false_for_not_equal_struct_instances()
     {
-        var type = _testResult.Assembly.GetType("StructWithOnlyOperator");
+        var type = testResult.Assembly.GetType("StructWithOnlyOperator");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -84,7 +84,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_equal_guid_instances()
     {
-        var type = _testResult.Assembly.GetType("GuidClass");
+        var type = testResult.Assembly.GetType("GuidClass");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -99,7 +99,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_empty_object_collections()
     {
-        var type = _testResult.Assembly.GetType("ObjectCollection");
+        var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -117,7 +117,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_equal_object_collections()
     {
-        var type = _testResult.Assembly.GetType("ObjectCollection");
+        var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -139,7 +139,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_false_for_collections_with_different_size()
     {
-        var type = _testResult.Assembly.GetType("ObjectCollection");
+        var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -164,7 +164,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_false_for_collections_with_elements_and_empty_collection()
     {
-        var type = _testResult.Assembly.GetType("ObjectCollection");
+        var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -186,7 +186,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_false_for_different_object_collections()
     {
-        var type = _testResult.Assembly.GetType("ObjectCollection");
+        var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
@@ -208,7 +208,7 @@ public partial class IntegrationTests
     [Fact]
     public void When_opting_out_of_operators_should_not_add_operators()
     {
-        var type = _testResult.Assembly.GetType("DoNotAddEqualityOperators");
+        var type = testResult.Assembly.GetType("DoNotAddEqualityOperators");
 
         var methodNames = type.GetMethods().Select(x => x.Name).ToList();
 
@@ -219,7 +219,7 @@ public partial class IntegrationTests
     [Fact]
     public void When_opting_out_of_operators_should_not_replace_operators()
     {
-        var type = _testResult.Assembly.GetType("DoNotReplaceEqualityOperators");
+        var type = testResult.Assembly.GetType("DoNotReplaceEqualityOperators");
 
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
