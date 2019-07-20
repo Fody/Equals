@@ -30,7 +30,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_return_value_for_null_string()
     {
-        var type = _testResult.Assembly.GetType("SimpleClass");
+        var type = testResult.Assembly.GetType("SimpleClass");
         dynamic instance = Activator.CreateInstance(type);
         instance.Text = null;
 
