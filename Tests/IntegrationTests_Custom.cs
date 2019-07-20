@@ -6,10 +6,10 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_use_custom_logic()
     {
-        var first = _testResult.GetInstance("CustomEquals");
+        var first = testResult.GetInstance("CustomEquals");
         first.X = 1;
 
-        var second = _testResult.GetInstance("CustomEquals");
+        var second = testResult.GetInstance("CustomEquals");
         second.X = 2;
 
         var result = first.Equals(second);
@@ -20,10 +20,10 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_use_custom_logic_for_structure()
     {
-        var first = _testResult.GetInstance("CustomStructEquals");
+        var first = testResult.GetInstance("CustomStructEquals");
         first.X = 1;
 
-        var second = _testResult.GetInstance("CustomStructEquals");
+        var second = testResult.GetInstance("CustomStructEquals");
         second.X = 2;
 
         var result = first.Equals(second);
@@ -34,7 +34,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_use_custom_logic_for_generic_type()
     {
-        var genericClassType = _testResult.Assembly.GetType("CustomGenericEquals`1");
+        var genericClassType = testResult.Assembly.GetType("CustomGenericEquals`1");
         var propType = typeof(int);
         var type = genericClassType.MakeGenericType(propType);
 
@@ -52,7 +52,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_use_custom_logic()
     {
-        var instance = _testResult.GetInstance("CustomGetHashCode");
+        var instance = testResult.GetInstance("CustomGetHashCode");
         instance.X = 1;
 
         var result = instance.GetHashCode();
@@ -63,7 +63,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_use_custom_logic_for_structure()
     {
-        var instance = _testResult.GetInstance("CustomStructEquals");
+        var instance = testResult.GetInstance("CustomStructEquals");
         instance.X = 1;
 
         var result = instance.GetHashCode();
@@ -74,7 +74,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_use_custom_logic_for_generic_type()
     {
-        var genericClassType = _testResult.Assembly.GetType("CustomGenericEquals`1");
+        var genericClassType = testResult.Assembly.GetType("CustomGenericEquals`1");
         var propType = typeof(int);
         var type = genericClassType.MakeGenericType(propType);
 
