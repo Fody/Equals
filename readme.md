@@ -3,8 +3,7 @@
 
 ## Breaking Changes in Version 3
 
-To prevent issue #10 the `!=` and `==` are not weaved fully automatically anymore.
-Instead, you must add stubs like
+The `!=` and `==` operators are not weaved fully automatically anymore. Instead, add stubs as follows:
 
     public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
     public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
