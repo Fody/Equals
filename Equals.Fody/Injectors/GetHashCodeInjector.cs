@@ -7,7 +7,7 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-  public const string CustomGetHashCodeAttribute = "CustomGetHashCodeAttribute";
+    public const string CustomGetHashCodeAttribute = "CustomGetHashCodeAttribute";
 
     const int magicNumber = 397;
 
@@ -85,6 +85,7 @@ public partial class ModuleWeaver
         {
             throw new WeavingException($"Custom GetHashCode of type {type.FullName} have to have empty parameter list.");
         }
+
         if (customMethod.ReturnType.FullName != typeof(int).FullName)
         {
             throw new WeavingException($"Custom GetHashCode of type {type.FullName} have to return int.");
@@ -228,9 +229,7 @@ public partial class ModuleWeaver
     void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         ins.If(
-            c =>
-            {
-            },
+            c => { },
             t =>
             {
                 LoadVariable(property, t, type);
@@ -245,10 +244,7 @@ public partial class ModuleWeaver
         {
             ins.If(
                 c => LoadVariable(property, c, type),
-                t =>
-                {
-                    GenerateCollectionCode(property, resultVariable, method, type, t);
-                },
+                t => { GenerateCollectionCode(property, resultVariable, method, type, t); },
                 f => { });
         }
         else

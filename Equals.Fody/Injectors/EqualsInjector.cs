@@ -141,6 +141,7 @@ public partial class ModuleWeaver
                 {
                     throw new WeavingException($"Custom equals of type {type.FullName} have to have one parameter.");
                 }
+
                 if (parameters[0].ParameterType.Resolve().FullName != type.FullName)
                 {
                     throw new WeavingException($"Custom equals of type {type.FullName} have to have one parameter of type {type.FullName}.");
@@ -180,6 +181,7 @@ public partial class ModuleWeaver
 
                     ins.Add(Instruction.Create(OpCodes.Ldloca, argVariable));
                 }
+
                 ins.Add(Instruction.Create(OpCodes.Ldarg_1));
                 ins.Add(Instruction.Create(imported.GetCallForMethod(), imported));
             },
@@ -195,6 +197,7 @@ public partial class ModuleWeaver
             var resolvedType = type.GetGenericInstanceType(type);
             ins.Add(Instruction.Create(OpCodes.Ldobj, resolvedType));
         }
+
         ins.Add(Instruction.Create(OpCodes.Ldarg_1));
         ins.Add(Instruction.Create(OpCodes.Call, newEquals));
         ins.Add(Instruction.Create(OpCodes.Ret));
@@ -208,6 +211,7 @@ public partial class ModuleWeaver
             var resolvedType = type.GetGenericInstanceType(type);
             t.Add(Instruction.Create(OpCodes.Ldobj, resolvedType));
         }
+
         t.Add(Instruction.Create(OpCodes.Ldarg_1));
         if (type.IsValueType)
         {
@@ -267,6 +271,7 @@ public partial class ModuleWeaver
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
+
         c.Add(Instruction.Create(OpCodes.Call, GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldtoken, typeRef));
@@ -283,6 +288,7 @@ public partial class ModuleWeaver
             c.Add(Instruction.Create(OpCodes.Ldobj, resolved));
             c.Add(Instruction.Create(OpCodes.Box, resolved));
         }
+
         c.Add(Instruction.Create(OpCodes.Call, GetType));
 
         c.Add(Instruction.Create(OpCodes.Ldarg_1));
@@ -297,6 +303,7 @@ public partial class ModuleWeaver
         {
             return;
         }
+
         ins.If(
             c =>
             {
@@ -359,12 +366,14 @@ public partial class ModuleWeaver
         {
             c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
         }
+
         c.Add(Instruction.Create(type.GetLdArgForType(), right));
         c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
         if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
         {
             c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
         }
+
         c.Add(Instruction.Create(OpCodes.Call, StaticEquals));
     }
 
@@ -389,6 +398,7 @@ public partial class ModuleWeaver
             AddCollectionCall(type, collectionEquals, property, propType, left, right, e);
             return;
         }
+
         e.If(
             cf =>
             {
@@ -399,7 +409,7 @@ public partial class ModuleWeaver
             t => t.Add(Instruction.Create(OpCodes.Ldc_I4_0)),
             es => { AddCollectionCall(type, collectionEquals, property, propType, left, right, es); });
     }
-    
+
     void AddCollectionCall(TypeDefinition type, MethodDefinition collectionEquals, PropertyDefinition property, TypeReference propType, ParameterDefinition left, ParameterDefinition right, Collection<Instruction> es)
     {
         var getMethod = property.GetGetMethod(type);

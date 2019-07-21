@@ -6,8 +6,3 @@ public class ExactlyOfTypeClass
     public static bool operator ==(ExactlyOfTypeClass left, ExactlyOfTypeClass right) => Operator.Weave();
     public static bool operator !=(ExactlyOfTypeClass left, ExactlyOfTypeClass right) => Operator.Weave();
 }
-
-public class ExactlyOfTypeSubClass : ExactlyOfTypeClass
-{
-    public int B { get; set; }
-}

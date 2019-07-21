@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Equals.Fody;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
-public partial class ModuleWeaver : BaseModuleWeaver
+public partial class ModuleWeaver :
+    BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
     public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
@@ -26,9 +26,10 @@ public partial class ModuleWeaver : BaseModuleWeaver
     {
         if (type.HasGenericParameters)
         {
-            var parameters = type.GenericParameters.Select(x => (TypeReference)x).ToArray();
+            var parameters = type.GenericParameters.Select(x => (TypeReference) x).ToArray();
             return type.MakeGenericInstanceType(parameters);
         }
+
         return type;
     }
 
@@ -57,7 +58,7 @@ public partial class ModuleWeaver : BaseModuleWeaver
                 var typeCheckProperty = attribute.Properties.SingleOrDefault(x => x.Name == "TypeCheck");
                 if (typeCheckProperty.Name != null)
                 {
-                    typeCheck = (int)typeCheckProperty.Argument.Value;
+                    typeCheck = (int) typeCheckProperty.Argument.Value;
                 }
 
                 var newEquals = InjectEqualsInternal(type, typeRef, collectionEquals, ignoreBaseClassProperties);

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public struct GenericDependency<T> : IEnumerable<T>
+public struct GenericDependency<T> :
+    IEnumerable<T>
 {
     public IEnumerator<T> GetEnumerator()
     {

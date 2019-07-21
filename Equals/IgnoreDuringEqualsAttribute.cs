@@ -4,6 +4,7 @@ using System;
 /// Property will be ignored during generating Equals/GetHashCode method.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class IgnoreDuringEqualsAttribute : Attribute
+public sealed class IgnoreDuringEqualsAttribute :
+    Attribute
 {
 }

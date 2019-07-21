@@ -6,8 +6,3 @@ public class EqualsOrSubtypeClass
     public static bool operator ==(EqualsOrSubtypeClass left, EqualsOrSubtypeClass right) => Operator.Weave();
     public static bool operator !=(EqualsOrSubtypeClass left, EqualsOrSubtypeClass right) => Operator.Weave();
 }
-
-public class EqualsOrSubtypeSubClass : EqualsOrSubtypeClass
-{
-    public int B { get; set; }
-}

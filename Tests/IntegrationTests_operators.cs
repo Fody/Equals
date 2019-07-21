@@ -48,7 +48,6 @@ public partial class IntegrationTests
         Assert.True(second != first);
     }
 
-
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_with_generic_property()
     {

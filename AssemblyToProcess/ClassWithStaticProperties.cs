@@ -12,4 +12,3 @@ public class ClassWithStaticProperties
     public static bool operator ==(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
     public static bool operator !=(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
 }
-

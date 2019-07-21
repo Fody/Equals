@@ -27,24 +27,25 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
-        first.X = new[] { 1, 2 };
-        first.Y = new[] { 3, 4 };
+        first.X = new[] {1, 2};
+        first.Y = new[] {3, 4};
         dynamic second = Activator.CreateInstance(type);
-        second.X = new[] { 1, 2 };
-        second.Y = new[] { 3, 4 };
+        second.X = new[] {1, 2};
+        second.Y = new[] {3, 4};
 
         Assert.True(first.Equals(second));
     }
+
     [Fact]
     public void Equals_should_return_false_for_StructWithArray()
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
-        first.X = new[] { 1, 2 };
-        first.Y = new[] { 3, 4 };
+        first.X = new[] {1, 2};
+        first.Y = new[] {3, 4};
         dynamic second = Activator.CreateInstance(type);
-        second.X = new[] { 1, 2 };
-        second.Y = new[] { 1, 4 };
+        second.X = new[] {1, 2};
+        second.Y = new[] {1, 4};
 
         Assert.False(first.Equals(second));
     }
@@ -114,7 +115,7 @@ public partial class IntegrationTests
         dynamic rightInstance = Activator.CreateInstance(rightType);
         rightInstance.A = 1;
 
-        return leftInstance.Equals((object)rightInstance);
+        return leftInstance.Equals((object) rightInstance);
     }
 
     [Theory]
@@ -155,7 +156,7 @@ public partial class IntegrationTests
         dynamic first = Activator.CreateInstance(type, 3, 6);
         dynamic second = Activator.CreateInstance(type, 3, 6);
 
-        var result = ((object)first).Equals((object)second);
+        var result = ((object) first).Equals((object) second);
 
         Assert.True(result);
     }
@@ -168,21 +169,21 @@ public partial class IntegrationTests
         var instanceType = genericClassType.MakeGenericType(propType);
 
         Func<dynamic> createInstance = () =>
-            {
-                dynamic instance = Activator.CreateInstance(instanceType);
-                instance.A = 1;
-                dynamic propInstance = Activator.CreateInstance(propType);
+        {
+            dynamic instance = Activator.CreateInstance(instanceType);
+            instance.A = 1;
+            dynamic propInstance = Activator.CreateInstance(propType);
 
-                dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
-                array[0] = propInstance;
+            dynamic array = Activator.CreateInstance(propType.MakeArrayType(), 1);
+            array[0] = propInstance;
 
-                instance.B = array;
-                return instance;
-            };
+            instance.B = array;
+            return instance;
+        };
         var first = createInstance();
         var second = createInstance();
 
-        var result = first.Equals((object)second);
+        var result = first.Equals((object) second);
 
         Assert.True(result);
     }
@@ -260,11 +261,11 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { 1, 2, 3, 4, 5, 6 };
+        first.Collection = new[] {1, 2, 3, 4, 5, 6};
         first.Count = 2;
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new List<int> { 1, 2, 3, 4, 5, 6 };
+        second.Collection = new List<int> {1, 2, 3, 4, 5, 6};
         second.Count = 2;
 
         var result = first.Equals(second);
@@ -277,10 +278,10 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntArray");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { 1, 2, 3 };
+        first.Collection = new[] {1, 2, 3};
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new[] { 1, 2, 3 };
+        second.Collection = new[] {1, 2, 3};
 
         var result = first.Equals(second);
 
@@ -292,10 +293,10 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("StringArray");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { "one", "two", "three" };
+        first.Collection = new[] {"one", "two", "three"};
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new[] { "one", "two", "three" };
+        second.Collection = new[] {"one", "two", "three"};
 
         var result = first.Equals(second);
 
@@ -307,7 +308,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { 1, 2, 3, 4, 5, 6 };
+        first.Collection = new[] {1, 2, 3, 4, 5, 6};
         first.Count = 2;
 
         dynamic second = Activator.CreateInstance(type);
@@ -341,7 +342,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { 1 };
+        first.Collection = new[] {1};
         first.Count = 0;
 
         dynamic second = Activator.CreateInstance(type);
@@ -362,7 +363,7 @@ public partial class IntegrationTests
         first.Count = 0;
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new[] { 1 };
+        second.Collection = new[] {1};
         second.Count = 0;
 
         var result = first.Equals(second);
@@ -497,7 +498,7 @@ public partial class IntegrationTests
 
         object second = instance;
 
-        var result1 = ((dynamic)first).Equals((dynamic)second);
+        var result1 = ((dynamic) first).Equals((dynamic) second);
         var result = first.Equals(second);
 
         Assert.True(result);
@@ -545,10 +546,10 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);
-        first.Prop = new GenericDependency<int> { Prop = 1 };
+        first.Prop = new GenericDependency<int> {Prop = 1};
 
         dynamic second = Activator.CreateInstance(type);
-        second.Prop = new GenericDependency<int> { Prop = 1 };
+        second.Prop = new GenericDependency<int> {Prop = 1};
 
         var result = first.Equals(second);
 

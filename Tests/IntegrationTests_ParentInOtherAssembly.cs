@@ -53,18 +53,18 @@ public partial class IntegrationTests
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
         first.InChildText = "test";
-        first.InChildCollection = new[] { 1, 2 };
+        first.InChildCollection = new[] {1, 2};
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new[] { 1, 2 };
+        first.InParentCollection = new[] {1, 2};
 
         var second = testResult.GetInstance("ComplexChild");
         second.InChildNumber = 1;
         second.InChildText = "test";
-        second.InChildCollection = new[] { 1, 2 };
+        second.InChildCollection = new[] {1, 2};
         second.InParentNumber = 1;
         second.InParentText = "test";
-        second.InParentCollection = new[] { 1, 2 };
+        second.InParentCollection = new[] {1, 2};
 
         var result = first.Equals(second);
 
@@ -77,10 +77,10 @@ public partial class IntegrationTests
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
         first.InChildText = "test";
-        first.InChildCollection = new[] { 1, 2 };
+        first.InChildCollection = new[] {1, 2};
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new[] { 1, 2 };
+        first.InParentCollection = new[] {1, 2};
 
         var result = first.GetHashCode();
 
@@ -93,18 +93,18 @@ public partial class IntegrationTests
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
         first.InChildText = "test";
-        first.InChildCollection = new[] { 1, 2 };
+        first.InChildCollection = new[] {1, 2};
         first.InParentNumber = 1;
         first.InParentText = "test";
-        first.InParentCollection = new[] { 1, 2 };
+        first.InParentCollection = new[] {1, 2};
 
         var second = testResult.GetInstance("ComplexChild");
         second.InChildNumber = 1;
         second.InChildText = "test";
-        second.InChildCollection = new[] { 1, 2 };
+        second.InChildCollection = new[] {1, 2};
         second.InParentNumber = 1;
         second.InParentText = "test";
-        second.InParentCollection = new[] { 1, 2 };
+        second.InParentCollection = new[] {1, 2};
 
         var result = first.GetHashCode();
 

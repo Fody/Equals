@@ -3,7 +3,7 @@ using Xunit;
 
 public class OperatorBadCaseIntegrationTests
 {
-    private readonly ModuleWeaver weavingTask;
+    ModuleWeaver weavingTask;
 
     public OperatorBadCaseIntegrationTests()
     {

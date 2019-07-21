@@ -3,9 +3,9 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    private static readonly string AssemblyVersion = typeof(ModuleWeaver).Assembly.GetName().Version.ToString();
-    private static readonly string AssemblyName = typeof(ModuleWeaver).Assembly.GetName().Name;
-    
+    static string AssemblyVersion = typeof(ModuleWeaver).Assembly.GetName().Version.ToString();
+    static string AssemblyName = typeof(ModuleWeaver).Assembly.GetName().Name;
+
     public void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
     {
         AddCustomAttributeArgument(customAttributes);
