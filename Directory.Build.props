@@ -4,6 +4,5 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <Version>3.0.0</Version>
-    <ReleaseNotes>Breaking Change: Not weaving == and != operators anymore. When calling the operators from the same assembly as the type is defined, the behavior was different from when calling from a different assembly. See https://github.com/Fody/Equals/issues/10</ReleaseNotes> 
   </PropertyGroup>
 </Project>
