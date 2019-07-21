@@ -1,6 +1,14 @@
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg?style=flat&max-age=86400)](https://gitter.im/Fody/Fody)
 [![NuGet Status](http://img.shields.io/nuget/v/Equals.Fody.svg?style=flat&max-age=86400)](https://www.nuget.org/packages/Equals.Fody/)
 
+## Breaking Changes in Version 3
+
+The `!=` and `==` operators are not weaved fully automatically anymore. Instead, add stubs as follows:
+
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    
+**or** opt out of operator weaving by `[Equals(DoNotAddEqualityOperators = true)]`.
 
 ## This is an add-in for [Fody](https://github.com/Fody/Home/)
 
@@ -55,6 +63,9 @@ public class Point
     {
         return Z == other.Z || Z == 0 || other.Z == 0;
     }
+    
+    public static bool operator ==(Point left, Point right) => Operator.Weave();
+    public static bool operator !=(Point left, Point right) => Operator.Weave();
 }
 
 [Equals]
@@ -70,9 +81,18 @@ public class CustomGetHashCode
     {
         return 42;
     }
+    
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
 }
 ```
 
+Note:
+- unless you specify `[Equals(DoNotAddEqualityOperators = true)]`, you must always add the `==` and `!=` method stubs with the `Operator.Weave()` implementation (if you want to know why, see [#10](https://github.com/Fody/Equals/issues/10)).
+- adding the `==` and `!=` operators will result in compiler warnings CS0660 and CS0661, which tell you to implement custom `Equals` and `GetHashCode` implementations. Equals.Fody is doing this for you, but after the compiler runs. To suppress the false-positives you can either do so
+  - per project, by adding `<PropertyGroup><NoWarn>CS0660;CS0661</NoWarn></PropertyGroup>` to the project file
+  - per source file, by adding `#pragma warning disable CS0660, CS0661`.
+- implementing a custom hash code method (marked by `[CustomGetHashCode]`) is optional.
 
 ## What gets compiled
 
@@ -164,6 +184,24 @@ public class CustomGetHashCode : IEquatable<CustomGetHashCode>
 }
 ```
 
+## Configurability
+
+Through properties on the `[Equals]` attribute the following options can be set:
+
+ - `DoNotAddEqualityOperators` => do not weave `==` and `!=` operators
+ - `DoNotAddGetHashCode` => do not override the `int GetHashCode()` methods
+ - `DoNotAddEquals` => do not override the `bool Equals(object other)` method, do not add and implement `IEquatable<T>`
+ - `IgnoreBaseClassProperties` => equality and hash code do not consider properties of base classes.
+ - `TypeCheck` can be used to affect the equality logic.
+   - `ExactlyTheSameTypeAsThis` (*default*): only equal, when the other object is of the same type as `this`. Imagine we have a class `Foo` with `[Equals]` and we have a sub-`class Bar : Foo`:
+     - `Foo` may equal `Foo` 
+     - `Bar` may equal `Bar`
+     - but `Foo` may never equal `Bar`
+   - `ExactlyOfType`: only equal, when the other object is of the same as the method is added to. Consider a class `Foo` with `[Equals(TypeCheck = ExactlyOfType)]` and a sub-`class Bar : Foo`:
+     - `Foo` may equal `Foo`
+     - `Bar` may never equal `Bar`
+     - `Foo` may never equal `Bar`
+   - `EqualsOrSubtype`: equal, when the other object is of same type as the method is added to, or is of a sub type.
 
 ## Icon
 

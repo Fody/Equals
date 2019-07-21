@@ -15,6 +15,9 @@ public struct CustomStructEquals
     {
         return 42;
     }
+
+    public static bool operator ==(CustomStructEquals left, CustomStructEquals right) => Operator.Weave();
+    public static bool operator !=(CustomStructEquals left, CustomStructEquals right) => Operator.Weave();
 }
 
 [Equals]
@@ -34,6 +37,9 @@ public struct CustomGenericEquals<T>
     {
         return 42;
     }
+
+    public static bool operator ==(CustomGenericEquals<T> left, CustomGenericEquals<T> right) => Operator.Weave();
+    public static bool operator !=(CustomGenericEquals<T> left, CustomGenericEquals<T> right) => Operator.Weave();
 }
 
 [Equals]
@@ -53,6 +59,9 @@ public class CustomEquals
     {
         return 42;
     }
+
+    public static bool operator ==(CustomEquals left, CustomEquals right) => Operator.Weave();
+    public static bool operator !=(CustomEquals left, CustomEquals right) => Operator.Weave();
 }
 
 [Equals]
@@ -65,4 +74,7 @@ public class CustomGetHashCode
     {
         return 42;
     }
+
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
 }

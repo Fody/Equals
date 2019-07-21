@@ -8,5 +8,8 @@ public class ClassWithStaticProperties
     public static double Z { get; set; }
 
     public static char V { get; set; }
+
+    public static bool operator ==(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
+    public static bool operator !=(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
 }
 

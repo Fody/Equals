@@ -1,21 +1,17 @@
 ﻿using Fody;
+using Xunit;
 using Xunit.Abstractions;
 
 public partial class IntegrationTests :
-    XunitLoggingBase
+    XunitLoggingBase,
+    IClassFixture<AssemblyToProcessFixture>
 {
-
-    static TestResult testResult;
+    TestResult testResult;
 #pragma warning restore 618
 
-    static IntegrationTests()
-    {
-        var weavingTask = new ModuleWeaver();
-        testResult = weavingTask.ExecuteTestRun("AssemblyToProcess.dll");
-    }
-
-    public IntegrationTests(ITestOutputHelper output) :
+    public IntegrationTests(ITestOutputHelper output, AssemblyToProcessFixture fixture) :
         base(output)
     {
+        testResult = fixture.TestResult;
     }
 }

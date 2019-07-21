@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 public partial class IntegrationTests
 {
+    /// To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
+    /// See OnlyOperator.Equals(object)!
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_instances()
     {
@@ -14,7 +17,7 @@ public partial class IntegrationTests
         second.Value = 2;
 
         Assert.True(first == second);
-        Assert.False(first != second);
+        Assert.True(second != first);
     }
 
     [Fact]
@@ -42,7 +45,7 @@ public partial class IntegrationTests
         second.Value = 2;
 
         Assert.True(first == second);
-        Assert.False(first != second);
+        Assert.True(second != first);
     }
 
 
@@ -203,18 +206,25 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void Equality_should_return_false_for_class_with_method_to_remove()
+    public void When_opting_out_of_operators_should_not_add_operators()
     {
-        var type = testResult.Assembly.GetType("ClassWithMethodToRemove");
+        var type = testResult.Assembly.GetType("DoNotAddEqualityOperators");
+
+        var methodNames = type.GetMethods().Select(x => x.Name).ToList();
+
+        Assert.DoesNotContain("op_Equality", methodNames);
+        Assert.DoesNotContain("op_Inequality", methodNames);
+    }
+
+    [Fact]
+    public void When_opting_out_of_operators_should_not_replace_operators()
+    {
+        var type = testResult.Assembly.GetType("DoNotReplaceEqualityOperators");
+
         dynamic first = Activator.CreateInstance(type);
-        first.X = 1;
-        first.Y = 2;
-
         dynamic second = Activator.CreateInstance(type);
-        second.X = 1;
-        second.Y = 3;
 
+        Assert.True(first == second);
         Assert.True(first != second);
-        Assert.False(first == second);
     }
 }

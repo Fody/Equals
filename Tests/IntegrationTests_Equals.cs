@@ -21,17 +21,17 @@ public partial class IntegrationTests
         Assert.True(first.Equals(second));
         Assert.False(first.Equals(third));
     }
-    
+
     [Fact]
     public void Equals_should_return_true_for_StructWithArray()
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
-        first.X = new[]{1,2};
-        first.Y = new[]{3,4};
+        first.X = new[] { 1, 2 };
+        first.Y = new[] { 3, 4 };
         dynamic second = Activator.CreateInstance(type);
-        second.X = new[]{1,2};
-        second.Y = new[]{3,4};
+        second.X = new[] { 1, 2 };
+        second.Y = new[] { 3, 4 };
 
         Assert.True(first.Equals(second));
     }
@@ -40,11 +40,11 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
-        first.X = new[]{1,2};
-        first.Y = new[]{3,4};
+        first.X = new[] { 1, 2 };
+        first.Y = new[] { 3, 4 };
         dynamic second = Activator.CreateInstance(type);
-        second.X = new[]{1,2};
-        second.Y = new[]{1,4};
+        second.X = new[] { 1, 2 };
+        second.Y = new[] { 1, 4 };
 
         Assert.False(first.Equals(second));
     }
@@ -114,7 +114,7 @@ public partial class IntegrationTests
         dynamic rightInstance = Activator.CreateInstance(rightType);
         rightInstance.A = 1;
 
-        return leftInstance.Equals((object) rightInstance);
+        return leftInstance.Equals((object)rightInstance);
     }
 
     [Theory]
@@ -277,25 +277,25 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntArray");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { 1, 2, 3};
+        first.Collection = new[] { 1, 2, 3 };
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new [] { 1, 2, 3 };
+        second.Collection = new[] { 1, 2, 3 };
 
         var result = first.Equals(second);
 
         Assert.True(result);
     }
-    
+
     [Fact]
     public void Equals_should_return_true_for_equal_string_arrays()
     {
         var type = testResult.Assembly.GetType("StringArray");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[] { "one", "two", "three"};
+        first.Collection = new[] { "one", "two", "three" };
 
         dynamic second = Activator.CreateInstance(type);
-        second.Collection = new[] { "one", "two", "three"};
+        second.Collection = new[] { "one", "two", "three" };
 
         var result = first.Equals(second);
 
@@ -341,7 +341,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
-        first.Collection = new[]{1};
+        first.Collection = new[] { 1 };
         first.Count = 0;
 
         dynamic second = Activator.CreateInstance(type);
@@ -522,39 +522,22 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void Equals_should_return_true_for_class_with_method_to_remove()
-    {
-        var type = testResult.Assembly.GetType("ClassWithMethodToRemove");
-        dynamic first = Activator.CreateInstance(type);
-        first.X = 1;
-        first.Y = 2;
-
-        dynamic second = Activator.CreateInstance(type);
-        second.X = 1;
-        second.Y = 2;
-
-        var result = first.Equals(second);
-
-        Assert.True(result);
-    }
-
-    [Fact]
     public void Equals_should_return_true_for_class_with_guid_in_parent()
     {
         var guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
 
-        var type = testResult.Assembly.GetType( "ReferenceObject" );
-        dynamic first = Activator.CreateInstance( type );
+        var type = testResult.Assembly.GetType("ReferenceObject");
+        dynamic first = Activator.CreateInstance(type);
         first.Name = "Test";
-        first.Id = Guid.Parse( guid );
+        first.Id = Guid.Parse(guid);
 
-        dynamic second = Activator.CreateInstance( type );
+        dynamic second = Activator.CreateInstance(type);
         second.Name = "Test";
-        second.Id = Guid.Parse( guid );
+        second.Id = Guid.Parse(guid);
 
-        var result = first.Equals( second );
+        var result = first.Equals(second);
 
-        Assert.True( result );
+        Assert.True(result);
     }
 
     [Fact]

@@ -10,4 +10,7 @@ public class ClassWithIndexer
         get => X;
         set => X = index;
     }
+
+    public static bool operator ==(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave();
+    public static bool operator !=(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave();
 }

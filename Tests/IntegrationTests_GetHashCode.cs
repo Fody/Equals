@@ -166,19 +166,19 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntArray");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new[] { 1, 2, 3};
+        instance.Collection = new[] { 1, 2, 3 };
 
         var result = instance.GetHashCode();
 
         Assert.NotEqual(0, result);
     }
-    
+
     [Fact]
     public void GetHashCode_should_return_value_for_string_array()
     {
         var type = testResult.Assembly.GetType("StringArray");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new[] { "one", "two", "three"};
+        instance.Collection = new[] { "one", "two", "three" };
 
         var result = instance.GetHashCode();
 
@@ -216,7 +216,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("OnlyIntCollection");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new[] { 1, 2, 3, 4, 5};
+        instance.Collection = new[] { 1, 2, 3, 4, 5 };
 
         var result = instance.GetHashCode();
 
@@ -343,12 +343,14 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void GetHashCode_should_return_value_for_class_with_method_to_remove()
+    public void GetHashCode_should_return_value_for_class_with_guid_in_parent()
     {
-        var type = testResult.Assembly.GetType("ClassWithMethodToRemove");
+        var guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
+
+        var type = testResult.Assembly.GetType("ReferenceObject");
         dynamic first = Activator.CreateInstance(type);
-        first.X = 1;
-        first.Y = 2;
+        first.Name = "Test";
+        first.Id = Guid.Parse(guid);
 
         var result = first.GetHashCode();
 
@@ -356,26 +358,11 @@ public partial class IntegrationTests
     }
 
     [Fact]
-    public void GetHashCode_should_return_value_for_class_with_guid_in_parent()
-    {
-        var guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
-
-        var type = testResult.Assembly.GetType( "ReferenceObject" );
-        dynamic first = Activator.CreateInstance( type );
-        first.Name = "Test";
-        first.Id = Guid.Parse( guid );
-
-        var result = first.GetHashCode();
-
-        Assert.NotEqual( 0, result );
-    }
-
-    [Fact]
     public void GetHashCode_should_return_value_for_class_with_generic_property2()
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);
-        first.Prop = new GenericDependency<int> {Prop = 1};
+        first.Prop = new GenericDependency<int> { Prop = 1 };
 
         var result = first.GetHashCode();
 

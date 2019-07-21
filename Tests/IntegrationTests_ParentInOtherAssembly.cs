@@ -5,11 +5,11 @@ public partial class IntegrationTests
     [Fact]
     public void Equals_should_return_true_for_child_with_parent_in_other_assembly()
     {
-        var first = testResult.GetInstance("Child");;
+        var first = testResult.GetInstance("Child");
         first.InParent = 10;
         first.InChild = 5;
 
-        var second = testResult.GetInstance("Child");;
+        var second = testResult.GetInstance("Child");
         second.InParent = 10;
         second.InChild = 5;
 
@@ -21,7 +21,7 @@ public partial class IntegrationTests
     [Fact]
     public void GetHashCode_should_return_true_for_child_with_parent_in_other_assembly()
     {
-        var first = testResult.GetInstance("Child");;
+        var first = testResult.GetInstance("Child");
         first.InParent = 10;
         first.InChild = 5;
 
@@ -33,7 +33,7 @@ public partial class IntegrationTests
     [Fact]
     public void Equality_operator_should_return_true_for_child_with_parent_in_other_assembly()
     {
-        var first = testResult.GetInstance("Child");;
+        var first = testResult.GetInstance("Child");
         first.InParent = 10;
         first.InChild = 5;
 
@@ -51,7 +51,7 @@ public partial class IntegrationTests
     public void Equals_should_return_true_for_child_with_complex_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("ComplexChild");
-        first.InChildNumber  = 1;
+        first.InChildNumber = 1;
         first.InChildText = "test";
         first.InChildCollection = new[] { 1, 2 };
         first.InParentNumber = 1;
