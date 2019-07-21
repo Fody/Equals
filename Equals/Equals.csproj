@@ -9,6 +9,7 @@
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
     <PackageIconUrl>https://raw.githubusercontent.com/Fody/Equals/master/package_icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Fody/Equals</PackageProjectUrl>
+    <ReleaseNotes>$(PackageProjectUrl)/milestones?state=closed</ReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Equals, GetHashCode, ILWeaving, Fody, Cecil</PackageTags>
   </PropertyGroup>
