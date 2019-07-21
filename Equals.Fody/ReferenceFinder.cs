@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Equals.Fody;
 using Mono.Cecil;
 #pragma warning disable 108,114
 
