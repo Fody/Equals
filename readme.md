@@ -10,6 +10,8 @@ The `!=` and `==` operators are not weaved fully automatically anymore. Instead,
     
 **or** opt out of operator weaving by `[Equals(DoNotAddEqualityOperators = true)]`.
 
+Note: With version 3.0.0 operator weaving is buggy. If you experience build errors like ` 'System.Boolean op_Equality(T ,T)' is declared in another module and needs to be imported` or ` 'System.Boolean op_Inequality(T ,T)' is declared in another module and needs to be imported`, make sure to update to version 3.0.1 or above.
+
 ## This is an add-in for [Fody](https://github.com/Fody/Home/)
 
 ![Icon](https://raw.githubusercontent.com/Fody/Equals/master/package_icon.png)
