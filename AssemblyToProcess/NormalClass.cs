@@ -1,4 +1,4 @@
-﻿[Equals(DoNotAddEqualityOperators = true)]
+﻿[Equals]
 public class NormalClass
 {
     public int X { get; set; }
