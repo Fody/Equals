@@ -5,26 +5,19 @@ using Mono.Collections.Generic;
 
 public partial class ModuleWeaver
 {
-    public void InjectOperator(TypeDefinition type, Operator @operator)
+    public void ReplaceOperator(TypeDefinition type, Operator @operator)
     {
-        var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Static;
-        var method = new MethodDefinition(@operator.MethodName, methodAttributes, TypeSystem.BooleanReference);
+        var method = WeavingInstruction.RetrieveOperatorAndAssertHasWeavingInstruction(type, @operator);
         MarkAsGeneratedCode(method.CustomAttributes);
-
-        var parameterType = type.GetGenericInstanceType(type);
-
-        method.Parameters.Add("left", parameterType);
-        method.Parameters.Add("right", parameterType);
 
         var body = method.Body;
         var ins = body.Instructions;
+        ins.Clear();
 
         AddStaticEqualsCall(type, ins);
         ins.AddReturnValue(@operator.IsEquality);
 
         body.OptimizeMacros();
-
-        type.Methods.AddOrReplace(method);
     }
 
     void AddStaticEqualsCall(TypeDefinition type, Collection<Instruction> ins)

@@ -14,13 +14,7 @@ public class WeavingInstruction
         this.weaveMethod = weaveMethod;
     }
 
-    public void AssertHasWeavingInstruction(TypeDefinition type)
-    {
-        AssertHasWeavingInstruction(type, Operator.Equality);
-        AssertHasWeavingInstruction(type, Operator.Inequality);
-    }
-
-    void AssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
+    public MethodDefinition RetrieveOperatorAndAssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
     {
         if (!@operator.TryGetOperator(type, out var operatorMethod))
         {
@@ -33,15 +27,11 @@ public class WeavingInstruction
             throw CreateException(
                 $"TType {type.Name} marked with the [Equals] attribute contains {@operator.MethodName}, but it does not contain the instruction to weave it. Either set implement the method like {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
         }
+
+        return operatorMethod;
     }
 
-    public void AssertNotHasWeavingInstruction(TypeDefinition type)
-    {
-        AssertNotHasWeavingInstruction(type, Operator.Equality);
-        AssertNotHasWeavingInstruction(type, Operator.Inequality);
-    }
-
-    void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
+    public void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
     {
         if (@operator.TryGetOperator(type, out var operatorMethod))
         {

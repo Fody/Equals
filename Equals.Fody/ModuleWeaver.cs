@@ -79,14 +79,13 @@ public partial class ModuleWeaver :
 
             if (IsPropertySet(attribute, DoNotAddEqualityOperators))
             {
-                WeavingInstruction.AssertNotHasWeavingInstruction(type);
+                WeavingInstruction.AssertNotHasWeavingInstruction(type, Operator.Equality);
+                WeavingInstruction.AssertNotHasWeavingInstruction(type, Operator.Inequality);
             }
             else
             {
-                WeavingInstruction.AssertHasWeavingInstruction(type);
-
-                InjectOperator(type, Operator.Equality);
-                InjectOperator(type, Operator.Inequality);
+                ReplaceOperator(type, Operator.Equality);
+                ReplaceOperator(type, Operator.Inequality);
             }
         }
 
