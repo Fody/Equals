@@ -227,6 +227,8 @@ public partial class IntegrationTests
         Assert.True(first != second);
     }
 
+    /// To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
+    /// See OnlyOperatorUsingWeavingInstructionOverloadingWithParameters.Equals(object)!
     [Fact]
     public void When_using_operator_weaving_instruction_overload_with_parameters_should_weave_correctly()
     {

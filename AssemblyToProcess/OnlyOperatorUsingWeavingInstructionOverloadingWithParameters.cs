@@ -5,7 +5,7 @@ public class OnlyOperatorUsingWeavingInstructionOverloadingWithParameters
 
     public override bool Equals(object obj)
     {
-        if (!(obj is OnlyOperator second))
+        if (!(obj is OnlyOperatorUsingWeavingInstructionOverloadingWithParameters second))
         {
             return false;
         }
