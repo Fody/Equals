@@ -53,8 +53,7 @@ public partial class ModuleWeaver
         var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.Single(x => x.Name == "Equals");
         var equalsAssembly = ModuleDefinition.AssemblyResolver.Resolve(equalsAssemblyReference);
         var operatorType = equalsAssembly.MainModule.Types.Single(x => x.Name == "Operator");
-        var weaveMethod = operatorType.Methods.Single(x => x.Name == "Weave");
-
-        WeavingInstruction = new WeavingInstruction(weaveMethod);
+        var weaveMethods = operatorType.Methods.Where(x => x.Name == "Weave").ToList();
+        WeavingInstruction = new WeavingInstruction(weaveMethods);
     }
 }
