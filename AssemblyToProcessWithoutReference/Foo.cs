@@ -1,6 +1,3 @@
-﻿namespace AssemblyToProcessWithoutReference
+﻿public class Foo
 {
-    public class Foo
-    {
-    }
 }
