@@ -226,4 +226,18 @@ public partial class IntegrationTests
         Assert.True(first == second);
         Assert.True(first != second);
     }
+
+    [Fact]
+    public void When_using_operator_weaving_instruction_overload_with_parameters_should_weave_correctly()
+    {
+        var type = testResult.Assembly.GetType("OnlyOperatorUsingWeavingInstructionOverloadingWithParameters");
+        dynamic first = Activator.CreateInstance(type);
+        dynamic second = Activator.CreateInstance(type);
+
+        first.Value = 1;
+        second.Value = 2;
+
+        Assert.True(first == second);
+        Assert.True(second != first);
+    }
 }
