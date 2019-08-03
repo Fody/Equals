@@ -37,7 +37,7 @@ public partial class ModuleWeaver :
     {
         if (!FindReferencesAndDetermineWhetherEqualsIsReferenced(FindType))
         {
-            LogDebug($"Assembly does not reference 'Equals' assembly. No work to do - exiting.");
+            LogDebug("Assembly does not reference 'Equals' assembly. No work to do - exiting.");
             return;
         }
 
