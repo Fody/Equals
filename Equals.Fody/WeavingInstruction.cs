@@ -45,8 +45,19 @@ public class WeavingInstruction
 
     bool IsWeavingInstruction(MethodDefinition method)
     {
-        var firstInstruction = method.Body.Instructions.FirstOrDefault() ?? NotWeavingInstruction;
-        return IsWeavingInstruction(firstInstruction);
+        var instructions = method.Body.Instructions;
+
+        // since `Operator.Weave(left, right)` has two parameters, we've got 4 IL instructions:
+        // 1. Load `left` to the stack
+        // 2. Load `right` to the stack
+        // 3. call Operator.Weave(left, right)
+        // 4. return the result
+        if (instructions.Count == 4)
+        {
+            return IsWeavingInstruction(instructions[2]);
+        }
+
+        return false;
     }
 
     bool IsWeavingInstruction(Instruction instruction) =>
