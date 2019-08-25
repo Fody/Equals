@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Fody;
 using Mono.Cecil;
@@ -7,13 +6,12 @@ using Mono.Cecil.Cil;
 
 public class WeavingInstruction
 {
-    readonly MethodDefinition weaveMethodWithoutParameters;
-    readonly MethodDefinition weaveMethodWithParameters;
+    static Instruction NotWeavingInstruction = Instruction.Create(OpCodes.Throw);
+    MethodDefinition weaveMethod;
 
-    public WeavingInstruction(IReadOnlyList<MethodDefinition> weaveMethods)
+    public WeavingInstruction(MethodDefinition weaveMethod)
     {
-        weaveMethodWithoutParameters = weaveMethods.Single(x => !x.Parameters.Any());
-        weaveMethodWithParameters = weaveMethods.Single(x => x.Parameters.Count == 2);
+        this.weaveMethod = weaveMethod;
     }
 
     public MethodDefinition RetrieveOperatorAndAssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
@@ -47,28 +45,19 @@ public class WeavingInstruction
 
     bool IsWeavingInstruction(MethodDefinition method)
     {
-        var instructions = method.Body.Instructions;
-
-        switch (instructions.Count)
-        {
-            case 2:
-                return IsWeavingInstruction(instructions[0], weaveMethodWithoutParameters);
-            case 4:
-                return IsWeavingInstruction(instructions[2], weaveMethodWithParameters);
-            default:
-                return false;
-        }
+        var firstInstruction = method.Body.Instructions.FirstOrDefault() ?? NotWeavingInstruction;
+        return IsWeavingInstruction(firstInstruction);
     }
 
-    bool IsWeavingInstruction(Instruction instruction, MethodDefinition weavingMethod)
-        => instruction.OpCode == OpCodes.Call &&
-           IsOperatorWeaveTarget(instruction.Operand, weavingMethod);
+    bool IsWeavingInstruction(Instruction instruction) =>
+        instruction.OpCode == OpCodes.Call &&
+        IsOperatorWeaveTarget(instruction.Operand);
 
-    bool IsOperatorWeaveTarget(object operand, MethodDefinition weavingMethod)
+    bool IsOperatorWeaveTarget(object operand)
     {
         if (operand is MethodReference method)
         {
-            return method.Resolve() == weavingMethod;
+            return method.Resolve() == weaveMethod;
         }
 
         return false;
