@@ -4,6 +4,6 @@ public class ClassWithGenericBase :
 {
     public int Prop { get; set; }
 
-    public static bool operator ==(ClassWithGenericBase left, ClassWithGenericBase right) => Operator.Weave();
-    public static bool operator !=(ClassWithGenericBase left, ClassWithGenericBase right) => Operator.Weave();
+    public static bool operator ==(ClassWithGenericBase left, ClassWithGenericBase right) => Operator.Weave(left, right);
+    public static bool operator !=(ClassWithGenericBase left, ClassWithGenericBase right) => Operator.Weave(left, right);
 }

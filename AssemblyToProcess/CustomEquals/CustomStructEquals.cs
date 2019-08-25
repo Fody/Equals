@@ -16,6 +16,6 @@ public struct CustomStructEquals
         return 42;
     }
 
-    public static bool operator ==(CustomStructEquals left, CustomStructEquals right) => Operator.Weave();
-    public static bool operator !=(CustomStructEquals left, CustomStructEquals right) => Operator.Weave();
+    public static bool operator ==(CustomStructEquals left, CustomStructEquals right) => Operator.Weave(left, right);
+    public static bool operator !=(CustomStructEquals left, CustomStructEquals right) => Operator.Weave(left, right);
 }

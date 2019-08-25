@@ -9,6 +9,6 @@ public class NestedClass
 
     public NormalClass D { get; set; }
 
-    public static bool operator ==(NestedClass left, NestedClass right) => Operator.Weave();
-    public static bool operator !=(NestedClass left, NestedClass right) => Operator.Weave();
+    public static bool operator ==(NestedClass left, NestedClass right) => Operator.Weave(left, right);
+    public static bool operator !=(NestedClass left, NestedClass right) => Operator.Weave(left, right);
 }

@@ -7,6 +7,6 @@ public class IntCollection
 
     public IEnumerable<int> Collection { get; set; }
 
-    public static bool operator ==(IntCollection left, IntCollection right) => Operator.Weave();
-    public static bool operator !=(IntCollection left, IntCollection right) => Operator.Weave();
+    public static bool operator ==(IntCollection left, IntCollection right) => Operator.Weave(left, right);
+    public static bool operator !=(IntCollection left, IntCollection right) => Operator.Weave(left, right);
 }

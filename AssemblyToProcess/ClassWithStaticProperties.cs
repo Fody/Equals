@@ -9,6 +9,6 @@ public class ClassWithStaticProperties
 
     public static char V { get; set; }
 
-    public static bool operator ==(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
-    public static bool operator !=(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave();
+    public static bool operator ==(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave(left, right);
+    public static bool operator !=(ClassWithStaticProperties left, ClassWithStaticProperties right) => Operator.Weave(left, right);
 }

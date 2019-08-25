@@ -9,6 +9,6 @@ public class SimpleClass
 
     public DateTime Date { get; set; }
 
-    public static bool operator ==(SimpleClass left, SimpleClass right) => Operator.Weave();
-    public static bool operator !=(SimpleClass left, SimpleClass right) => Operator.Weave();
+    public static bool operator ==(SimpleClass left, SimpleClass right) => Operator.Weave(left, right);
+    public static bool operator !=(SimpleClass left, SimpleClass right) => Operator.Weave(left, right);
 }
