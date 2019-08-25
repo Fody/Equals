@@ -6,9 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="FodyHelpers" Version="5.1.1" />
+    <PackageReference Include="FodyHelpers" Version="6.0.0" />
     <PackageReference Include="Xunit" Version="2.4.1" />
-    <PackageReference Include="XunitLogger" Version="2.4.0" />
+    <PackageReference Include="XunitLogger" Version="2.5.0" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithOperatorsOptOutButWeavingInstruction\ClassWithOperatorsOptOutButWeavingInstruction.csproj" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithoutOperators\ClassWithoutOperators.csproj" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithoutWeavingInstruction\ClassWithoutWeavingInstruction.csproj" />
@@ -18,5 +18,6 @@
     <ProjectReference Include="..\Equals.Fody\Equals.Fody.csproj" />
     <ProjectReference Include="..\Equals\Equals.csproj" />
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
+    <ProjectReference Include="..\AssemblyToProcessWithoutReference\AssemblyToProcessWithoutReference.csproj" />
   </ItemGroup>
 </Project>

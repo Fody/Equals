@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Equals.Fody", "Equals.Fody\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
 	ProjectSection(ProjectDependencies) = postProject
+		{7C9B9E2C-E927-46FD-8723-8072747C0873} = {7C9B9E2C-E927-46FD-8723-8072747C0873}
 		{FECCFB62-75B0-4BCD-8919-290FBE97E1C7} = {FECCFB62-75B0-4BCD-8919-290FBE97E1C7}
 		{2388E87C-D5D9-45EE-ABA9-CE4634F5853C} = {2388E87C-D5D9-45EE-ABA9-CE4634F5853C}
 		{2DACC286-3204-4E5D-9873-B8314AF76CBC} = {2DACC286-3204-4E5D-9873-B8314AF76CBC}
@@ -43,6 +44,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassWithoutOperators", "BadCaseAssembliesToProcess\ClassWithoutOperators\ClassWithoutOperators.csproj", "{2DACC286-3204-4E5D-9873-B8314AF76CBC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StructWithoutOperators", "BadCaseAssembliesToProcess\StructWithoutOperators\StructWithoutOperators.csproj", "{2F0DD0E5-35A4-4DF2-825F-F906F31E8462}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToProcessWithoutReference", "AssemblyToProcessWithoutReference\AssemblyToProcessWithoutReference.csproj", "{7C9B9E2C-E927-46FD-8723-8072747C0873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +135,14 @@ Global
 		{2F0DD0E5-35A4-4DF2-825F-F906F31E8462}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F0DD0E5-35A4-4DF2-825F-F906F31E8462}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F0DD0E5-35A4-4DF2-825F-F906F31E8462}.Release|x86.Build.0 = Release|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C9B9E2C-E927-46FD-8723-8072747C0873}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

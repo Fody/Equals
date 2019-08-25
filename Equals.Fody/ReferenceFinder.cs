@@ -23,7 +23,7 @@ public partial class ModuleWeaver
 
     public WeavingInstruction WeavingInstruction;
 
-    public void FindReferences(Func<string, TypeDefinition> typeFinder)
+    public bool FindReferencesAndDetermineWhetherEqualsIsReferenced(Func<string, TypeDefinition> typeFinder)
     {
         var typeDefinition = typeFinder("System.Type");
         GetTypeFromHandle = ModuleDefinition.ImportReference(typeDefinition.FindMethod("GetTypeFromHandle", "RuntimeTypeHandle"));
@@ -50,10 +50,17 @@ public partial class ModuleWeaver
         var debuggerNonUserCodeType = typeFinder("System.Diagnostics.DebuggerNonUserCodeAttribute");
         DebuggerNonUserCodeAttributeConstructor = ModuleDefinition.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
 
-        var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.Single(x => x.Name == "Equals");
+        var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.SingleOrDefault(x => x.Name == "Equals");
+        if (equalsAssemblyReference == null)
+        {
+            return false;
+        }
+
         var equalsAssembly = ModuleDefinition.AssemblyResolver.Resolve(equalsAssemblyReference);
         var operatorType = equalsAssembly.MainModule.Types.Single(x => x.Name == "Operator");
         var weaveMethods = operatorType.Methods.Where(x => x.Name == "Weave").ToList();
         WeavingInstruction = new WeavingInstruction(weaveMethods);
+
+        return true;
     }
 }

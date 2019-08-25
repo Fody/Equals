@@ -207,4 +207,4 @@ Through properties on the `[Equals]` attribute the following options can be set:
 
 ## Icon
 
-Icon courtesy of [The Noun Project](http://thenounproject.com)
+Icon courtesy of [The Noun Project](https://thenounproject.com)

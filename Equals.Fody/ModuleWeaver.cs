@@ -35,7 +35,11 @@ public partial class ModuleWeaver :
 
     public override void Execute()
     {
-        FindReferences(FindType);
+        if (!FindReferencesAndDetermineWhetherEqualsIsReferenced(FindType))
+        {
+            LogDebug("Assembly does not reference 'Equals' assembly. No work to do - exiting.");
+            return;
+        }
 
         var collectionEquals = InjectCollectionEquals(ModuleDefinition);
 
