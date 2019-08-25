@@ -7,13 +7,13 @@ public class Operator
     public static readonly Operator Equality = new Operator("op_Equality", true, "==");
     public static readonly Operator Inequality = new Operator("op_Inequality", false, "!=");
 
-    private Operator(string methodName, bool isEquality, string sourceMethodName)
+    Operator(string methodName, bool isEquality, string sourceMethodName)
     {
         MethodName = methodName;
         IsEquality = isEquality;
         MethodSourceExample =
             FormattableString.Invariant(
-                $"`public static bool operator {sourceMethodName}(T left, T right) => Operator.Weave();`");
+                $"`public static bool operator {sourceMethodName}(T left, T right) => Operator.Weave(left, right);`");
     }
 
     public string MethodName { get; }
