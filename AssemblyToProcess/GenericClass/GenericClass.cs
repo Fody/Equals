@@ -14,6 +14,6 @@ public class GenericClass<T>
 
     public IEnumerable<T> B { get; set; }
 
-    public static bool operator ==(GenericClass<T> left, GenericClass<T> right) => Operator.Weave();
-    public static bool operator !=(GenericClass<T> left, GenericClass<T> right) => Operator.Weave();
+    public static bool operator ==(GenericClass<T> left, GenericClass<T> right) => Operator.Weave(left, right);
+    public static bool operator !=(GenericClass<T> left, GenericClass<T> right) => Operator.Weave(left, right);
 }

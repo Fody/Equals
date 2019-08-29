@@ -11,6 +11,6 @@ public class ClassWithIndexer
         set => X = index;
     }
 
-    public static bool operator ==(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave();
-    public static bool operator !=(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave();
+    public static bool operator ==(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave(left, right);
+    public static bool operator !=(ClassWithIndexer left, ClassWithIndexer right) => Operator.Weave(left, right);
 }

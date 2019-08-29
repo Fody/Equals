@@ -25,7 +25,7 @@ public class WeavingInstruction
         if (!IsWeavingInstruction(operatorMethod))
         {
             throw CreateException(
-                $"TType {type.Name} marked with the [Equals] attribute contains {@operator.MethodName}, but it does not contain the instruction to weave it. Either set implement the method like {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
+                $"Type {type.Name} marked with the [Equals] attribute contains {@operator.MethodName}, but it does not contain the instruction to weave it. Either set implement the method like {@operator.MethodSourceExample} or, if you don't want the operator to be woven: set `[Equals].DoNotAddEqualityOperators = true`.");
         }
 
         return operatorMethod;
@@ -45,8 +45,19 @@ public class WeavingInstruction
 
     bool IsWeavingInstruction(MethodDefinition method)
     {
-        var firstInstruction = method.Body.Instructions.FirstOrDefault() ?? NotWeavingInstruction;
-        return IsWeavingInstruction(firstInstruction);
+        var instructions = method.Body.Instructions;
+
+        // since `Operator.Weave(left, right)` has two parameters, we've got 4 IL instructions:
+        // 1. Load `left` to the stack
+        // 2. Load `right` to the stack
+        // 3. call Operator.Weave(left, right)
+        // 4. return the result
+        if (instructions.Count == 4)
+        {
+            return IsWeavingInstruction(instructions[2]);
+        }
+
+        return false;
     }
 
     bool IsWeavingInstruction(Instruction instruction) =>

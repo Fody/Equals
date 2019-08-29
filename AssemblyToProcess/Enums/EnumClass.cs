@@ -15,6 +15,6 @@ public class EnumClass
         FlagsEnum = (FlagsEnum)flagsEnum;
     }
 
-    public static bool operator ==(EnumClass left, EnumClass right) => Operator.Weave();
-    public static bool operator !=(EnumClass left, EnumClass right) => Operator.Weave();
+    public static bool operator ==(EnumClass left, EnumClass right) => Operator.Weave(left, right);
+    public static bool operator !=(EnumClass left, EnumClass right) => Operator.Weave(left, right);
 }

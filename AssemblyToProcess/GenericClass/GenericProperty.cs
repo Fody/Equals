@@ -8,6 +8,6 @@ public class GenericProperty<T>
         return Equals(a, b);
     }
 
-    public static bool operator ==(GenericProperty<T> left, GenericProperty<T> right) => Operator.Weave();
-    public static bool operator !=(GenericProperty<T> left, GenericProperty<T> right) => Operator.Weave();
+    public static bool operator ==(GenericProperty<T> left, GenericProperty<T> right) => Operator.Weave(left, right);
+    public static bool operator !=(GenericProperty<T> left, GenericProperty<T> right) => Operator.Weave(left, right);
 }

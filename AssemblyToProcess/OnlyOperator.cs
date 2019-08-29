@@ -13,8 +13,8 @@ public class OnlyOperator
         return Value == 1 && second.Value == 2;
     }
 
-    public static bool operator ==(OnlyOperator left, OnlyOperator right) => Operator.Weave();
-    public static bool operator !=(OnlyOperator left, OnlyOperator right) => Operator.Weave();
+    public static bool operator ==(OnlyOperator left, OnlyOperator right) => Operator.Weave(left, right);
+    public static bool operator !=(OnlyOperator left, OnlyOperator right) => Operator.Weave(left, right);
 }
 
 /// Reproducing https://github.com/Fody/Equals/issues/99

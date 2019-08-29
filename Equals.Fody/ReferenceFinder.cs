@@ -61,7 +61,6 @@ public partial class ModuleWeaver
         var weaveMethod = operatorType.Methods.Single(x => x.Name == "Weave");
 
         WeavingInstruction = new WeavingInstruction(weaveMethod);
-
         return true;
     }
 }

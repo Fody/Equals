@@ -10,6 +10,6 @@ public class ComplexChild :
 
     public IEnumerable<int> InChildCollection { get; set; }
 
-    public static bool operator ==(ComplexChild left, ComplexChild right) => Operator.Weave();
-    public static bool operator !=(ComplexChild left, ComplexChild right) => Operator.Weave();
+    public static bool operator ==(ComplexChild left, ComplexChild right) => Operator.Weave(left, right);
+    public static bool operator !=(ComplexChild left, ComplexChild right) => Operator.Weave(left, right);
 }

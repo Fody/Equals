@@ -10,6 +10,6 @@ public struct StructWithOnlyOperator
         return Value == 1 && second.Value == 2;
     }
 
-    public static bool operator ==(StructWithOnlyOperator left, StructWithOnlyOperator right) => Operator.Weave();
-    public static bool operator !=(StructWithOnlyOperator left, StructWithOnlyOperator right) => Operator.Weave();
+    public static bool operator ==(StructWithOnlyOperator left, StructWithOnlyOperator right) => Operator.Weave(left, right);
+    public static bool operator !=(StructWithOnlyOperator left, StructWithOnlyOperator right) => Operator.Weave(left, right);
 }

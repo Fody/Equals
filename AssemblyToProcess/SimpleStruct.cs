@@ -5,6 +5,6 @@ public struct SimpleStruct
 
     public int Y { get; set; }
 
-    public static bool operator ==(SimpleStruct left, SimpleStruct right) => Operator.Weave();
-    public static bool operator !=(SimpleStruct left, SimpleStruct right) => Operator.Weave();
+    public static bool operator ==(SimpleStruct left, SimpleStruct right) => Operator.Weave(left, right);
+    public static bool operator !=(SimpleStruct left, SimpleStruct right) => Operator.Weave(left, right);
 }

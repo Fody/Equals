@@ -9,6 +9,6 @@ public class NormalClass
 
     public char V { get; set; }
 
-    public static bool operator ==(NormalClass left, NormalClass right) => Operator.Weave();
-    public static bool operator !=(NormalClass left, NormalClass right) => Operator.Weave();
+    public static bool operator ==(NormalClass left, NormalClass right) => Operator.Weave(left, right);
+    public static bool operator !=(NormalClass left, NormalClass right) => Operator.Weave(left, right);
 }

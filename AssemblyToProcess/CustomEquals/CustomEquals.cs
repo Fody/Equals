@@ -16,6 +16,6 @@ public class CustomEquals
         return 42;
     }
 
-    public static bool operator ==(CustomEquals left, CustomEquals right) => Operator.Weave();
-    public static bool operator !=(CustomEquals left, CustomEquals right) => Operator.Weave();
+    public static bool operator ==(CustomEquals left, CustomEquals right) => Operator.Weave(left, right);
+    public static bool operator !=(CustomEquals left, CustomEquals right) => Operator.Weave(left, right);
 }

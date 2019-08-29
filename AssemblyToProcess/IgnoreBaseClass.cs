@@ -4,6 +4,6 @@ public class IgnoreBaseClass :
 {
     public int B { get; set; }
 
-    public static bool operator ==(IgnoreBaseClass left, IgnoreBaseClass right) => Operator.Weave();
-    public static bool operator !=(IgnoreBaseClass left, IgnoreBaseClass right) => Operator.Weave();
+    public static bool operator ==(IgnoreBaseClass left, IgnoreBaseClass right) => Operator.Weave(left, right);
+    public static bool operator !=(IgnoreBaseClass left, IgnoreBaseClass right) => Operator.Weave(left, right);
 }

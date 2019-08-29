@@ -5,6 +5,6 @@ public class StructPropertyClass
 
     public SimpleStruct B { get; set; }
 
-    public static bool operator ==(StructPropertyClass left, StructPropertyClass right) => Operator.Weave();
-    public static bool operator !=(StructPropertyClass left, StructPropertyClass right) => Operator.Weave();
+    public static bool operator ==(StructPropertyClass left, StructPropertyClass right) => Operator.Weave(left, right);
+    public static bool operator !=(StructPropertyClass left, StructPropertyClass right) => Operator.Weave(left, right);
 }

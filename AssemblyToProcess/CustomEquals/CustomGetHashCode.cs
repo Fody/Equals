@@ -9,6 +9,6 @@ public class CustomGetHashCode
         return 42;
     }
 
-    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
-    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(left, right);
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(left, right);
 }
