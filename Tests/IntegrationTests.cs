@@ -3,7 +3,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 public partial class IntegrationTests :
-    XunitLoggingBase,
+    XunitApprovalBase,
     IClassFixture<AssemblyToProcessFixture>
 {
     TestResult testResult;
