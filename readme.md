@@ -88,8 +88,8 @@ public class CustomGetHashCode
         return 42;
     }
     
-    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
-    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(); // Operator.Weave(left, right) in Version 4
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(); // Operator.Weave(left, right) in Version 4
 }
 ```
 
