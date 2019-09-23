@@ -70,8 +70,8 @@ public class Point
         return Z == other.Z || Z == 0 || other.Z == 0;
     }
     
-    public static bool operator ==(Point left, Point right) => Operator.Weave();
-    public static bool operator !=(Point left, Point right) => Operator.Weave();
+    public static bool operator ==(Point left, Point right) => Operator.Weave(); // Operator.Weave(left, right) in Version 4
+    public static bool operator !=(Point left, Point right) => Operator.Weave(); // Operator.Weave(left, right) in Version 4
 }
 
 [Equals]
