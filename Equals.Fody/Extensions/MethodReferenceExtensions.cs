@@ -14,6 +14,12 @@ public static class MethodReferenceExtensions
         {
             var parameterDefinition = methodReference.Parameters[index];
             var paramType = paramTypes[index];
+
+            if (parameterDefinition.ParameterType.ContainsGenericParameter)
+            {
+                // Have to get the REAL type
+            }
+
             if (parameterDefinition.ParameterType.Name != paramType)
             {
                 return false;
@@ -25,6 +31,7 @@ public static class MethodReferenceExtensions
 
     public static OpCode GetCallForMethod(this MethodReference methodReference)
     {
+        // TODO: Aren't there other cases where Call can be preferred for perf? Like sealed classes?
         if (methodReference.DeclaringType.IsValueType)
         {
             return OpCodes.Call;

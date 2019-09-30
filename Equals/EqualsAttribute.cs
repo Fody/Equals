@@ -17,3 +17,15 @@ public sealed class EqualsAttribute :
 
     public bool IgnoreBaseClassProperties { get; set; }
 }
+
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field /* TODO: #41 says maybe fields aren't supported */)]
+public sealed class EqualityComparerAttribute : Attribute
+{
+    public EqualityComparerAttribute(string comparerFieldName)
+    {
+        //ComparerFieldName = comparerFieldName;
+    }
+
+    // Can't access from Mono anyway, so no point in having
+    //public string ComparerFieldName { get; set; }
+}
