@@ -70,8 +70,8 @@ public class Point
         return Z == other.Z || Z == 0 || other.Z == 0;
     }
     
-    public static bool operator ==(Point left, Point right) => Operator.Weave();
-    public static bool operator !=(Point left, Point right) => Operator.Weave();
+    public static bool operator ==(Point left, Point right) => Operator.Weave(left, right);
+    public static bool operator !=(Point left, Point right) => Operator.Weave(left, right);
 }
 
 [Equals]
@@ -88,8 +88,8 @@ public class CustomGetHashCode
         return 42;
     }
     
-    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
-    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
+    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(left, right);
+    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave(left, right);
 }
 ```
 
