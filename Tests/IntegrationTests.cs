@@ -1,9 +1,10 @@
 ﻿using Fody;
+using VerifyXunit;
 using Xunit;
 using Xunit.Abstractions;
 
 public partial class IntegrationTests :
-    XunitApprovalBase,
+    VerifyBase,
     IClassFixture<AssemblyToProcessFixture>
 {
     TestResult testResult;

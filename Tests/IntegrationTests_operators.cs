@@ -4,8 +4,8 @@ using Xunit;
 
 public partial class IntegrationTests
 {
-    /// To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
-    /// See OnlyOperator.Equals(object)!
+    // To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
+    // See OnlyOperator.Equals(object)!
     [Fact]
     public void Equality_operator_should_return_true_for_equal_class_instances()
     {
