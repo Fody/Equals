@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 public class WeavingInstruction
 {
-    static Instruction NotWeavingInstruction = Instruction.Create(OpCodes.Throw);
     MethodDefinition weaveMethod;
 
     public WeavingInstruction(MethodDefinition weaveMethod)
@@ -33,31 +31,34 @@ public class WeavingInstruction
 
     public void AssertNotHasWeavingInstruction(TypeDefinition type, Operator @operator)
     {
-        if (@operator.TryGetOperator(type, out var operatorMethod))
+        if (!@operator.TryGetOperator(type, out var operatorMethod))
         {
-            if (IsWeavingInstruction(operatorMethod))
-            {
-                throw CreateException(
-                    $"Type {type.Name} marked with [Equals(DoNotAddEqualityOperators = true)] contains {@operator.MethodName} with the instruction to weave it. Either set `DoNotAddEqualityOperators` to `false` or implement the operator properly.");
-            }
+            return;
         }
+
+        if (!IsWeavingInstruction(operatorMethod))
+        {
+            return;
+        }
+
+        throw CreateException($"Type {type.Name} marked with [Equals(DoNotAddEqualityOperators = true)] contains {@operator.MethodName} with the instruction to weave it. Either set `DoNotAddEqualityOperators` to `false` or implement the operator properly.");
     }
 
     bool IsWeavingInstruction(MethodDefinition method)
     {
         var instructions = method.Body.Instructions;
 
+        if (instructions.Count != 4)
+        {
+            return false;
+        }
+
         // since `Operator.Weave(left, right)` has two parameters, we've got 4 IL instructions:
         // 1. Load `left` to the stack
         // 2. Load `right` to the stack
         // 3. call Operator.Weave(left, right)
         // 4. return the result
-        if (instructions.Count == 4)
-        {
-            return IsWeavingInstruction(instructions[2]);
-        }
-
-        return false;
+        return IsWeavingInstruction(instructions[2]);
     }
 
     bool IsWeavingInstruction(Instruction instruction) =>
