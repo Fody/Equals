@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -130,7 +131,42 @@ public static class TypeDefinitionExtensions
 
         return type;
     }
+    /// <summary>
+    /// https://stackoverflow.com/a/5001776
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="arguments"></param>
+    /// <returns></returns>
+    public static TypeReference MakeGenericType(this TypeReference self, params TypeReference[] arguments)
+    {
+        if (self.GenericParameters.Count != arguments.Length)
+            throw new ArgumentException();
 
+        var instance = new GenericInstanceType(self);
+        foreach (var argument in arguments)
+            instance.GenericArguments.Add(argument);
+
+        return instance;
+    }
+
+    public static MethodReference MakeGeneric(this MethodReference self, params TypeReference[] arguments)
+    {
+        var reference = new MethodReference(self.Name, self.ReturnType)
+        {
+            DeclaringType = self.DeclaringType.MakeGenericType(arguments),
+            HasThis = self.HasThis,
+            ExplicitThis = self.ExplicitThis,
+            CallingConvention = self.CallingConvention,
+        };
+
+        foreach (var parameter in self.Parameters)
+            reference.Parameters.Add(new ParameterDefinition(parameter.ParameterType));
+
+        foreach (var generic_parameter in self.GenericParameters)
+            reference.GenericParameters.Add(new GenericParameter(generic_parameter.Name, reference));
+
+        return reference;
+    }
     static GenericInstanceType GetGenericInstanceType(TypeReference type, Collection<GenericParameter> parameters)
     {
         var genericInstanceType = new GenericInstanceType(type);
@@ -164,6 +200,16 @@ public static class TypeDefinitionExtensions
             return OpCodes.Ldarga;
         }
         return OpCodes.Ldarg;
+    }
+
+    public static OpCode GetLdSFldForType(this TypeReference type)
+    {
+        if (type.IsValueType)
+        {
+            // TODO: Interestingly the compiler seems to not generate this, but instead ldsfld, stloc.0, ldloca.s, wonder why...
+            return OpCodes.Ldsflda;
+        }
+        return OpCodes.Ldsfld;
     }
 
 

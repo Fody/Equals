@@ -506,6 +506,37 @@ public partial class IntegrationTests
     }
 
     [Fact]
+    public void Equals_should_use_custom_equality_comparer_for_normal_class()
+    {
+        var type = testResult.Assembly.GetType(nameof(NormalClass));
+        dynamic instance = Activator.CreateInstance(type);
+        instance.X = 1;
+        instance.Y = "a";
+        instance.Z = 4.5;
+        instance.V = 'C';
+
+        object first = instance;
+
+        instance = Activator.CreateInstance(type);
+        instance.X = 1;
+        instance.Y = "A";
+        instance.Z = 4.5;
+        instance.V = 'C';
+
+        object second = instance;
+
+        var result1 = ((dynamic)first).Equals((dynamic)second);
+        var result = first.Equals(second);
+
+        Assert.True(result);
+        Assert.True(result1);
+
+        // OOOH, we can't use the class directly because this is literally a FODY test, so the weaving hasn't happened yet
+        // we do it on-demand here. THAT'S confusing haha!
+        Assert.True(first.Equals(second));
+    }
+
+    [Fact]
     public void Equals_should_return_true_for_class_with_static_properties()
     {
         var type = testResult.Assembly.GetType("ClassWithStaticProperties");

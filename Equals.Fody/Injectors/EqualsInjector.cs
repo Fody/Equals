@@ -333,8 +333,15 @@ public partial class ModuleWeaver
                     var propType = property.PropertyType.Resolve();
                     var isCollection = propType.IsCollection() || property.PropertyType.IsArray;
                     var fullName = property.PropertyType.FullName;
-                    if ((simpleTypes.Contains(fullName) || propType.IsEnum) && !property.PropertyType.IsArray)
+
+                    var customEquatable = property.CustomAttributes.SingleOrDefault(p => p.AttributeType.Name == "EqualityComparerAttribute");
+                    if (customEquatable != null)
                     {
+                        AddCustomEquatableCheck(type, c, property, left, right, customEquatable);
+                    }
+                    else if ((simpleTypes.Contains(fullName) || propType.IsEnum) && !property.PropertyType.IsArray)
+                    {
+                        // TODO: Arg order doesn't match other methods
                         AddSimpleValueCheck(c, property, type, left, right);
                     }
                     else if (!isCollection || fullName == typeof(string).FullName)
@@ -348,11 +355,65 @@ public partial class ModuleWeaver
                 }
                 else
                 {
+                    // TODO/BUG: genericType isn't used, was that intentional? gonna have to test some generics
                     var genericType = property.PropertyType.GetGenericInstanceType(type);
                     AddNormalCheck(type, c, property, left, right);
                 }
             },
             TypeDefinitionExtensions.AddReturnFalse);
+    }
+
+    void AddCustomEquatableCheck(
+        TypeDefinition type,
+        Collection<Instruction> c,
+        PropertyDefinition property,
+        ParameterDefinition left,
+        ParameterDefinition right,
+        CustomAttribute customEquatableAttribute)
+    {
+        // Why can't I access it in Properties here from Mono?
+        var fieldName = customEquatableAttribute.ConstructorArguments.Single().Value;
+        var fieldOnClass = type.Fields.Single(f => string.Equals(f.Name, fieldName));
+
+        var genericInstance = new Lazy<TypeReference>(() => ModuleDefinition.ImportReference(property.PropertyType.GetGenericInstanceType(type)));
+        var getMethodImported = ModuleDefinition.ImportReference(property.GetGetMethod(type));
+
+        // Load the static comparer (TODO: Does it always HAVE to be static?)
+        c.Add(Instruction.Create(fieldOnClass.FieldType.GetLdSFldForType(), fieldOnClass));
+
+        // IL - get left.Prop
+        c.Add(Instruction.Create(type.GetLdArgForType(), left));
+        c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
+        if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
+        {
+            c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
+        }
+
+        // IL - get right.Prop
+        c.Add(Instruction.Create(type.GetLdArgForType(), right));
+        c.Add(Instruction.Create(getMethodImported.GetCallForMethod(), getMethodImported));
+        if (property.PropertyType.IsValueType || property.PropertyType.IsGenericParameter)
+        {
+            c.Add(Instruction.Create(OpCodes.Box, genericInstance.Value));
+        }
+
+        // IL - get SpecialComparer.Equals
+        // TODO: What if it's not an IEqualityComparer and we have the direct type, does it have to be a call virt?
+        // ^^ validated, if it can resolve to the absolute type, it should not be a call virt
+        // TODO: Do we need to handle generics also?
+        // We could always FORCE it to call via the interface, but that would be -- for perf
+        var ftype = fieldOnClass.FieldType;
+        var baseTypeDefinition = ftype.Resolve();
+        //// TODO: Noted we will have to handle boxed value types & explicit interface implementation separately/uniquely
+        var baseMethodDefinition = baseTypeDefinition.FindMethod("Equals", "T", "T"/* TODO: What if its Equals is actually a base type for instance? */);
+        var baseMethodReference = ModuleDefinition.ImportReference(baseMethodDefinition);
+        if (ftype.IsGenericInstance)
+        {
+            var baseTypeInstance = (GenericInstanceType)ftype;
+            baseMethodReference = baseMethodReference.MakeGeneric(baseTypeInstance.GenericArguments.ToArray());
+        }
+
+        c.Add(Instruction.Create(baseMethodReference.GetCallForMethod(), baseMethodReference));
     }
 
     void AddNormalCheck(TypeDefinition type, Collection<Instruction> c, PropertyDefinition property, ParameterDefinition left, ParameterDefinition right)
