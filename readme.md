@@ -1,26 +1,14 @@
+# <img src="/package_icon.png" height="30px"> Equals
+
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/Equals.Fody.svg)](https://www.nuget.org/packages/Equals.Fody/)
 
-## Breaking Changes
-
-### Version 4
-Changed from `Operator.Weave()` to `Operator.Weave(left, right)` ([#105](https://github.com/Fody/Equals/pull/105)).
-### Version 3
-
-The `!=` and `==` operators are not weaved fully automatically anymore. Instead, add stubs as follows:
-
-    public static bool operator ==(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
-    public static bool operator !=(CustomGetHashCode left, CustomGetHashCode right) => Operator.Weave();
-    
-**or** opt out of operator weaving by `[Equals(DoNotAddEqualityOperators = true)]`.
-
-Note: With version 3.0.0 operator weaving is buggy. If you experience build errors like ` 'System.Boolean op_Equality(T ,T)' is declared in another module and needs to be imported` or ` 'System.Boolean op_Inequality(T ,T)' is declared in another module and needs to be imported`, make sure to update to version 3.0.1 or above.
-
-## This is an add-in for [Fody](https://github.com/Fody/Home/)
-
-![Icon](https://raw.githubusercontent.com/Fody/Equals/master/package_icon.png)
-
 Generate Equals, GetHashCode and operators methods from properties for class decorated with a `[Equals]` Attribute.
+
+
+### This is an add-in for [Fody](https://github.com/Fody/Home/)
+
+**It is expected that all developers using Fody either [become a Patron on OpenCollective](https://opencollective.com/fody/), or have a [Tidelift Subscription](https://tidelift.com/subscription/pkg/nuget-fody?utm_source=nuget-fody&utm_medium=referral&utm_campaign=enterprise).**
 
 
 ## Usage
