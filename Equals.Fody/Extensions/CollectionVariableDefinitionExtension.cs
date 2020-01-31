@@ -2,7 +2,7 @@
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
-public static class CollectionVariableDefinitionExtension
+static class CollectionVariableDefinitionExtension
 {
     public static VariableDefinition Add(this Collection<VariableDefinition> variables, TypeReference type)
     {

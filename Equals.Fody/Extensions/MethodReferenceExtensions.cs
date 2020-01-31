@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-public static class MethodReferenceExtensions
+static class MethodReferenceExtensions
 {
     public static bool IsMatch(this MethodReference methodReference, params string[] paramTypes)
     {

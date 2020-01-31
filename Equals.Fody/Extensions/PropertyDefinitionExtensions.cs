@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Mono.Cecil;
 
-public static class PropertyDefinitionExtensions
+static class PropertyDefinitionExtensions
 {
     public static MethodReference GetGetMethod(this PropertyDefinition property, TypeReference targetType)
     {

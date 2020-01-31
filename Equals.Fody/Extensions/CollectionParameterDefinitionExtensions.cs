@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Collections.Generic;
 
-public static class CollectionParameterDefinitionExtensions
+static class CollectionParameterDefinitionExtensions
 {
     public static ParameterDefinition Add(this Collection<ParameterDefinition> parameters, string name, TypeReference type)
     {

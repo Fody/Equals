@@ -2,7 +2,7 @@
 using Mono.Collections.Generic;
 using Mono.Cecil;
 
-public static class CollectionMethodDefinitionExtensions
+static class CollectionMethodDefinitionExtensions
 {
     public static void AddOrReplace(this Collection<MethodDefinition> methods, MethodDefinition method)
     {

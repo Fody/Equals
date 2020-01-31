@@ -6,7 +6,7 @@ public partial class ModuleWeaver
     static string AssemblyVersion = typeof(ModuleWeaver).Assembly.GetName().Version.ToString();
     static string AssemblyName = typeof(ModuleWeaver).Assembly.GetName().Name;
 
-    public void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
+    void MarkAsGeneratedCode(Collection<CustomAttribute> customAttributes)
     {
         AddCustomAttributeArgument(customAttributes);
         AddDebuggerNonUserCodeAttribute(customAttributes);

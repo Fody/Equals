@@ -37,10 +37,10 @@ public partial class ModuleWeaver
         IEnumerableType = ModuleDefinition.ImportReference(enumerableType);
         GetEnumerator = ModuleDefinition.ImportReference(enumerableType.FindMethod("GetEnumerator"));
 
-        var ienumeratorDefinition = typeFinder("System.Collections.IEnumerator");
-        IEnumeratorType = ModuleDefinition.ImportReference(ienumeratorDefinition);
-        MoveNext = ModuleDefinition.ImportReference(ienumeratorDefinition.FindMethod("MoveNext"));
-        GetCurrent = ModuleDefinition.ImportReference(ienumeratorDefinition.FindMethod("get_Current"));
+        var enumeratorDefinition = typeFinder("System.Collections.IEnumerator");
+        IEnumeratorType = ModuleDefinition.ImportReference(enumeratorDefinition);
+        MoveNext = ModuleDefinition.ImportReference(enumeratorDefinition.FindMethod("MoveNext"));
+        GetCurrent = ModuleDefinition.ImportReference(enumeratorDefinition.FindMethod("get_Current"));
 
         IEquatableType = ModuleDefinition.ImportReference(typeFinder("System.IEquatable`1"));
 

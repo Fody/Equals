@@ -4,7 +4,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
-public static class TypeDefinitionExtensions
+static class TypeDefinitionExtensions
 {
     public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes)
     {

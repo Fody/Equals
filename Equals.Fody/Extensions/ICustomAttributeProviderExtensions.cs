@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-
 using Mono.Cecil;
 
-public static class ICustomAttributeProviderExtensions
+static class ICustomAttributeProviderExtensions
 {
     public static void RemoveAttribute(this ICustomAttributeProvider definition, string name)
     {

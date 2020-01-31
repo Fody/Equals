@@ -187,8 +187,7 @@ public partial class ModuleWeaver
             },
             TypeDefinitionExtensions.AddReturnFalse);
     }
-
-
+    
     static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins, TypeReference type)
     {
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));
@@ -233,7 +232,6 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Ldloc, result));
         ins.Add(Instruction.Create(OpCodes.Ret));
     }
-
 
     void AddTypeChecking(TypeDefinition type, TypeReference typeRef, int typeCheck, Collection<Instruction> c)
     {

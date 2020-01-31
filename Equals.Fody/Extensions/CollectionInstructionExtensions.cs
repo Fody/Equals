@@ -2,7 +2,7 @@
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
-public static class CollectionInstructionExtensions
+static class CollectionInstructionExtensions
 {
     public static void If(this Collection<Instruction> ins,
         Action<Collection<Instruction>> condition,
