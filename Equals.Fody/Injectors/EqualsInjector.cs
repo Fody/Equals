@@ -29,7 +29,7 @@ public partial class ModuleWeaver
         "System.UInt16"
     });
 
-    public void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
+    void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {
         var methodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
         var method = new MethodDefinition("Equals", methodAttributes, TypeSystem.BooleanReference);
@@ -328,7 +328,12 @@ public partial class ModuleWeaver
         ins.IfNot(
             c =>
             {
-                if (!property.PropertyType.IsGenericParameter)
+                if (property.PropertyType.IsGenericParameter)
+                {
+                    var genericType = property.PropertyType.GetGenericInstanceType(type);
+                    AddNormalCheck(type, c, property, left, right);
+                }
+                else
                 {
                     var propType = property.PropertyType.Resolve();
                     var isCollection = propType.IsCollection() || property.PropertyType.IsArray;
@@ -345,11 +350,6 @@ public partial class ModuleWeaver
                     {
                         AddCollectionCheck(type, collectionEquals, c, property, property.PropertyType, left, right);
                     }
-                }
-                else
-                {
-                    var genericType = property.PropertyType.GetGenericInstanceType(type);
-                    AddNormalCheck(type, c, property, left, right);
                 }
             },
             TypeDefinitionExtensions.AddReturnFalse);

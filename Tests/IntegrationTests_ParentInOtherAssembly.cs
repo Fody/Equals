@@ -106,8 +106,6 @@ public partial class IntegrationTests
         second.InParentText = "test";
         second.InParentCollection = new[] {1, 2};
 
-        var result = first.GetHashCode();
-
         Assert.True(first == second);
         Assert.False(first != second);
     }
@@ -150,8 +148,6 @@ public partial class IntegrationTests
         var second = testResult.GetInstance("GenericChild");
         second.InChild = "1";
         second.GenericInParent = 2;
-
-        var result = first.GetHashCode();
 
         Assert.True(first == second);
         Assert.False(first != second);
