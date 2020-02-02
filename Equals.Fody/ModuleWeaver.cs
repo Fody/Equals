@@ -8,8 +8,8 @@ public partial class ModuleWeaver :
     BaseModuleWeaver
 {
     public const string attributeName = "EqualsAttribute";
-    public const string ignoreAttributeName = "IgnoreDuringEqualsAttribute";
-    public const string customEqualsAttribute = "CustomEqualsInternalAttribute";
+    public const string ignoreDuringEqualsAttributeName = "IgnoreDuringEqualsAttribute";
+    public const string customEqualsInternalAttribute = "CustomEqualsInternalAttribute";
 
     public const string DoNotAddEqualityOperators = "DoNotAddEqualityOperators";
     public const string DoNotAddGetHashCode = "DoNotAddGetHashCode";
@@ -35,9 +35,9 @@ public partial class ModuleWeaver :
 
     public override void Execute()
     {
-        if (!FindReferencesAndDetermineWhetherEqualsIsReferenced(FindType))
+        if (!FindReferencesAndDetermineWhetherEqualsIsReferenced(FindTypeDefinition))
         {
-            LogDebug("Assembly does not reference 'Equals' assembly. No work to do - exiting.");
+            WriteDebug("Assembly does not reference 'Equals' assembly. No work to do - exiting.");
             return;
         }
 
@@ -97,6 +97,36 @@ public partial class ModuleWeaver :
         {
             RemoveFodyAttributes(type);
         }
+
+        CheckForInvalidAttributes();
+    }
+
+    void CheckForInvalidAttributes()
+    {
+        foreach (var type in ModuleDefinition.GetTypes())
+        {
+            foreach (var method in type.Methods)
+            {
+                if (method.CustomAttributes.Any(x => x.AttributeType.Name == customEqualsInternalAttribute))
+                {
+                    WriteError($"Method `{type.FullName}.{method.Name}` contains {customEqualsInternalAttribute} but has no `[Equals]` attribute.", method);
+                }
+
+                if (method.CustomAttributes.Any(x => x.AttributeType.Name == CustomGetHashCodeAttribute))
+                {
+                    WriteError($"Method `{type.FullName}.{method.Name}` contains {CustomGetHashCodeAttribute} but has no `[Equals]` attribute.", method);
+                }
+            }
+
+            foreach (var property in type.Properties)
+            {
+                if (property.CustomAttributes.Any(x => x.AttributeType.Name == ignoreDuringEqualsAttributeName))
+                {
+                    //TODO: add sequence point
+                    WriteError($"Property `{type.FullName}.{property.Name}` contains {ignoreDuringEqualsAttributeName} but has no `[Equals]` attribute.");
+                }
+            }
+        }
     }
 
     public override IEnumerable<string> GetAssembliesForScanning()
@@ -128,17 +158,17 @@ public partial class ModuleWeaver :
 
         foreach (var property in type.Properties)
         {
-            property.RemoveAttribute(ignoreAttributeName);
+            property.RemoveAttribute(ignoreDuringEqualsAttributeName);
         }
 
         foreach (var property in type.Fields)
         {
-            property.RemoveAttribute(ignoreAttributeName);
+            property.RemoveAttribute(ignoreDuringEqualsAttributeName);
         }
 
         foreach (var method in type.Methods)
         {
-            method.RemoveAttribute(customEqualsAttribute);
+            method.RemoveAttribute(customEqualsInternalAttribute);
             method.RemoveAttribute(CustomGetHashCodeAttribute);
         }
     }

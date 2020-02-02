@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 public partial class IntegrationTests
@@ -133,6 +134,12 @@ public partial class IntegrationTests
 
         Assert.True(first == second);
         Assert.False(first != second);
+    }
+
+    [Fact]
+    public Task IncorrectAttributes()
+    {
+        return Verify(testResult.Errors.Select(x => x.Text));
     }
 
     [Fact]

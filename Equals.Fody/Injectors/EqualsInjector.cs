@@ -89,7 +89,7 @@ public partial class ModuleWeaver
         body.InitLocals = true;
         var ins = body.Instructions;
 
-        var properties = type.GetPropertiesWithoutIgnores(ignoreAttributeName);
+        var properties = type.GetPropertiesWithoutIgnores(ignoreDuringEqualsAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
@@ -102,7 +102,7 @@ public partial class ModuleWeaver
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customEqualsAttribute)).ToArray();
+            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customEqualsInternalAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {

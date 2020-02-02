@@ -26,7 +26,7 @@ public partial class ModuleWeaver
         ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
         ins.Add(Instruction.Create(OpCodes.Stloc, resultVariable));
 
-        var properties = ModuleDefinition.ImportReference(type).Resolve().GetPropertiesWithoutIgnores(ignoreAttributeName);
+        var properties = ModuleDefinition.ImportReference(type).Resolve().GetPropertiesWithoutIgnores(ignoreDuringEqualsAttributeName);
         if (ignoreBaseClassProperties)
         {
             properties = properties.IgnoreBaseClassProperties(type);
