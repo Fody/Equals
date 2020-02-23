@@ -14,7 +14,7 @@
     <PackageTags>Equals, GetHashCode, ILWeaving, Fody, Cecil</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.1.0" PrivateAssets="none" />
+    <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="none" />
     <PackageReference Include="FodyPackaging" Version="6.1.1" PrivateAssets="All" />
   </ItemGroup>
 </Project>
