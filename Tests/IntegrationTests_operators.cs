@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using VerifyXunit;
 using Xunit;
 
 public partial class IntegrationTests
@@ -139,7 +140,7 @@ public partial class IntegrationTests
     [Fact]
     public Task IncorrectAttributes()
     {
-        return Verify(testResult.Errors.Select(x => x.Text));
+        return Verifier.Verify(testResult.Errors.Select(x => x.Text));
     }
 
     [Fact]

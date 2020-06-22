@@ -1,9 +1,8 @@
 ﻿using Fody;
 using VerifyXunit;
-using Xunit.Abstractions;
 
-public partial class IntegrationTests :
-    VerifyBase
+[UsesVerify]
+public partial class IntegrationTests
 {
     static IntegrationTests()
     {
@@ -13,9 +12,4 @@ public partial class IntegrationTests :
 
     static TestResult testResult;
 #pragma warning restore 618
-
-    public IntegrationTests(ITestOutputHelper output) :
-        base(output)
-    {
-    }
 }
