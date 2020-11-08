@@ -1,5 +1,5 @@
 [
-  'Method `PropertyAttributesWithNoEquals.Method` contains CustomEqualsInternalAttribute but has no `[Equals]` attribute.',
-  'Method `PropertyAttributesWithNoEquals.Method` contains CustomGetHashCodeAttribute but has no `[Equals]` attribute.',
-  'Property `PropertyAttributesWithNoEquals.Property` contains IgnoreDuringEqualsAttribute but has no `[Equals]` attribute.'
+  Method `PropertyAttributesWithNoEquals.Method` contains CustomEqualsInternalAttribute but has no `[Equals]` attribute.,
+  Method `PropertyAttributesWithNoEquals.Method` contains CustomGetHashCodeAttribute but has no `[Equals]` attribute.,
+  Property `PropertyAttributesWithNoEquals.Property` contains IgnoreDuringEqualsAttribute but has no `[Equals]` attribute.
 ]
