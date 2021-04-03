@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
     <PackageReference Include="FodyHelpers" Version="6.5.0" />
-    <PackageReference Include="Xunit" Version="2.4.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="Verify.Xunit" Version="11.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithOperatorsOptOutButWeavingInstruction\ClassWithOperatorsOptOutButWeavingInstruction.csproj" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithoutOperators\ClassWithoutOperators.csproj" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\ClassWithoutWeavingInstruction\ClassWithoutWeavingInstruction.csproj" />
