@@ -12,6 +12,9 @@
     <ReleaseNotes>$(PackageProjectUrl)/milestones?state=closed</ReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Equals, GetHashCode, ILWeaving, Fody, Cecil</PackageTags>
+    <Description>
+      Generate Equals, GetHashCode and operator methods from properties for classes decorated with an [Equals] Attribute.
+    </Description>
     <NoWarn>NU5118;CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>

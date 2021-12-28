@@ -3,7 +3,7 @@
 [![Chat on Gitter](https://img.shields.io/gitter/room/fody/fody.svg)](https://gitter.im/Fody/Fody)
 [![NuGet Status](https://img.shields.io/nuget/v/Equals.Fody.svg)](https://www.nuget.org/packages/Equals.Fody/)
 
-Generate Equals, GetHashCode and operators methods from properties for class decorated with a `[Equals]` Attribute.
+Generate Equals, GetHashCode and operator methods from properties for classes decorated with an `[Equals]` Attribute
 
 
 ### This is an add-in for [Fody](https://github.com/Fody/Home/)

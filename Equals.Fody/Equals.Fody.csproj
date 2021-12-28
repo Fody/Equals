@@ -4,12 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
   </PropertyGroup>
-  <PropertyGroup>
-    <PackageTags>Equatable;Equals;Fody;Weave;CodeGen</PackageTags>
-    <Description>
-      Generate Equals, GetHashCode and operator methods from properties for classes decorated with an [Equals] Attribute.
-    </Description>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FodyHelpers" Version="6.6.0" />
   </ItemGroup>
