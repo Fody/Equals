@@ -13,7 +13,7 @@ public partial class ModuleWeaver
     const int ExactlyOfType = 1;
     const int EqualsOrSubtype = 2;
 
-    static HashSet<string> simpleTypes = new HashSet<string>(new[]
+    static HashSet<string> simpleTypes = new(new[]
     {
         "System.Boolean",
         "System.Byte",
@@ -132,7 +132,7 @@ public partial class ModuleWeaver
     void AddCustomLogicCall(TypeDefinition type, MethodBody body, Collection<Instruction> ins, MethodDefinition[] customLogic)
     {
         ins.IfNot(
-            c =>
+            _ =>
             {
                 var customMethod = ModuleDefinition.ImportReference(customLogic[0]);
 
@@ -187,7 +187,7 @@ public partial class ModuleWeaver
             },
             TypeDefinitionExtensions.AddReturnFalse);
     }
-    
+
     static void AddEqualsTypeReturn(MethodReference newEquals, Collection<Instruction> ins, TypeReference type)
     {
         ins.Add(Instruction.Create(OpCodes.Ldarg_0));

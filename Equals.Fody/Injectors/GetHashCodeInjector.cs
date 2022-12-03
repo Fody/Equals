@@ -229,7 +229,7 @@ public partial class ModuleWeaver
     void AddNormalCode(PropertyDefinition property, Collection<Instruction> ins, TypeDefinition type)
     {
         ins.If(
-            c => { },
+            _ => { },
             t =>
             {
                 LoadVariable(property, t, type);
@@ -245,7 +245,7 @@ public partial class ModuleWeaver
             ins.If(
                 c => LoadVariable(property, c, type),
                 t => { GenerateCollectionCode(property, resultVariable, method, type, t); },
-                f => { });
+                _ => { });
         }
         else
         {
@@ -283,7 +283,7 @@ public partial class ModuleWeaver
                 b.Add(Instruction.Create(OpCodes.Stloc, currentVariable));
 
                 b.If(
-                    bc => b.Add(Instruction.Create(OpCodes.Ldloc, currentVariable)),
+                    _ => b.Add(Instruction.Create(OpCodes.Ldloc, currentVariable)),
                     bt =>
                     {
                         bt.Add(Instruction.Create(OpCodes.Ldloc, currentVariable));

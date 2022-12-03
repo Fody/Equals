@@ -77,7 +77,7 @@ public partial class ModuleWeaver
                 t => t.If(
                     c => AddCheckCurrent(c, leftEnumerator, rightEnumerator),
                     TypeDefinitionExtensions.AddReturnFalse),
-                e2 =>
+                _ =>
                 {
                     ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
                     ins.Add(Instruction.Create(OpCodes.Ret));
@@ -132,13 +132,13 @@ public partial class ModuleWeaver
     void AddRightAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition right)
     {
         ins.If(
-            c =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
                 ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
-            t =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
                 ins.Add(Instruction.Create(OpCodes.Ret));
@@ -148,13 +148,13 @@ public partial class ModuleWeaver
     void AddLeftAndNullReferenceEquals(Collection<Instruction> ins, ParameterDefinition left)
     {
         ins.If(
-            c =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldnull));
                 ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
-            t =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldc_I4_0));
                 ins.Add(Instruction.Create(OpCodes.Ret));
@@ -164,13 +164,13 @@ public partial class ModuleWeaver
     void AddLeftAndRightReferenceEquals(Collection<Instruction> ins, ParameterDefinition left, ParameterDefinition right)
     {
         ins.If(
-            c =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldarg, left));
                 ins.Add(Instruction.Create(OpCodes.Ldarg, right));
                 ins.Add(Instruction.Create(OpCodes.Call, ReferenceEquals));
             },
-            t =>
+            _ =>
             {
                 ins.Add(Instruction.Create(OpCodes.Ldc_I4_1));
                 ins.Add(Instruction.Create(OpCodes.Ret));

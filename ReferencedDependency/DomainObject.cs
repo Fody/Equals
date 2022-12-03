@@ -1,6 +1,6 @@
 ﻿public class DomainObject
 {
-    private static StatePrinter StatePrinter = new StatePrinter();
+    private static StatePrinter StatePrinter = new();
 
     public override string ToString()
     {

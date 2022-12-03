@@ -4,8 +4,8 @@ using Mono.Cecil;
 
 public class Operator
 {
-    public static readonly Operator Equality = new Operator("op_Equality", true, "==");
-    public static readonly Operator Inequality = new Operator("op_Inequality", false, "!=");
+    public static readonly Operator Equality = new("op_Equality", true, "==");
+    public static readonly Operator Inequality = new("op_Inequality", false, "!=");
 
     Operator(string methodName, bool isEquality, string sourceMethodName)
     {

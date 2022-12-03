@@ -41,8 +41,6 @@ public partial class IntegrationTests
         second.InParent = 10;
         second.InChild = 5;
 
-        var result = first.GetHashCode();
-
         Assert.True(first == second);
         Assert.False(first != second);
     }

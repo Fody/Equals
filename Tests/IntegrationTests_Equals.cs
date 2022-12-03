@@ -105,7 +105,7 @@ public partial class IntegrationTests
         Assert.True(result);
     }
 
-    bool CheckEqualityOnTypesForTypeCheck(string left, string right)
+    static bool CheckEqualityOnTypesForTypeCheck(string left, string right)
     {
         var leftType = testResult.Assembly.GetType(left);
         dynamic leftInstance = Activator.CreateInstance(leftType);
@@ -168,7 +168,7 @@ public partial class IntegrationTests
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
         var instanceType = genericClassType.MakeGenericType(propType);
 
-        Func<dynamic> createInstance = () =>
+        var createInstance = () =>
         {
             dynamic instance = Activator.CreateInstance(instanceType);
             instance.A = 1;
@@ -406,7 +406,7 @@ public partial class IntegrationTests
         Assert.False(result);
     }
 
-    dynamic GetNestedClassInstance()
+    static dynamic GetNestedClassInstance()
     {
         var normalType = testResult.Assembly.GetType("NormalClass");
         dynamic normalInstance = Activator.CreateInstance(normalType);

@@ -22,7 +22,7 @@ public partial class ModuleWeaver :
             .Where(x => x.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
     }
 
-    TypeReference GetGenericType(TypeReference type)
+    static TypeReference GetGenericType(TypeReference type)
     {
         if (type.HasGenericParameters)
         {
@@ -139,7 +139,7 @@ public partial class ModuleWeaver :
         yield return "System.Runtime";
     }
 
-    bool IsPropertySet(CustomAttribute attribute, string property)
+    static bool IsPropertySet(CustomAttribute attribute, string property)
     {
         var argument = attribute.Properties.Where(x => x.Name == property)
             .Select(x => x.Argument)
@@ -152,7 +152,7 @@ public partial class ModuleWeaver :
         return true.Equals(argument.Value);
     }
 
-    void RemoveFodyAttributes(TypeDefinition type)
+    static void RemoveFodyAttributes(TypeDefinition type)
     {
         type.RemoveAttribute(attributeName);
 
