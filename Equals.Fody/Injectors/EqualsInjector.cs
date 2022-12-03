@@ -328,7 +328,6 @@ public partial class ModuleWeaver
             {
                 if (property.PropertyType.IsGenericParameter)
                 {
-                    var genericType = property.PropertyType.GetGenericInstanceType(type);
                     AddNormalCheck(type, c, property, left, right);
                 }
                 else
