@@ -7,7 +7,7 @@ public class OperatorBadCaseIntegrationTests
 
     public OperatorBadCaseIntegrationTests()
     {
-        weavingTask = new ModuleWeaver();
+        weavingTask = new();
     }
 
     [Fact]

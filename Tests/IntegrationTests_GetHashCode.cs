@@ -203,7 +203,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic instance = Activator.CreateInstance(type);
-        instance.Collection = new int[0];
+        instance.Collection = Array.Empty<int>();
         instance.Count = 0;
 
         var result = instance.GetHashCode();

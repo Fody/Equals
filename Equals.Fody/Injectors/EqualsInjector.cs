@@ -35,7 +35,7 @@ public partial class ModuleWeaver
         var method = new MethodDefinition("Equals", methodAttributes, TypeSystem.BooleanReference);
         MarkAsGeneratedCode(method.CustomAttributes);
 
-        var obj = method.Parameters.Add("obj", TypeSystem.ObjectReference);
+        method.Parameters.Add("obj", TypeSystem.ObjectReference);
 
         var body = method.Body;
         body.InitLocals = true;
@@ -67,7 +67,7 @@ public partial class ModuleWeaver
         var body = method.Body;
         var ins = body.Instructions;
 
-        var other = method.Parameters.Add("other", typeRef);
+        method.Parameters.Add("other", typeRef);
 
         AddCheckEqualsReference(type, ins);
         AddEqualsTypeReturn(newEquals, ins, type);

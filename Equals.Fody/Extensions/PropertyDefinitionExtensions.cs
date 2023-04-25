@@ -9,12 +9,13 @@ static class PropertyDefinitionExtensions
         if (method.DeclaringType.HasGenericParameters)
         {
             var genericInstanceType = property.DeclaringType.GetGenericInstanceType(targetType);
-            method = new MethodReference(method.Name, method.ReturnType.IsGenericParameter ? method.ReturnType : property.Module.ImportReference(method.ReturnType))
+            method = new(
+                method.Name,
+                method.ReturnType.IsGenericParameter ? method.ReturnType : property.Module.ImportReference(method.ReturnType))
             {
                 DeclaringType = property.Module.ImportReference(genericInstanceType),
                 HasThis = true
             };
-
         }
         return method;
     }

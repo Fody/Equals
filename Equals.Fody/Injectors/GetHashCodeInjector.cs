@@ -183,7 +183,7 @@ public partial class ModuleWeaver
                 ins.Add(Instruction.Create(OpCodes.Ldarg_0));
                 c.Add(Instruction.Create(OpCodes.Call, getMethod));
 
-                variable = new VariableDefinition(getMethod.ReturnType);
+                variable = new(getMethod.ReturnType);
                 c.Add(Instruction.Create(OpCodes.Stloc, variable));
                 c.Add(Instruction.Create(OpCodes.Ldloca, variable));
 

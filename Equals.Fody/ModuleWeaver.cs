@@ -72,7 +72,7 @@ public partial class ModuleWeaver :
                 var typeInterface = IEquatableType.MakeGenericInstanceType(typeRef);
                 if (type.Interfaces.All(x => x.InterfaceType.FullName != typeInterface.FullName))
                 {
-                    type.Interfaces.Add(new InterfaceImplementation(typeInterface));
+                    type.Interfaces.Add(new(typeInterface));
                 }
             }
 

@@ -77,6 +77,6 @@ public class WeavingInstruction
 
     static WeavingException CreateException(FormattableString message)
     {
-        return new WeavingException(FormattableString.Invariant(message));
+        return new(FormattableString.Invariant(message));
     }
 }

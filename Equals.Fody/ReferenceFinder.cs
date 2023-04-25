@@ -60,7 +60,7 @@ public partial class ModuleWeaver
         var operatorType = equalsAssembly.MainModule.Types.Single(x => x.Name == "Operator");
         var weaveMethod = operatorType.Methods.Single(x => x.Name == "Weave");
 
-        WeavingInstruction = new WeavingInstruction(weaveMethod);
+        WeavingInstruction = new(weaveMethod);
         return true;
     }
 }
