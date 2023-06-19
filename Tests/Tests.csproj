@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <DisableFody>true</DisableFody>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
-    <PackageReference Include="FodyHelpers" Version="6.7.0" />
+    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'"></Reference>
+    
     <PackageReference Include="Verify.Xunit" Version="20.3.2" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
@@ -18,7 +18,7 @@
     <ProjectReference Include="..\BadCaseAssembliesToProcess\StructWithoutWeavingInstruction\StructWithoutWeavingInstruction.csproj" />
     <ProjectReference Include="..\BadCaseAssembliesToProcess\StructWithoutOperators\StructWithoutOperators.csproj" />
     <ProjectReference Include="..\Equals.Fody\Equals.Fody.csproj" />
-    <ProjectReference Include="..\Equals\Equals.csproj" />
+    
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
     <ProjectReference Include="..\AssemblyToProcessWithoutReference\AssemblyToProcessWithoutReference.csproj" />
   </ItemGroup>
