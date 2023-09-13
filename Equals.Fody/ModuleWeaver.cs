@@ -19,7 +19,7 @@ public partial class ModuleWeaver :
     public IEnumerable<TypeDefinition> GetMatchingTypes()
     {
         return ModuleDefinition.GetTypes()
-            .Where(x => x.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
+            .Where(_ => _.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
     }
 
     static TypeReference GetGenericType(TypeReference type)
@@ -52,14 +52,14 @@ public partial class ModuleWeaver :
                 ModuleDefinition.ImportReference(prop.PropertyType).Resolve();
             }
 
-            var attribute = type.CustomAttributes.Single(x => x.AttributeType.Name == attributeName);
+            var attribute = type.CustomAttributes.Single(_ => _.AttributeType.Name == attributeName);
             var typeRef = GetGenericType(type);
             var ignoreBaseClassProperties = IsPropertySet(attribute, IgnoreBaseClassProperties);
 
             if (!IsPropertySet(attribute, DoNotAddEquals))
             {
                 var typeCheck = 0;
-                var typeCheckProperty = attribute.Properties.SingleOrDefault(x => x.Name == "TypeCheck");
+                var typeCheckProperty = attribute.Properties.SingleOrDefault(_ => _.Name == "TypeCheck");
                 if (typeCheckProperty.Name != null)
                 {
                     typeCheck = (int) typeCheckProperty.Argument.Value;
@@ -70,7 +70,7 @@ public partial class ModuleWeaver :
                 InjectEqualsObject(type, typeRef, newEquals, typeCheck);
 
                 var typeInterface = IEquatableType.MakeGenericInstanceType(typeRef);
-                if (type.Interfaces.All(x => x.InterfaceType.FullName != typeInterface.FullName))
+                if (type.Interfaces.All(_ => _.InterfaceType.FullName != typeInterface.FullName))
                 {
                     type.Interfaces.Add(new(typeInterface));
                 }
@@ -107,12 +107,12 @@ public partial class ModuleWeaver :
         {
             foreach (var method in type.Methods)
             {
-                if (method.CustomAttributes.Any(x => x.AttributeType.Name == customEqualsInternalAttribute))
+                if (method.CustomAttributes.Any(_ => _.AttributeType.Name == customEqualsInternalAttribute))
                 {
                     WriteError($"Method `{type.FullName}.{method.Name}` contains {customEqualsInternalAttribute} but has no `[Equals]` attribute.", method);
                 }
 
-                if (method.CustomAttributes.Any(x => x.AttributeType.Name == CustomGetHashCodeAttribute))
+                if (method.CustomAttributes.Any(_ => _.AttributeType.Name == CustomGetHashCodeAttribute))
                 {
                     WriteError($"Method `{type.FullName}.{method.Name}` contains {CustomGetHashCodeAttribute} but has no `[Equals]` attribute.", method);
                 }
@@ -120,7 +120,7 @@ public partial class ModuleWeaver :
 
             foreach (var property in type.Properties)
             {
-                if (property.CustomAttributes.Any(x => x.AttributeType.Name == ignoreDuringEqualsAttributeName))
+                if (property.CustomAttributes.Any(_ => _.AttributeType.Name == ignoreDuringEqualsAttributeName))
                 {
                     //TODO: add sequence point
                     WriteError($"Property `{type.FullName}.{property.Name}` contains {ignoreDuringEqualsAttributeName} but has no `[Equals]` attribute.");
@@ -141,8 +141,8 @@ public partial class ModuleWeaver :
 
     static bool IsPropertySet(CustomAttribute attribute, string property)
     {
-        var argument = attribute.Properties.Where(x => x.Name == property)
-            .Select(x => x.Argument)
+        var argument = attribute.Properties.Where(_ => _.Name == property)
+            .Select(_ => _.Argument)
             .FirstOrDefault();
         if (argument.Value == null)
         {

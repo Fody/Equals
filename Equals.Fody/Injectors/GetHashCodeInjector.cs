@@ -39,7 +39,7 @@ public partial class ModuleWeaver
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == CustomGetHashCodeAttribute)).ToArray();
+            .Where(_ => _.CustomAttributes.Any(y => y.AttributeType.Name == CustomGetHashCodeAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {
@@ -187,7 +187,7 @@ public partial class ModuleWeaver
                 c.Add(Instruction.Create(OpCodes.Stloc, variable));
                 c.Add(Instruction.Create(OpCodes.Ldloca, variable));
 
-                var hasValuePropertyResolved = nullablePropertyResolved.Properties.First(x => x.Name == "HasValue").Resolve();
+                var hasValuePropertyResolved = nullablePropertyResolved.Properties.First(_ => _.Name == "HasValue").Resolve();
                 var hasMethod = ModuleDefinition.ImportReference(hasValuePropertyResolved.GetGetMethod(nullablePropertyImported));
                 c.Add(Instruction.Create(OpCodes.Call, hasMethod));
             },
@@ -203,7 +203,7 @@ public partial class ModuleWeaver
                 t.Add(Instruction.Create(OpCodes.Box, nullableProperty));
                 t.Add(Instruction.Create(OpCodes.Callvirt, GetHashcode));
             },
-            e => e.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
+            _ => _.Add(Instruction.Create(OpCodes.Ldc_I4_0)));
         return variable;
     }
 

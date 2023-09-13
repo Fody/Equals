@@ -8,13 +8,13 @@ static class TypeDefinitionExtensions
 {
     public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes)
     {
-        return typeDefinition.Methods.First(x => x.Name == method && x.IsMatch(paramTypes));
+        return typeDefinition.Methods.First(_ => _.Name == method && x.IsMatch(paramTypes));
     }
 
     public static bool IsCollection(this TypeDefinition type)
     {
         return !type.Name.Equals("String") &&
-               type.Interfaces.Any(i => i.InterfaceType.Name.Equals("IEnumerable"));
+               type.Interfaces.Any(_ => _.InterfaceType.Name.Equals("IEnumerable"));
     }
 
     public static PropertyDefinition[] GetPropertiesWithoutIgnores(this TypeDefinition type, string ignoreAttributeName)

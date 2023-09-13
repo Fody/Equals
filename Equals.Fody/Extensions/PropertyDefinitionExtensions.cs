@@ -22,7 +22,7 @@ static class PropertyDefinitionExtensions
 
     public static PropertyDefinition[] IgnoreBaseClassProperties(this PropertyDefinition[] properties, TypeDefinition type)
     {
-        return properties.Where(x => x.DeclaringType == type)
+        return properties.Where(_ => _.DeclaringType == type)
             .ToArray();
     }
 }

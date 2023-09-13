@@ -13,7 +13,7 @@ public partial class ModuleWeaver
         do
         {
             var name = mod == 0 ? "Equals.Helpers" : "Equals.Helpers" + mod;
-            typeDef = moduleDefinition.Types.FirstOrDefault(x => x.FullName == name);
+            typeDef = moduleDefinition.Types.FirstOrDefault(_ => _.FullName == name);
             if (typeDef != null)
             {
                 mod++;
@@ -71,7 +71,7 @@ public partial class ModuleWeaver
             c => AddCheckHasNext(c, leftHasNext, false),
             c => AddCheckHasNext(c, rightHasNext, false),
             AddReturnTrue,
-            e => e.IfAnd(
+            _ => _.IfAnd(
                 c => AddCheckHasNext(c, leftHasNext, true),
                 c => AddCheckHasNext(c, rightHasNext, true),
                 t => t.If(

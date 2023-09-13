@@ -22,7 +22,7 @@ public class Operator
 
     public bool TryGetOperator(TypeDefinition type, out MethodDefinition operatorMethod)
     {
-        operatorMethod = type.Methods.SingleOrDefault(x => x.Name == MethodName);
+        operatorMethod = type.Methods.SingleOrDefault(_ => _.Name == MethodName);
         return operatorMethod != null;
     }
 }

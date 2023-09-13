@@ -102,7 +102,7 @@ public partial class ModuleWeaver
 
         var methods = type.GetMethods();
         var customLogic = methods
-            .Where(x => x.CustomAttributes.Any(y => y.AttributeType.Name == customEqualsInternalAttribute)).ToArray();
+            .Where(_ => _.CustomAttributes.Any(y => y.AttributeType.Name == customEqualsInternalAttribute)).ToArray();
 
         if (customLogic.Length > 2)
         {

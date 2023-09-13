@@ -50,15 +50,15 @@ public partial class ModuleWeaver
         var debuggerNonUserCodeType = typeFinder("System.Diagnostics.DebuggerNonUserCodeAttribute");
         DebuggerNonUserCodeAttributeConstructor = ModuleDefinition.ImportReference(debuggerNonUserCodeType.FindMethod(".ctor"));
 
-        var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.SingleOrDefault(x => x.Name == "Equals");
+        var equalsAssemblyReference = ModuleDefinition.AssemblyReferences.SingleOrDefault(_ => _.Name == "Equals");
         if (equalsAssemblyReference == null)
         {
             return false;
         }
 
         var equalsAssembly = ModuleDefinition.AssemblyResolver.Resolve(equalsAssemblyReference);
-        var operatorType = equalsAssembly.MainModule.Types.Single(x => x.Name == "Operator");
-        var weaveMethod = operatorType.Methods.Single(x => x.Name == "Weave");
+        var operatorType = equalsAssembly.MainModule.Types.Single(_ => _.Name == "Operator");
+        var weaveMethod = operatorType.Methods.Single(_ => _.Name == "Weave");
 
         WeavingInstruction = new(weaveMethod);
         return true;

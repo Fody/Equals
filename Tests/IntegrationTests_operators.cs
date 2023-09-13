@@ -140,7 +140,7 @@ public partial class IntegrationTests
     [Fact]
     public Task IncorrectAttributes()
     {
-        return Verifier.Verify(testResult.Errors.Select(x => x.Text));
+        return Verifier.Verify(testResult.Errors.Select(_ => _.Text));
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public partial class IntegrationTests
     {
         var type = testResult.Assembly.GetType("DoNotAddEqualityOperators");
 
-        var methodNames = type.GetMethods().Select(x => x.Name).ToList();
+        var methodNames = type.GetMethods().Select(_ => _.Name).ToList();
 
         Assert.DoesNotContain("op_Equality", methodNames);
         Assert.DoesNotContain("op_Inequality", methodNames);
