@@ -5,6 +5,4 @@ using System;
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class CustomEqualsInternalAttribute :
-    Attribute
-{
-}
+    Attribute;

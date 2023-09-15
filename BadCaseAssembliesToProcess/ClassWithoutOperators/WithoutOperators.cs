@@ -1,4 +1,2 @@
 ﻿[Equals]
-public class WithoutOperators
-{
-}
+public class WithoutOperators;

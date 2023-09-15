@@ -1,4 +1,2 @@
 ﻿[Equals]
-public struct WithoutOperators
-{
-}
+public struct WithoutOperators;

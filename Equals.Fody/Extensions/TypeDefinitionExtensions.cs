@@ -8,7 +8,9 @@ static class TypeDefinitionExtensions
 {
     public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes)
     {
-        return typeDefinition.Methods.First(_ => _.Name == method && x.IsMatch(paramTypes));
+        return typeDefinition.Methods
+            .First(_ => _.Name == method &&
+                        _.IsMatch(paramTypes));
     }
 
     public static bool IsCollection(this TypeDefinition type)
@@ -44,7 +46,7 @@ static class TypeDefinitionExtensions
                     continue;
                 }
 
-                var shouldBeIgnored = property.CustomAttributes.Any(y => y.AttributeType.Name == ignoreAttributeName);
+                var shouldBeIgnored = property.CustomAttributes.Any(_ => _.AttributeType.Name == ignoreAttributeName);
                 if (shouldBeIgnored)
                 {
                     ignoredProperties.Add(property.Name);
@@ -74,7 +76,7 @@ static class TypeDefinitionExtensions
 
         if (type.IsGenericParameter)
         {
-            var genericParameter = (GenericParameter)type;
+            var genericParameter = (GenericParameter) type;
 
             var current = targetType;
             var currentResolved = current.Resolve();
@@ -85,6 +87,7 @@ static class TypeDefinitionExtensions
                 {
                     return type;
                 }
+
                 current = currentResolved.BaseType;
                 currentResolved = current.Resolve();
             }
@@ -112,7 +115,8 @@ static class TypeDefinitionExtensions
                 var propertyType = type.Resolve();
 
                 TypeDefinition parentResolved;
-                while (parent != null && propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
+                while (parent != null &&
+                       propertyType.FullName != (parentResolved = parent.Resolve()).FullName)
                 {
                     parentReference = parentResolved.BaseType;
                     parent = parentResolved.BaseType?.Resolve();
@@ -138,6 +142,7 @@ static class TypeDefinitionExtensions
         {
             genericInstanceType.GenericArguments.Add(genericParameter);
         }
+
         return genericInstanceType;
     }
 
@@ -163,19 +168,20 @@ static class TypeDefinitionExtensions
         {
             return OpCodes.Ldarga;
         }
+
         return OpCodes.Ldarg;
     }
 
 
-    public static void AddReturnTrue(this Collection<Instruction> e)
+    public static void AddReturnTrue(this Collection<Instruction> collection)
     {
-        e.Add(Instruction.Create(OpCodes.Ldc_I4_1));
-        e.Add(Instruction.Create(OpCodes.Ret));
+        collection.Add(Instruction.Create(OpCodes.Ldc_I4_1));
+        collection.Add(Instruction.Create(OpCodes.Ret));
     }
 
-    public static void AddReturnFalse(this Collection<Instruction> e)
+    public static void AddReturnFalse(this Collection<Instruction> collection)
     {
-        e.Add(Instruction.Create(OpCodes.Ldc_I4_0));
-        e.Add(Instruction.Create(OpCodes.Ret));
+        collection.Add(Instruction.Create(OpCodes.Ldc_I4_0));
+        collection.Add(Instruction.Create(OpCodes.Ret));
     }
 }

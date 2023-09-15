@@ -5,6 +5,4 @@ using System;
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class IgnoreDuringEqualsAttribute :
-    Attribute
-{
-}
+    Attribute;

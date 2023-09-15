@@ -1,4 +1,2 @@
 ﻿[Equals(DoNotAddEqualityOperators = true)]
-public class DoNotAddEqualityOperators
-{
-}
+public class DoNotAddEqualityOperators;

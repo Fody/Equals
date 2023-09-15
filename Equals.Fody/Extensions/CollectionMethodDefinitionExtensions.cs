@@ -8,7 +8,7 @@ static class CollectionMethodDefinitionExtensions
     {
         var current = methods.Where(_ => _.Name == method.Name)
             .FirstOrDefault(_ => _.Parameters.Count == method.Parameters.Count &&
-                                 x.Parameters.Zip(method.Parameters, (a, b) => new {First = a, Second = b})
+                                 _.Parameters.Zip(method.Parameters, (a, b) => new {First = a, Second = b})
                                      .All(y => y.First.ParameterType.FullName == y.Second.ParameterType.FullName));
 
         if (current != null)
