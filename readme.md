@@ -5,6 +5,8 @@
 
 Generate Equals, GetHashCode and operator methods from properties for classes decorated with an `[Equals]` Attribute
 
+**See [Milestones](../../milestones?state=closed) for release notes.**
+
 
 ### This is an add-in for [Fody](https://github.com/Fody/Home/)
 
