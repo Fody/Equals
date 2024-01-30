@@ -16,11 +16,9 @@ public partial class ModuleWeaver :
     public const string DoNotAddEquals = "DoNotAddEquals";
     public const string IgnoreBaseClassProperties = "IgnoreBaseClassProperties";
 
-    public IEnumerable<TypeDefinition> GetMatchingTypes()
-    {
-        return ModuleDefinition.GetTypes()
+    public IEnumerable<TypeDefinition> GetMatchingTypes() =>
+        ModuleDefinition.GetTypes()
             .Where(_ => _.CustomAttributes.Any(a => a.AttributeType.Name == attributeName));
-    }
 
     static TypeReference GetGenericType(TypeReference type)
     {

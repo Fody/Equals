@@ -29,6 +29,7 @@ static class MethodReferenceExtensions
         {
             return OpCodes.Call;
         }
+
         return OpCodes.Callvirt;
     }
 }

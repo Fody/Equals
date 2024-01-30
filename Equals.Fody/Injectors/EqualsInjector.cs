@@ -13,21 +13,24 @@ public partial class ModuleWeaver
     const int ExactlyOfType = 1;
     const int EqualsOrSubtype = 2;
 
-    static HashSet<string> simpleTypes = new(new[]
-    {
-        "System.Boolean",
-        "System.Byte",
-        "System.SByte",
-        "System.Char",
-        "System.Double",
-        "System.Single",
-        "System.Int32",
-        "System.UInt32",
-        "System.Int64",
-        "System.UInt64",
-        "System.Int16",
-        "System.UInt16"
-    });
+    static HashSet<string> simpleTypes =
+    [
+        ..new[]
+        {
+            "System.Boolean",
+            "System.Byte",
+            "System.SByte",
+            "System.Char",
+            "System.Double",
+            "System.Single",
+            "System.Int32",
+            "System.UInt32",
+            "System.Int64",
+            "System.UInt64",
+            "System.Int16",
+            "System.UInt16"
+        }
+    ];
 
     void InjectEqualsObject(TypeDefinition type, TypeReference typeRef, MethodReference newEquals, int typeCheck)
     {

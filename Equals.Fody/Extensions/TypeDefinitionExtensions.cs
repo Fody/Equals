@@ -6,18 +6,14 @@ using Mono.Collections.Generic;
 
 static class TypeDefinitionExtensions
 {
-    public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes)
-    {
-        return typeDefinition.Methods
+    public static MethodDefinition FindMethod(this TypeDefinition typeDefinition, string method, params string[] paramTypes) =>
+        typeDefinition.Methods
             .First(_ => _.Name == method &&
                         _.IsMatch(paramTypes));
-    }
 
-    public static bool IsCollection(this TypeDefinition type)
-    {
-        return !type.Name.Equals("String") &&
-               type.Interfaces.Any(_ => _.InterfaceType.Name.Equals("IEnumerable"));
-    }
+    public static bool IsCollection(this TypeDefinition type) =>
+        !type.Name.Equals("String") &&
+        type.Interfaces.Any(_ => _.InterfaceType.Name.Equals("IEnumerable"));
 
     public static PropertyDefinition[] GetPropertiesWithoutIgnores(this TypeDefinition type, string ignoreAttributeName)
     {

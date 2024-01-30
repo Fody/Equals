@@ -3,15 +3,8 @@ using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-public class WeavingInstruction
+public class WeavingInstruction(MethodDefinition weaveMethod)
 {
-    MethodDefinition weaveMethod;
-
-    public WeavingInstruction(MethodDefinition weaveMethod)
-    {
-        this.weaveMethod = weaveMethod;
-    }
-
     public MethodDefinition RetrieveOperatorAndAssertHasWeavingInstruction(TypeDefinition type, Operator @operator)
     {
         if (!@operator.TryGetOperator(type, out var operatorMethod))
@@ -75,8 +68,6 @@ public class WeavingInstruction
         return false;
     }
 
-    static WeavingException CreateException(FormattableString message)
-    {
-        return new(FormattableString.Invariant(message));
-    }
+    static WeavingException CreateException(FormattableString message) =>
+        new(FormattableString.Invariant(message));
 }

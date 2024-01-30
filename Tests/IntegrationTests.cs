@@ -1,8 +1,4 @@
-﻿using Fody;
-using VerifyXunit;
-
-[UsesVerify]
-public partial class IntegrationTests
+﻿public partial class IntegrationTests
 {
     static IntegrationTests()
     {
