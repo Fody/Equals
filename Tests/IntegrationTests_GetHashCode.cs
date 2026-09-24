@@ -1,10 +1,9 @@
-﻿using System;
-using Xunit;
+using System;
 
 public partial class IntegrationTests
 {
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_generic_property()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_generic_property()
     {
         var genericClassType = testResult.Assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -13,22 +12,22 @@ public partial class IntegrationTests
         dynamic instance = Activator.CreateInstance(type);
         instance.Prop = 1;
 
-        Assert.NotEqual(0, instance.GetHashCode());
+        await Assert.That((int) (instance.GetHashCode())).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_empty_type()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_empty_type()
     {
         var type = testResult.Assembly.GetType("EmptyClass");
         dynamic instance = Activator.CreateInstance(type);
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(0, result);
+        await Assert.That((int) (result)).IsEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_null_string()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_null_string()
     {
         var type = testResult.Assembly.GetType("SimpleClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -36,11 +35,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(0, result);
+        await Assert.That((int) (result)).IsEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_null_nullable()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_null_nullable()
     {
         var type = testResult.Assembly.GetType("ClassWithNullable");
         dynamic instance = Activator.CreateInstance(type);
@@ -48,11 +47,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(0, result);
+        await Assert.That((int) (result)).IsEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_date_nullable()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_date_nullable()
     {
         var type = testResult.Assembly.GetType("ClassWithNullable");
         dynamic instance = Activator.CreateInstance(type);
@@ -60,11 +59,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_different_value_for_changed_property_in_base_class()
+    [Test]
+    public async Task GetHashCode_should_return_different_value_for_changed_property_in_base_class()
     {
         var type = testResult.Assembly.GetType("InheritedClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -75,11 +74,11 @@ public partial class IntegrationTests
         instance.A = 3;
         var secondResult = instance.GetHashCode();
 
-        Assert.NotEqual(firstResult, secondResult);
+        await Assert.That((int) (secondResult)).IsNotEqualTo((int) firstResult);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_struct()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_struct()
     {
         var type = testResult.Assembly.GetType("SimpleStruct");
         dynamic instance = Activator.CreateInstance(type);
@@ -88,11 +87,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_guid_class()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_guid_class()
     {
         var type = testResult.Assembly.GetType("GuidClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -100,11 +99,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_normal_class()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_normal_class()
     {
         var type = testResult.Assembly.GetType("NormalClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -115,11 +114,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_should_ignored_marked_properties()
+    [Test]
+    public async Task GetHashCode_should_should_ignored_marked_properties()
     {
         var type = testResult.Assembly.GetType("IgnoredPropertiesClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -130,11 +129,11 @@ public partial class IntegrationTests
         instance.Y = 3;
         var secondResult = instance.GetHashCode();
 
-        Assert.Equal(firstResult, secondResult);
+        await Assert.That((int) (secondResult)).IsEqualTo((int) firstResult);
     }
 
-    [Fact]
-    public void GetHashCode_should_should_ignored_inherited_marked_properties()
+    [Test]
+    public async Task GetHashCode_should_should_ignored_inherited_marked_properties()
     {
         var type = testResult.Assembly.GetType("InheritedIgnoredPropertiesClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -145,11 +144,11 @@ public partial class IntegrationTests
         instance.Y = 3;
         var secondResult = instance.GetHashCode();
 
-        Assert.Equal(firstResult, secondResult);
+        await Assert.That((int) (secondResult)).IsEqualTo((int) firstResult);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic instance = Activator.CreateInstance(type);
@@ -158,11 +157,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_int_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_int_array()
     {
         var type = testResult.Assembly.GetType("IntArray");
         dynamic instance = Activator.CreateInstance(type);
@@ -170,11 +169,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_string_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_string_array()
     {
         var type = testResult.Assembly.GetType("StringArray");
         dynamic instance = Activator.CreateInstance(type);
@@ -182,11 +181,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_null_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_null_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic instance = Activator.CreateInstance(type);
@@ -195,11 +194,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(0, result);
+        await Assert.That((int) (result)).IsEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_empty_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_empty_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic instance = Activator.CreateInstance(type);
@@ -208,11 +207,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(0, result);
+        await Assert.That((int) (result)).IsEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_type_with_only_array()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_type_with_only_array()
     {
         var type = testResult.Assembly.GetType("OnlyIntCollection");
         dynamic instance = Activator.CreateInstance(type);
@@ -220,11 +219,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_generic_class()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_generic_class()
     {
         var genericClassType = testResult.Assembly.GetType("GenericClass`1");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -242,22 +241,22 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_enums()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_enums()
     {
         var type = testResult.Assembly.GetType("EnumClass");
         dynamic instance = Activator.CreateInstance(type, 3, 6);
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_nested_class()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_nested_class()
     {
         var normalType = testResult.Assembly.GetType("NormalClass");
         dynamic normalInstance = Activator.CreateInstance(normalType);
@@ -274,11 +273,11 @@ public partial class IntegrationTests
 
         var result = nestedInstance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_without_generic_parameter()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_without_generic_parameter()
     {
         var withoutGenericParameterType = testResult.Assembly.GetType("WithoutGenericParameter");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -293,11 +292,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_generic_parameter()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_generic_parameter()
     {
         var withGenericParameterType = testResult.Assembly.GetType("WithGenericParameter`1");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -313,11 +312,11 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_static_properties()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_static_properties()
     {
         var type = testResult.Assembly.GetType("ClassWithStaticProperties");
         dynamic first = Activator.CreateInstance(type);
@@ -326,11 +325,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_indexer()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_indexer()
     {
         var type = testResult.Assembly.GetType("ClassWithIndexer");
         dynamic first = Activator.CreateInstance(type);
@@ -339,11 +338,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_guid_in_parent()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_guid_in_parent()
     {
         var guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
 
@@ -354,11 +353,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_for_class_with_generic_property2()
+    [Test]
+    public async Task GetHashCode_should_return_value_for_class_with_generic_property2()
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);
@@ -366,11 +365,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void GetHashCode_should_ignore_properties_in_base_class_when_class_is_marked()
+    [Test]
+    public async Task GetHashCode_should_ignore_properties_in_base_class_when_class_is_marked()
     {
         var type = testResult.Assembly.GetType("IgnoreBaseClass");
 
@@ -385,6 +384,6 @@ public partial class IntegrationTests
         var first = instance.GetHashCode();
         var second = instance2.GetHashCode();
 
-        Assert.Equal(first, second);
+        await Assert.That((int) (second)).IsEqualTo((int) first);
     }
 }

@@ -1,15 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using VerifyXunit;
-using Xunit;
+using VerifyTUnit;
 
 public partial class IntegrationTests
 {
     // To ensure that the equivalency operator actually uses the overriden object.Equals(object) method the overriden method behaves unexpectedly
     // See OnlyOperator.Equals(object)!
-    [Fact]
-    public void Equality_operator_should_return_true_for_equal_class_instances()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_equal_class_instances()
     {
         var type = testResult.Assembly.GetType("OnlyOperator");
         dynamic first = Activator.CreateInstance(type);
@@ -18,12 +17,12 @@ public partial class IntegrationTests
         first.Value = 1;
         second.Value = 2;
 
-        Assert.True(first == second);
-        Assert.True(second != first);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (second != first)).IsTrue();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_false_for_not_class_equal_instances()
+    [Test]
+    public async Task Equality_operator_should_return_false_for_not_class_equal_instances()
     {
         var type = testResult.Assembly.GetType("OnlyOperator");
         dynamic first = Activator.CreateInstance(type);
@@ -32,12 +31,12 @@ public partial class IntegrationTests
         first.Value = 1;
         second.Value = 3;
 
-        Assert.True(first != second);
-        Assert.False(first == second);
+        await Assert.That((bool) (first != second)).IsTrue();
+        await Assert.That((bool) (first == second)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_equal_struct_instances()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_equal_struct_instances()
     {
         var type = testResult.Assembly.GetType("StructWithOnlyOperator");
         dynamic first = Activator.CreateInstance(type);
@@ -46,12 +45,12 @@ public partial class IntegrationTests
         first.Value = 1;
         second.Value = 2;
 
-        Assert.True(first == second);
-        Assert.True(second != first);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (second != first)).IsTrue();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_equal_class_with_generic_property()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_equal_class_with_generic_property()
     {
         var genericClassType = testResult.Assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -62,14 +61,14 @@ public partial class IntegrationTests
         dynamic second = Activator.CreateInstance(type);
         second.Prop = 1;
 
-        Assert.True(first == second);
+        await Assert.That((bool) (first == second)).IsTrue();
 #pragma warning disable CS1718 // Comparison made to same variable
-        Assert.False(first != first);
+        await Assert.That((bool) (first != first)).IsFalse();
 #pragma warning restore CS1718 // Comparison made to same variable
     }
 
-    [Fact]
-    public void Equality_operator_should_return_false_for_not_equal_struct_instances()
+    [Test]
+    public async Task Equality_operator_should_return_false_for_not_equal_struct_instances()
     {
         var type = testResult.Assembly.GetType("StructWithOnlyOperator");
         dynamic first = Activator.CreateInstance(type);
@@ -78,12 +77,12 @@ public partial class IntegrationTests
         first.Value = 1;
         second.Value = 3;
 
-        Assert.True(first != second);
-        Assert.False(first == second);
+        await Assert.That((bool) (first != second)).IsTrue();
+        await Assert.That((bool) (first == second)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_equal_guid_instances()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_equal_guid_instances()
     {
         var type = testResult.Assembly.GetType("GuidClass");
         dynamic first = Activator.CreateInstance(type);
@@ -93,12 +92,12 @@ public partial class IntegrationTests
         first.Key = newGuid;
         second.Key = newGuid;
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_empty_object_collections()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_empty_object_collections()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -111,12 +110,12 @@ public partial class IntegrationTests
         {
         };
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_equal_object_collections()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_equal_object_collections()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -133,18 +132,18 @@ public partial class IntegrationTests
             1.23456
         };
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
+    [Test]
     public Task IncorrectAttributes()
     {
         return Verifier.Verify(testResult.Errors.Select(_ => _.Text));
     }
 
-    [Fact]
-    public void Equality_operator_should_return_false_for_collections_with_different_size()
+    [Test]
+    public async Task Equality_operator_should_return_false_for_collections_with_different_size()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -162,14 +161,14 @@ public partial class IntegrationTests
             1.23456
         };
 
-        Assert.True(first != second);
-        Assert.False(first == second);
-        Assert.True(second != first);
-        Assert.False(second == first);
+        await Assert.That((bool) (first != second)).IsTrue();
+        await Assert.That((bool) (first == second)).IsFalse();
+        await Assert.That((bool) (second != first)).IsTrue();
+        await Assert.That((bool) (second == first)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_false_for_collections_with_elements_and_empty_collection()
+    [Test]
+    public async Task Equality_operator_should_return_false_for_collections_with_elements_and_empty_collection()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -184,14 +183,14 @@ public partial class IntegrationTests
             1.23456
         };
 
-        Assert.True(first != second);
-        Assert.False(first == second);
-        Assert.True(second != first);
-        Assert.False(second == first);
+        await Assert.That((bool) (first != second)).IsTrue();
+        await Assert.That((bool) (first == second)).IsFalse();
+        await Assert.That((bool) (second != first)).IsTrue();
+        await Assert.That((bool) (second == first)).IsFalse();
     }
 
-    [Fact]
-    public void Equality_operator_should_return_false_for_different_object_collections()
+    [Test]
+    public async Task Equality_operator_should_return_false_for_different_object_collections()
     {
         var type = testResult.Assembly.GetType("ObjectCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -208,30 +207,30 @@ public partial class IntegrationTests
             65432.1
         };
 
-        Assert.True(first != second);
-        Assert.False(first == second);
+        await Assert.That((bool) (first != second)).IsTrue();
+        await Assert.That((bool) (first == second)).IsFalse();
     }
 
-    [Fact]
-    public void When_opting_out_of_operators_should_not_add_operators()
+    [Test]
+    public async Task When_opting_out_of_operators_should_not_add_operators()
     {
         var type = testResult.Assembly.GetType("DoNotAddEqualityOperators");
 
         var methodNames = type.GetMethods().Select(_ => _.Name).ToList();
 
-        Assert.DoesNotContain("op_Equality", methodNames);
-        Assert.DoesNotContain("op_Inequality", methodNames);
+        await Assert.That(methodNames).DoesNotContain("op_Equality");
+        await Assert.That(methodNames).DoesNotContain("op_Inequality");
     }
 
-    [Fact]
-    public void When_opting_out_of_operators_should_not_replace_operators()
+    [Test]
+    public async Task When_opting_out_of_operators_should_not_replace_operators()
     {
         var type = testResult.Assembly.GetType("DoNotReplaceEqualityOperators");
 
         dynamic first = Activator.CreateInstance(type);
         dynamic second = Activator.CreateInstance(type);
 
-        Assert.True(first == second);
-        Assert.True(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsTrue();
     }
 }

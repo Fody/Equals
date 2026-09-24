@@ -1,10 +1,9 @@
-﻿using System;
-using Xunit;
+using System;
 
 public partial class IntegrationTests
 {
-    [Fact]
-    public void Equals_should_use_custom_logic()
+    [Test]
+    public async Task Equals_should_use_custom_logic()
     {
         var first = testResult.GetInstance("CustomEquals");
         first.X = 1;
@@ -14,11 +13,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_use_custom_logic_for_structure()
+    [Test]
+    public async Task Equals_should_use_custom_logic_for_structure()
     {
         var first = testResult.GetInstance("CustomStructEquals");
         first.X = 1;
@@ -28,11 +27,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_use_custom_logic_for_generic_type()
+    [Test]
+    public async Task Equals_should_use_custom_logic_for_generic_type()
     {
         var genericClassType = testResult.Assembly.GetType("CustomGenericEquals`1");
         var propType = typeof(int);
@@ -45,34 +44,34 @@ public partial class IntegrationTests
         dynamic third = Activator.CreateInstance(type);
         third.Prop = 2;
 
-        Assert.True(first.Equals(second));
-        Assert.False(first.Equals(third));
+        await Assert.That((bool) (first.Equals(second))).IsTrue();
+        await Assert.That((bool) (first.Equals(third))).IsFalse();
     }
 
-    [Fact]
-    public void GetHashCode_should_use_custom_logic()
+    [Test]
+    public async Task GetHashCode_should_use_custom_logic()
     {
         var instance = testResult.GetInstance("CustomGetHashCode");
         instance.X = 1;
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(423, result);
+        await Assert.That((int) (result)).IsEqualTo(423);
     }
 
-    [Fact]
-    public void GetHashCode_should_use_custom_logic_for_structure()
+    [Test]
+    public async Task GetHashCode_should_use_custom_logic_for_structure()
     {
         var instance = testResult.GetInstance("CustomStructEquals");
         instance.X = 1;
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(42, result);
+        await Assert.That((int) (result)).IsEqualTo(42);
     }
 
-    [Fact]
-    public void GetHashCode_should_use_custom_logic_for_generic_type()
+    [Test]
+    public async Task GetHashCode_should_use_custom_logic_for_generic_type()
     {
         var genericClassType = testResult.Assembly.GetType("CustomGenericEquals`1");
         var propType = typeof(int);
@@ -83,6 +82,6 @@ public partial class IntegrationTests
 
         var result = instance.GetHashCode();
 
-        Assert.Equal(42, result);
+        await Assert.That((int) (result)).IsEqualTo(42);
     }
 }

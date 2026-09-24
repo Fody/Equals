@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Xunit;
 
 public partial class IntegrationTests
 {
-    [Fact]
-    public void Equals_should_return_value_for_class_with_generic_property()
+    [Test]
+    public async Task Equals_should_return_value_for_class_with_generic_property()
     {
         var genericClassType = testResult.Assembly.GetType("GenericProperty`1");
         var propType = typeof(int);
@@ -18,12 +17,12 @@ public partial class IntegrationTests
         dynamic third = Activator.CreateInstance(type);
         third.Prop = 2;
 
-        Assert.True(first.Equals(second));
-        Assert.False(first.Equals(third));
+        await Assert.That((bool) (first.Equals(second))).IsTrue();
+        await Assert.That((bool) (first.Equals(third))).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_StructWithArray()
+    [Test]
+    public async Task Equals_should_return_true_for_StructWithArray()
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
@@ -33,11 +32,11 @@ public partial class IntegrationTests
         second.X = new[] {1, 2};
         second.Y = new[] {3, 4};
 
-        Assert.True(first.Equals(second));
+        await Assert.That((bool) (first.Equals(second))).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_StructWithArray()
+    [Test]
+    public async Task Equals_should_return_false_for_StructWithArray()
     {
         var type = testResult.Assembly.GetType("StructWithArray");
         dynamic first = Activator.CreateInstance(type);
@@ -47,11 +46,11 @@ public partial class IntegrationTests
         second.X = new[] {1, 2};
         second.Y = new[] {1, 4};
 
-        Assert.False(first.Equals(second));
+        await Assert.That((bool) (first.Equals(second))).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_value_for_class_without_generic_parameter()
+    [Test]
+    public async Task Equals_should_return_value_for_class_without_generic_parameter()
     {
         var withoutGenericParameterType = testResult.Assembly.GetType("WithoutGenericParameter");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -74,11 +73,11 @@ public partial class IntegrationTests
 
         var result = instance.Equals(instance2);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_value_for_class_with_generic_parameter()
+    [Test]
+    public async Task Equals_should_return_value_for_class_with_generic_parameter()
     {
         var withGenericParameterType = testResult.Assembly.GetType("WithGenericParameter`1");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -102,7 +101,7 @@ public partial class IntegrationTests
 
         bool result = instance.Equals(instance2);
 
-        Assert.True(result);
+        await Assert.That(result).IsTrue();
     }
 
     static bool CheckEqualityOnTypesForTypeCheck(string left, string right)
@@ -118,27 +117,27 @@ public partial class IntegrationTests
         return leftInstance.Equals((object) rightInstance);
     }
 
-    [Theory]
-    [InlineData("EqualsOrSubtypeClass", "EqualsOrSubtypeClass", true)]
-    [InlineData("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass", true)]
-    [InlineData("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass", true)]
-    [InlineData("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass", true)]
-    [InlineData("ExactlyOfTypeClass", "ExactlyOfTypeClass", true)]
-    [InlineData("ExactlyOfTypeSubClass", "ExactlyOfTypeClass", false)]
-    [InlineData("ExactlyOfTypeClass", "ExactlyOfTypeSubClass", true)]
-    [InlineData("ExactlyOfTypeSubClass", "ExactlyOfTypeSubClass", false)]
-    [InlineData("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisClass", true)]
-    [InlineData("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisSubClass", false)]
-    [InlineData("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisClass", false)]
+    [Test]
+    [Arguments("EqualsOrSubtypeClass", "EqualsOrSubtypeClass", true)]
+    [Arguments("EqualsOrSubtypeClass", "EqualsOrSubtypeSubClass", true)]
+    [Arguments("EqualsOrSubtypeSubClass", "EqualsOrSubtypeClass", true)]
+    [Arguments("EqualsOrSubtypeSubClass", "EqualsOrSubtypeSubClass", true)]
+    [Arguments("ExactlyOfTypeClass", "ExactlyOfTypeClass", true)]
+    [Arguments("ExactlyOfTypeSubClass", "ExactlyOfTypeClass", false)]
+    [Arguments("ExactlyOfTypeClass", "ExactlyOfTypeSubClass", true)]
+    [Arguments("ExactlyOfTypeSubClass", "ExactlyOfTypeSubClass", false)]
+    [Arguments("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisClass", true)]
+    [Arguments("ExactlyTheSameTypeAsThisClass", "ExactlyTheSameTypeAsThisSubClass", false)]
+    [Arguments("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisClass", false)]
     //TODO: support sub classes
-    //[InlineData("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisSubClass", true)]
-    public void Equals_should_use_type_check_option(string left, string right, bool result)
+    //[Arguments("ExactlyTheSameTypeAsThisSubClass", "ExactlyTheSameTypeAsThisSubClass", true)]
+    public async Task Equals_should_use_type_check_option(string left, string right, bool result)
     {
-        Assert.Equal(result, CheckEqualityOnTypesForTypeCheck(left, right));
+        await Assert.That(CheckEqualityOnTypesForTypeCheck(left, right)).IsEqualTo(result);
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_empty_type()
+    [Test]
+    public async Task Equals_should_return_true_for_empty_type()
     {
         var type = testResult.Assembly.GetType("EmptyClass");
         dynamic first = Activator.CreateInstance(type);
@@ -146,11 +145,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_enums()
+    [Test]
+    public async Task Equals_should_return_true_for_enums()
     {
         var type = testResult.Assembly.GetType("EnumClass");
         dynamic first = Activator.CreateInstance(type, 3, 6);
@@ -158,11 +157,11 @@ public partial class IntegrationTests
 
         var result = ((object) first).Equals((object) second);
 
-        Assert.True(result);
+        await Assert.That(result).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_generic_class()
+    [Test]
+    public async Task Equals_should_return_true_for_generic_class()
     {
         var genericClassType = testResult.Assembly.GetType("GenericClass`1");
         var propType = testResult.Assembly.GetType("GenericClassNormalClass");
@@ -185,11 +184,11 @@ public partial class IntegrationTests
 
         var result = first.Equals((object) second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_should_ignored_marked_properties()
+    [Test]
+    public async Task Equals_should_should_ignored_marked_properties()
     {
         var type = testResult.Assembly.GetType("IgnoredPropertiesClass");
         dynamic first = Activator.CreateInstance(type);
@@ -202,11 +201,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_should_inherited_ignored_marked_properties()
+    [Test]
+    public async Task Equals_should_should_inherited_ignored_marked_properties()
     {
         var type = testResult.Assembly.GetType("InheritedIgnoredPropertiesClass");
         dynamic first = Activator.CreateInstance(type);
@@ -219,11 +218,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_different_value_for_changed_property_in_base_class()
+    [Test]
+    public async Task Equals_should_return_false_for_different_value_for_changed_property_in_base_class()
     {
         var type = testResult.Assembly.GetType("InheritedClass");
         dynamic first = Activator.CreateInstance(type);
@@ -236,11 +235,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_class_with_indexer()
+    [Test]
+    public async Task Equals_should_return_true_for_class_with_indexer()
     {
         var type = testResult.Assembly.GetType("ClassWithIndexer");
         dynamic first = Activator.CreateInstance(type);
@@ -253,11 +252,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_collections()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_collections()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -270,11 +269,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_arrays()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_arrays()
     {
         var type = testResult.Assembly.GetType("IntArray");
         dynamic first = Activator.CreateInstance(type);
@@ -285,11 +284,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_string_arrays()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_string_arrays()
     {
         var type = testResult.Assembly.GetType("StringArray");
         dynamic first = Activator.CreateInstance(type);
@@ -300,11 +299,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_reference_equal_array()
+    [Test]
+    public async Task Equals_should_return_true_for_reference_equal_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -317,11 +316,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_null_array()
+    [Test]
+    public async Task Equals_should_return_true_for_null_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -334,11 +333,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_null_array_and_fill_array()
+    [Test]
+    public async Task Equals_should_return_false_for_null_array_and_fill_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -351,11 +350,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_fill_array_and_null_array()
+    [Test]
+    public async Task Equals_should_return_false_for_fill_array_and_null_array()
     {
         var type = testResult.Assembly.GetType("IntCollection");
         dynamic first = Activator.CreateInstance(type);
@@ -368,22 +367,22 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_nested_class()
+    [Test]
+    public async Task Equals_should_return_true_for_nested_class()
     {
         var nestedInstanceFirst = GetNestedClassInstance();
         var nestedInstanceSecond = GetNestedClassInstance();
 
         var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_changed_nested_class()
+    [Test]
+    public async Task Equals_should_return_false_for_changed_nested_class()
     {
         var nestedInstanceFirst = GetNestedClassInstance();
         var nestedInstanceSecond = GetNestedClassInstance();
@@ -391,11 +390,11 @@ public partial class IntegrationTests
 
         var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_null_nested_class()
+    [Test]
+    public async Task Equals_should_return_false_for_null_nested_class()
     {
         var nestedInstanceFirst = GetNestedClassInstance();
         var nestedInstanceSecond = GetNestedClassInstance();
@@ -403,7 +402,7 @@ public partial class IntegrationTests
 
         var result = nestedInstanceFirst.Equals(nestedInstanceSecond);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
     static dynamic GetNestedClassInstance()
@@ -423,8 +422,8 @@ public partial class IntegrationTests
         return nestedInstance;
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_structs()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_structs()
     {
         var type = testResult.Assembly.GetType("SimpleStruct");
         dynamic first = Activator.CreateInstance(type);
@@ -436,11 +435,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_false_for_changed_struct()
+    [Test]
+    public async Task Equals_should_return_false_for_changed_struct()
     {
         var type = testResult.Assembly.GetType("SimpleStruct");
         dynamic first = Activator.CreateInstance(type);
@@ -452,11 +451,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.False(result);
+        await Assert.That((bool) (result)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_struct_property()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_struct_property()
     {
         var type = testResult.Assembly.GetType("StructPropertyClass");
         var propertyType = testResult.Assembly.GetType("SimpleStruct");
@@ -475,11 +474,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_equal_normal_class()
+    [Test]
+    public async Task Equals_should_return_true_for_equal_normal_class()
     {
         var type = testResult.Assembly.GetType("NormalClass");
         dynamic instance = Activator.CreateInstance(type);
@@ -501,12 +500,12 @@ public partial class IntegrationTests
         var result1 = ((dynamic) first).Equals((dynamic) second);
         var result = first.Equals(second);
 
-        Assert.True(result);
-        Assert.True(result1);
+        await Assert.That(result).IsTrue();
+        await Assert.That((bool) (result1)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_class_with_static_properties()
+    [Test]
+    public async Task Equals_should_return_true_for_class_with_static_properties()
     {
         var type = testResult.Assembly.GetType("ClassWithStaticProperties");
         dynamic first = Activator.CreateInstance(type);
@@ -519,11 +518,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_class_with_guid_in_parent()
+    [Test]
+    public async Task Equals_should_return_true_for_class_with_guid_in_parent()
     {
         var guid = "{f6ab1abe-5811-40e9-8154-35776d2e5106}";
 
@@ -538,11 +537,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_return_for_class_with_generic_property()
+    [Test]
+    public async Task Equals_should_return_for_class_with_generic_property()
     {
         var type = testResult.Assembly.GetType("ClassWithGenericProperty");
         dynamic first = Activator.CreateInstance(type);
@@ -553,11 +552,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void Equals_should_ignore_properties_in_base_class_when_class_is_marked()
+    [Test]
+    public async Task Equals_should_ignore_properties_in_base_class_when_class_is_marked()
     {
         var type = testResult.Assembly.GetType("IgnoreBaseClass");
 
@@ -571,6 +570,6 @@ public partial class IntegrationTests
 
         var result = instance.Equals(instance2);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 }

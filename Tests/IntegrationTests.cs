@@ -1,4 +1,4 @@
-﻿public partial class IntegrationTests
+public partial class IntegrationTests
 {
     static IntegrationTests()
     {
@@ -6,6 +6,6 @@
         testResult = weaver.ExecuteTestRun("AssemblyToProcess.dll");
     }
 
-    static TestResult testResult;
+    static Fody.TestResult testResult;
 #pragma warning restore 618
 }

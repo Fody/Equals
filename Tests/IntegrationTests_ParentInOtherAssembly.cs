@@ -1,9 +1,8 @@
-﻿using Xunit;
 
 public partial class IntegrationTests
 {
-    [Fact]
-    public void Equals_should_return_true_for_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task Equals_should_return_true_for_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("Child");
         first.InParent = 10;
@@ -15,11 +14,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void GetHashCode_should_return_true_for_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task GetHashCode_should_return_true_for_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("Child");
         first.InParent = 10;
@@ -27,11 +26,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("Child");
         first.InParent = 10;
@@ -41,12 +40,12 @@ public partial class IntegrationTests
         second.InParent = 10;
         second.InChild = 5;
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    [Test]
+    public async Task Equals_should_return_true_for_child_with_complex_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
@@ -66,11 +65,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void GetHashCode_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    [Test]
+    public async Task GetHashCode_should_return_true_for_child_with_complex_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
@@ -82,11 +81,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_child_with_complex_parent_in_other_assembly()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_child_with_complex_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("ComplexChild");
         first.InChildNumber = 1;
@@ -104,12 +103,12 @@ public partial class IntegrationTests
         second.InParentText = "test";
         second.InParentCollection = new[] {1, 2};
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
-    public void Equals_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task Equals_should_return_true_for_generic_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("GenericChild");
         first.InChild = "1";
@@ -121,11 +120,11 @@ public partial class IntegrationTests
 
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 
-    [Fact]
-    public void GetHashCode_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task GetHashCode_should_return_true_for_generic_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("GenericChild");
         first.InChild = "1";
@@ -133,11 +132,11 @@ public partial class IntegrationTests
 
         var result = first.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void Equality_operator_should_return_true_for_generic_child_with_parent_in_other_assembly()
+    [Test]
+    public async Task Equality_operator_should_return_true_for_generic_child_with_parent_in_other_assembly()
     {
         var first = testResult.GetInstance("GenericChild");
         first.InChild = "1";
@@ -147,23 +146,23 @@ public partial class IntegrationTests
         second.InChild = "1";
         second.GenericInParent = 2;
 
-        Assert.True(first == second);
-        Assert.False(first != second);
+        await Assert.That((bool) (first == second)).IsTrue();
+        await Assert.That((bool) (first != second)).IsFalse();
     }
 
-    [Fact]
-    public void GetHashCode_should_return_value_class_with_generic_base()
+    [Test]
+    public async Task GetHashCode_should_return_value_class_with_generic_base()
     {
         var instance = testResult.GetInstance("ClassWithGenericBase");
         instance.Prop = 1;
 
         var result = instance.GetHashCode();
 
-        Assert.NotEqual(0, result);
+        await Assert.That((int) (result)).IsNotEqualTo(0);
     }
 
-    [Fact]
-    public void Equals_should_return_value_class_with_generic_base()
+    [Test]
+    public async Task Equals_should_return_value_class_with_generic_base()
     {
         var first = testResult.GetInstance("ClassWithGenericBase");
         first.Prop = 1;
@@ -172,6 +171,6 @@ public partial class IntegrationTests
         second.Prop = 1;
         var result = first.Equals(second);
 
-        Assert.True(result);
+        await Assert.That((bool) (result)).IsTrue();
     }
 }
